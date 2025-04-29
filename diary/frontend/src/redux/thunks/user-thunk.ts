@@ -4,14 +4,26 @@ import {AxiosInstance} from "axios";
 
 const login = createAsyncThunk<IUserReturned, IUser, {extra: AxiosInstance}>
 ('auth/login', async (body, {extra: api}) => {
-    const {data} = await api.post<IUserReturned>('user/login', body);
+    const {data} = await api.post<IUserReturned>('user/login', body, { withCredentials: true });
+    return data;
+});
+
+const check = createAsyncThunk<IUserReturned, undefined, {extra: AxiosInstance}>
+('auth/check', async (_, {extra: api}) => {
+    const {data} = await api.get<IUserReturned>('user/refresh', { withCredentials: true });
     return data;
 });
 
 const register = createAsyncThunk<IUserReturned, IUser, {extra: AxiosInstance}>
-('auth/login', async (body, {extra: api}) => {
-    const {data} = await api.post<IUserReturned>('user/login', body);
+('auth/register', async (body, {extra: api}) => {
+    const {data} = await api.post<IUserReturned>('user/register', body);
     return data;
 });
 
-export {login, register};
+const logout = createAsyncThunk<undefined, undefined, {extra: AxiosInstance}>
+('auth/logout', async (_, {extra: api}) => {
+    const {data} = await api.post('user/logout');
+    return data
+});
+
+export { login, register, check, logout };

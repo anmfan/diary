@@ -21,6 +21,7 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "../../../../AppData/Local/JetBrains/WebStorm2024.3/javascript/typings/express/4.17.21/node_modules/@types/node/module.d.ts"
   ]
 }

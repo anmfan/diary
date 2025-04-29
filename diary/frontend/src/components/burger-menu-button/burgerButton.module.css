@@ -1,0 +1,25 @@
+.burgerButton {
+    display: none;
+    flex-direction: column;
+    row-gap: 2px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    padding: 10px;
+
+    &:hover {
+        border-radius: 3px;
+        background: #f5f5f5;
+    }
+
+    >span {
+        width: 20px;
+        height: 3px;
+        background: #000;
+    }
+}
+
+@media (max-width: 600px) {
+    .burgerButton {
+        display: flex;
+    }
+}

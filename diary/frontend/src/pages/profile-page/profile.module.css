@@ -1,0 +1,85 @@
+/* Общие стили остаются как в предыдущем примере, меняем только специфичные блоки */
+
+/* Статистика */
+.statsContainer {
+    display: flex;
+    gap: 3rem;
+    margin: 2rem 0;
+}
+
+/* Ближайшие уроки */
+.scheduleSection {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.top {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.lessonsList {
+    margin-top: 1rem;
+}
+
+.lessonItem {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.time {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.lessonInfo h4 {
+    margin-bottom: 0.25rem;
+    color: #2c3e50;
+}
+
+/* Оценки */
+.gradesSection {
+    margin: 2rem 0;
+}
+
+.gradesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.gradeSubject, .gradeMark, .gradeDate {
+    padding: 0.8rem;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.gradeMark {
+    text-align: center;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+/* Кнопки */
+.editButton {
+    background: none;
+    border: 1px solid #3498db;
+    color: #3498db;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.editButton:hover {
+    background: #3498db;
+    color: white;
+}

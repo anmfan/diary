@@ -1,0 +1,119 @@
+.header {
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    margin-bottom: 15px;
+}
+
+.container {
+    max-width: 1470px;
+    padding: 10px 20px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .list {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+
+        &:last-of-type {
+            padding-right: 11px;
+        }
+
+        li {
+
+            a {
+                position: relative;
+                text-decoration: none;
+                color: #333;
+                font-size: 18px;
+                font-weight: 500;
+                transition: color 0.3s ease-in-out;
+
+                &:hover {
+                    color: #007bff;
+                }
+            }
+
+            .active {
+                color: #007bff;
+                font-weight: 600;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    width: 100%;
+                    height: 2px;
+                    background: #007bff;
+                    left: 0;
+                    bottom: -15px;
+                    transition: width 0.3s ease-in-out;
+                }
+            }
+        }
+    }
+
+    .account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+}
+
+@media (max-width: 600px) {
+    .menu {
+        position: fixed;
+        height: 100%;
+        width: 220px;
+        top: 0;
+        left: -260px;
+        display: flex;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        flex-direction: column-reverse;
+        row-gap: 15px;
+        justify-content: flex-end;
+        transition: transform 0.4s ease, opacity 0.4s ease;
+        z-index: 100;
+
+        .list {
+            display: flex;
+            flex-direction: column;
+
+            li {
+                .active {
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        width: 3%;
+                        height: 100%;
+                        background: #007bff;
+                        left: -15px;
+                        top: 0;
+                        transition: width 0.3s ease-in-out;
+                    }
+                }
+            }
+        }
+
+        .account {
+            margin-right: 10px;
+        }
+    }
+    .menu.active {
+        transform: translateX(100%);
+    }
+}

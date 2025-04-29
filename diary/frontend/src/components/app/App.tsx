@@ -1,7 +1,11 @@
 import Routes from '../routes/Routes.tsx';
+import useAuthCheck from "@/hooks/useAuthCheck.ts";
 
 const App = () => {
-    return <Routes />;
+    useAuthCheck();
+    return (
+        <Routes />
+    );
 };
 
 export default App;

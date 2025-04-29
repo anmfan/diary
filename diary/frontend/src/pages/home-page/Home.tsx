@@ -1,9 +1,11 @@
+import MainContainer from "@/components/main-container/MainContainer.tsx";
+import HomeMeeting from "@/components/home-meeting/HomeMeeting.tsx";
 
 const Home = () => {
     return (
-        <div>
-            Home
-        </div>
+        <MainContainer>
+            <HomeMeeting/>
+        </MainContainer>
     );
 };
 

@@ -1,0 +1,165 @@
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab:hover {
+    color: #333;
+}
+
+.activeTab {
+    color: #1976d2;
+    border-bottom: 3px solid #1976d2;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.managementButton {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    border: none;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: auto;
+    max-height: 41px;
+
+    &:hover {
+        background-color: #0056b3;
+    }
+}
+
+.listContainer {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fff;
+}
+
+.listTitle {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.list {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.listItem {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.listItem:hover {
+    background: #f5f5f5;
+}
+
+.listItem.selected {
+    background: #e3f2fd;
+    font-weight: 500;
+}
+
+.detailContainer {
+    flex: 2;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+}
+
+.editButtons {
+    display: flex;
+    margin-left: auto;
+    column-gap: 8px;
+    
+    > svg {
+        padding: 5px;
+        border-radius: 30%;
+        transition: background 0.2s, fill 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            background: #f5f5f5;
+        }
+    }
+
+    .biPlusLg {
+        &:hover {
+            fill: green;
+        }
+    }
+    .biTrash3 {
+        &:hover {
+            fill: red;
+        }
+    }
+    .biPencilSquare {
+        &:hover {
+            fill: blue;
+        }
+    }
+}
+
+.detailContent {
+    color: #333;
+}
+
+.detailContent h3 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+.detailContent p {
+    margin: 10px 0;
+}
+
+.emptyDetail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    font-size: 18px;
+}
+
+@media (max-width: 700px) {
+    .editButtons {
+
+    }
+}
