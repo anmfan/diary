@@ -21,8 +21,17 @@ export interface IUserInitialState {
 
 export interface IGroups extends IBase {
     name: string;
-    course: string;
+    course: string | null;
     students_count: number;
+    teacher: {
+        user_id: string;
+        user: {
+            email: string;
+            first_name: string | null;
+            last_name: string | null;
+        }
+    }
+    tab: "groups"
 }
 
 export interface IGroupsInitialState {
@@ -33,6 +42,7 @@ export interface IGroupsInitialState {
 
 export interface ISubject extends IBase {
     name: string;
+    tab: "subjects"
 }
 
 export type ITeacher = IBase & {
@@ -41,12 +51,21 @@ export type ITeacher = IBase & {
     first_name: string | null;
     last_name: string | null;
     avatar: string | null;
+    tab: "teachers"
 }
 
 export interface IBase {
     id: string;
 }
-export type IStudent = ITeacher
+export type IStudent = IBase & {
+    username: string;
+    email: string;
+    first_name: string | null;
+    last_name: string | null;
+    avatar: string | null;
+    group: string | null;
+    tab: "students"
+}
 
 export interface ITeachersInitialState {
     items: ITeacher[],
@@ -75,21 +94,93 @@ export interface IUser {
     password: string;
 }
 
-interface IUserData {
+type IUserData = {
     id: number;
     username: string;
     firstName: string;
     lastName: string;
     avatar: string;
     email: string;
+    group: string | null;
     role: UserRole;
 }
 
-export interface IUserReturned {
+export type IUserReturned = {
     message: string;
     userData: {
         accessToken: string;
         refreshToken: string;
         user: IUserData;
     };
+}
+
+export type TDeleteItemResponse = {
+    message: string;
+}
+
+type TDeleteDataResponse = {
+    data: TDeleteItemResponse;
+}
+
+export type TDelete<T extends string> = TDeleteDataResponse & {
+    [K in T]: string;
+};
+
+export type TDeleteItem = {
+    id: string
+}
+
+export type TCreateUser<T extends 2 | 3> = {
+    username: string;
+    email: string;
+    fullName: string;
+    password: string;
+    role_id: T;
+    group_id: string;
+}
+
+export type TEdit = {
+    id: string;
+    fullName: string;
+    email: string;
+    group: string;
+}
+
+export type TEditResponse = {
+    message: string;
+    user: {
+        id: string;
+        email: string;
+        first_name: string;
+        last_name: string;
+        group: string | null;
+    }
+}
+
+export type TGroupEdit = {
+    groupId: string;
+    newGroupName: string;
+}
+
+type TGroupEditUpdated = {
+    id: string;
+    name: string;
+    students_count: string;
+    course: 0 | 1 | 2 | 3 | 4;
+    curator_id: string | null;
+}
+
+type TSubjectEditUpdated = {
+    id: string;
+    name: string;
+}
+
+export type TSubjectEdit = {
+    subjectId: string;
+    newSubjectName: string;
+}
+
+export type TEntityEditResponse<T extends TGroupEdit | TSubjectEdit> = {
+    message: string;
+    updated: T extends TGroupEdit ? TGroupEditUpdated : TSubjectEditUpdated
 }

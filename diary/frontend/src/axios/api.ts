@@ -34,7 +34,6 @@ export const createApi = (): AxiosInstance => {
                 await store.dispatch(check()).unwrap();
                 return server(originalRequest);
             } catch (e) {
-                localStorage.removeItem('token');
                 await store.dispatch(logout());
                 return Promise.reject(e);
             }

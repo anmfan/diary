@@ -51,9 +51,6 @@ const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        switchManagementTab: (state, action: PayloadAction<TSelectedItem>) => {
-            state.selectedItem = action.payload;
-        },
         setSelectedItem: (state, action: PayloadAction<TSelectedItem>) => {
             state.selectedItem = action.payload;
         }
@@ -92,6 +89,7 @@ const userSlice = createSlice({
                 state.user.username = null
                 state.user.avatar = null
                 state.user.role = UsersRoles.unknown
+                localStorage.removeItem("token");
             })
     }
 })

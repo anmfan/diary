@@ -66,6 +66,13 @@
     border-radius: 8px;
     padding: 15px;
     background: #fff;
+    max-height: 300px;
+    overflow-y: auto;
+
+    &:has(.listItem:nth-child(n+7))::-webkit-scrollbar {
+        width: 6px;
+        background: #f0f0f0;
+    }
 }
 
 .listTitle {

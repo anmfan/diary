@@ -18,7 +18,7 @@ const AdminManagementSubjects = () => {
             <div
                 key={subject.id}
                 className={`${styles.listItem} ${selectedItem?.id === subject.id ? styles.selected : ''}`}
-                onClick={() => setSelected(subject)}
+                onClick={() => setSelected({...subject, tab: 'subjects'})}
             >
                 {subject.name}
             </div>

@@ -3,10 +3,10 @@ import AuthTooltip from "@/components/auth-tooltip/AuthTooltip.tsx";
 import {useAppDispatch} from "@/hooks/store.ts";
 import { useForm } from "react-hook-form";
 import {login} from "@/redux/thunks/user-thunk.ts";
-import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {useNavigate} from "react-router-dom";
 import {ROUTES_ENDPOINTS} from "@/components/routes/const.tsx";
+import {formValidation} from "@/utils/formValidation.ts";
 
 
 const Auth = () => {
@@ -19,16 +19,10 @@ const Auth = () => {
         }
     })
 
-    const submitForm = async (data: {email: string, password: string}) => {
-        if (data.email.length === 0) {
-            return toast.error("Введите email");
-        }
-        if (data.password.length === 0) {
-            return toast.error("Введите пароль");
-        }
-        if (data.password.length > 0 && data.password.length < 6) {
-            return toast.error("Пароль должен состоять минимум из 6 символов");
-        }
+    const submitForm = (data: {email: string, password: string}) => {
+        const isValid = formValidation(data);
+        if (!isValid) return;
+
         try {
             dispatch(login(data));
             navigate(ROUTES_ENDPOINTS.HOME)

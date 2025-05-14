@@ -18,7 +18,7 @@ const AdminManagementGroups = () => {
             <div
                 key={group.id}
                 className={`${styles.listItem} ${selectedItem?.id === group.id ? styles.selected : ''}`}
-                onClick={() => setSelected(group)}
+                onClick={() => setSelected({...group, tab: 'groups'})}
             >
                 {group.name}
             </div>

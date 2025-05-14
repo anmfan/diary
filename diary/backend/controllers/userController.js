@@ -1,180 +1,207 @@
 const ApiError = require('../error/ApiError');
 const {Users, Roles} = require("../models/models");
-const {hash} = require("bcrypt");
-const TokenService = require("./tokenService");
-const bcrypt = require("bcrypt");
-const ms = require("ms");
+const TokenService = require("../service/tokenService");
+const UserService = require("../service/userService");
+const {validationResult } = require("express-validator");
+const sequelize = require('../db');
+const tokenService = require("../service/tokenService");
 
-const saveRefreshTokenToCookie = (res, tokens) => {
-    res.cookie("refreshToken", tokens.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        maxAge: ms(process.env.JWT_REFRESH_EXPIRES),
-    });
-}
+const ACCESS_TOKEN = "AccessToken";
 
 class UserController {
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
 
-            if (!email || !password) {
-                return next(ApiError.badRequest("Не указан email или пароль"));
-            }
+            const userData = await UserService.login(email, password);
 
-            const user = await Users.findOne({
-                where: {email},
-                include: [{model: Roles, attributes: ['name']}]
-            });
-            if (!user) {
-                return next(ApiError.badRequest("Пользователь не найден"));
-            }
-
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                return next(ApiError.forbidden("Неверный пароль"));
-            }
-
-            const tokens = TokenService.generateTokens({id: user.id, email: user.email});
-            user.refreshToken = tokens.refreshToken;
-            await user.save();
-
-            await saveRefreshTokenToCookie(res, tokens);
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            })
 
             return res.json({
-                message: "Успешно авторизирован",
-                accessToken: tokens.accessToken,
-                user: {
-                    username: user.username,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    email: user.email,
-                    role_name: user.role.name,
+                    message: "Пользователь авторизирован",
+                    userData: {...userData}
                 }
-            });
+            );
         } catch (e) {
-            return next(ApiError.internal(e.message));
+            return next(e);
         }
     }
     async register(req, res, next) {
+        const transaction = await sequelize.transaction();
         try {
-            const {username, email, password} = req.body;
-
-            if (!email || !password || !username) {
-                return next(ApiError.badRequest('Не указан email, пароль или username'))
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                await transaction.rollback();
+                return next(ApiError.badRequest('Ошибка при валидации', errors.array()))
             }
 
-            const existingUser = await Users.findOne({where: {email}});
+            const {
+                username,
+                email,
+                password,
+                role_id,
+                group_id,
+                fullName,
+            } = req.body;
 
-            if (existingUser) {
-                return next(ApiError.badRequest("Пользователь уже существует"));
+            const candidate = await Users.findOne({where: {email}, transaction})
+            if (candidate) {
+                await transaction.rollback();
+                return next(ApiError.badRequest(`Пользователь с адресом ${email} уже существует`));
             }
 
-            const hashedPassword = await hash(password, 10);
-            const newUser = await Users.create({email, username, password: hashedPassword})
+            const userData = await UserService.registration(
+                email,
+                password,
+                username,
+                role_id,
+                group_id,
+                fullName,
+                transaction
+            );
 
-            const tokens = TokenService.generateTokens({id: newUser.id, email: newUser.email});
-
-            newUser.refresh_token = tokens.refreshToken;
-            await newUser.save();
-
-            saveRefreshTokenToCookie(res, tokens);
+            await transaction.commit();
 
             return res.json({
                 message: "Пользователь зарегистрирован",
-                accessToken: tokens.accessToken,
-                user: {
-                    username: newUser.username,
-                    email: newUser.email,
-                }}
+                userData: {...userData}
+            }
             );
         } catch (e) {
-            return next(ApiError.internal(e.message));
+            return next(e);
         }
     }
     async check(req, res, next) {
         try {
-            const authHeader = req.headers.authorization;
-            if (!authHeader) {
-                return next(ApiError.forbidden("Токен не предоставлен"));
-            }
-
-            const token = authHeader.split(" ")[1];
+            const token = req.cookies.AccessToken;
             if (!token) {
-                return next(ApiError.forbidden("Некорректный формат токена"));
+                return next(ApiError.unauthorized("Токен отсутствует"));
             }
 
             const userData = TokenService.validateAccessToken(token);
             if (!userData) {
+                res.clearCookie(ACCESS_TOKEN);
                 return next(ApiError.forbidden("Токен недействителен"));
             }
 
-            return res.json({ message: "Токен валиден", user: userData });
+            const user = await Users.findByPk(userData.id, {
+                include: [{ model: Roles, attributes: ['name'] }]
+            });
+
+            if (!user) {
+                res.clearCookie(ACCESS_TOKEN);
+                return next(ApiError.unauthorized("Пользователь не найден"));
+            }
+
+            return res.json({
+                message: "Токен валиден",
+                user: {
+                    email: user.email,
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    role: user.role.name,
+                }
+            });
         } catch (e) {
-            return next(ApiError.internal("Ошибка авторизации"));
+            return next(e);
         }
     }
 
     async refresh(req, res, next) {
         try {
             const { refreshToken } = req.cookies;
-
-            if (!refreshToken) {
-                return next(ApiError.forbidden("RefreshToken не предоставлен"));
-            }
-
-            const userData = TokenService.validateRefreshToken(refreshToken);
-            if (!userData) {
-                res.clearCookie("refreshToken");
-                return next(ApiError.unauthorized("Требуется повторная авторизация"));
-            }
-
-            const user = await Users.findOne({ where: refreshToken });
-            if (!user) {
-                res.clearCookie("refreshToken");
-                return next(ApiError.unauthorized("Пользователь не найден, авторизуйтесь заново"));
-            }
-
-            const tokens = TokenService.generateTokens({ id: user.id, email: user.email });
-
-            user.refreshToken = tokens.refreshToken;
-            await user.save();
-
-            saveRefreshTokenToCookie(res, tokens);
-
-            return res.json({
-                message: "Токены обновлены",
-                accessToken: tokens.accessToken
-            });
+            const userData = await UserService.refresh(refreshToken)
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            })
+            return res.json({message: "Токен обновлен", userData: userData});
         } catch (e) {
-            res.clearCookie("refreshToken");
-            return next(ApiError.internal("Ошибка при обновлении токена"));
+            return next(e);
         }
     }
 
     async logout(req, res, next) {
         try {
-            const { refreshToken } = req.body;
-            if (!refreshToken) {
-                return next(ApiError.forbidden("Токен не предоставлен"));
+            const {refreshToken} = req.cookies;
+            await UserService.logout(refreshToken)
+            res.clearCookie('refreshToken')
+            return res.json({ message: "Выход выполнен" });
+        } catch (e) {
+            return next(e);
+        }
+    }
+
+    async getAccount(req, res, next) {
+        return res.json({message: "Какие-то данные"})
+    }
+
+    async edit(req, res, next) {
+        try {
+            const { id, email, fullName } = req.body;
+
+            if (!email && !fullName) {
+                return next(ApiError.badRequest("Нужно указать хотя бы одно поле для обновления"));
             }
 
-            const user = await Users.findOne({ where: refreshToken});
+            const user = await Users.findByPk(id);
             if (!user) {
                 return next(ApiError.badRequest("Пользователь не найден"));
             }
 
-            user.refreshToken = null;
+            let isSameEmail = true;
+            let isSameFullName = true;
+
+            if (email && email !== user.email) {
+                const existingUser = await Users.findOne({ where: { email } });
+                if (existingUser && existingUser.id !== user.id) {
+                    return next(ApiError.badRequest(`Email ${email} уже используется`));
+                }
+                isSameEmail = false;
+            }
+
+            let first_name, last_name;
+            if (fullName) {
+                const parts = fullName.trim().split(" ");
+                first_name = parts[0];
+                last_name = parts.slice(1).join(" ");
+                const currentFullName = `${user.first_name} ${user.last_name}`.trim();
+                isSameFullName = fullName.trim() === currentFullName;
+            }
+
+            if (isSameEmail && isSameFullName) {
+                return next(ApiError.badRequest("Новые данные совпадают с текущими"));
+            }
+
+            if (!isSameEmail) {
+                user.email = email;
+            }
+
+            if (!isSameFullName) {
+                user.first_name = first_name;
+                user.last_name = last_name;
+            }
+
             await user.save();
 
-            res.clearCookie("refreshToken");
-
-            return res.json({ message: "Выход выполнен" });
+            return res.json({
+                message: "Данные пользователя обновлены",
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                }
+            });
         } catch (e) {
-            return next(ApiError.internal(e.message));
+            return next(e);
         }
     }
+
 }
 
 module.exports = new UserController();

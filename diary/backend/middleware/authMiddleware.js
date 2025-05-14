@@ -1,26 +1,26 @@
-const TokenService = require("../controllers/tokenService");
+const TokenService = require("../service/tokenService");
 const ApiError = require("../error/ApiError");
 
 module.exports = function (req, res, next) {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            return next(ApiError.forbidden("Токен не предоставлен"));
+            return next(ApiError.unauthorized());
         }
 
-        const token = authHeader.split(" ")[1];
-        if (!token) {
-            return next(ApiError.forbidden("Некорректный формат токена"));
+        const accessToken = authHeader.split(" ")[1];
+        if (!accessToken) {
+            return next(ApiError.unauthorized());
         }
 
-        const userData = TokenService.validateAccessToken(token);
+        const userData = TokenService.validateAccessToken(accessToken);
         if (!userData) {
-            return next(ApiError.forbidden("Токен недействителен"));
+            return next(ApiError.unauthorized());
         }
 
         req.user = userData;
         next();
     } catch (e) {
-        return next(ApiError.internal("Ошибка авторизации"));
+        return next(ApiError.unauthorized());
     }
 };

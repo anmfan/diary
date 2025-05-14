@@ -3,24 +3,29 @@ import {Link} from "react-router-dom";
 import {ROUTES_ENDPOINTS} from "../routes/const.tsx";
 import HeaderMenuList from "../header-menu-list/HeaderMenuList.tsx";
 import { motion } from 'motion/react';
-import useAuth from "@/hooks/useAuth.tsx";
-import HeaderAuth from "../header-auth/HeaderAuth.tsx";
-import HeaderGuest from '../header-guest/HeaderGuest.tsx';
 import {useRef, useState} from "react";
 import BurgerMenuButton from "../burger-menu-button/BurgerMenuButton.tsx";
-
+import { transitionParams } from "@/components/header/const.tsx";
 
 const Header = () => {
-    const isAuth = useAuth();
     const [burgerIsOpen, setBurgerIsOpen] = useState<boolean>(false);
+    const [asideIsClosed, setAsideIsClosed] = useState<boolean>(false)
     const burgerMenuRef = useRef<HTMLDivElement | null>(null)
 
+    const toggleSidebar = () => {
+        setAsideIsClosed(prev => !prev);
+    }
+
     return (
-        <motion.header
-            className={styles.header}
-            initial={{y: -105, opacity: 0}}
-            animate={{y: 0, opacity: 1}}
-            transition={{type: "tween", stiffness: 100}}
+        <motion.aside
+            className={`${styles.header} ${asideIsClosed && styles.asideIsClosed}`}
+            initial={{x: -500, opacity: 0}}
+            animate={{
+                x: 0,
+                opacity: 1,
+                width: asideIsClosed ? 60 : 240,
+           }}
+            transition={transitionParams}
         >
             <div className={styles.container}>
                 <Link to={ROUTES_ENDPOINTS.HOME}>
@@ -35,18 +40,20 @@ const Header = () => {
                 </Link>
                 <div ref={burgerMenuRef} className={`${styles.menu} ${burgerIsOpen ? styles.active : ""}`}>
                     <HeaderMenuList/>
-                    <div className={styles.account}>
-                        {isAuth && <HeaderAuth/>}
-                        {!isAuth && <HeaderGuest/>}
-                    </div>
                 </div>
                 <BurgerMenuButton
                     setBurgerIsOpen={setBurgerIsOpen}
                     burgerMenuRef={burgerMenuRef}
                     burgerIsOpen={burgerIsOpen}
                 />
+                <button onClick={toggleSidebar} className={styles.toggleAside}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                         stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                </button>
             </div>
-        </motion.header>
+        </motion.aside>
     );
 };
 

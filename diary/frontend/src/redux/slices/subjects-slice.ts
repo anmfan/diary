@@ -1,6 +1,13 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ISubject, ISubjectsInitialState} from "../types.ts";
-import {getAllSubjects} from "../thunks/subjects-thunk.ts";
+import {
+    ISubject,
+    ISubjectsInitialState,
+    TDelete,
+    TEntityEditResponse,
+    TSubjectEdit
+} from "../types.ts";
+import {createSubject, deleteSubject, editSubject, getAllSubjects, TCreateSubject} from "../thunks/subjects-thunk.ts";
+import {updateEditedEntity, updateFilteredList} from "@/redux/helper.ts";
 
 const initialState: ISubjectsInitialState = {
     items: [],
@@ -24,6 +31,27 @@ const subjectsSlice = createSlice({
             .addCase(getAllSubjects.rejected, (state) => {
                 state.loadingIsDone = true
                 state.isError = true
+            })
+            .addCase(deleteSubject.fulfilled, (state, action: PayloadAction<TDelete<'subjectId'>>) => {
+                state.loadingIsDone = true
+                state.items = updateFilteredList(state.items, action.payload.subjectId)
+            })
+            .addCase(deleteSubject.rejected, (state) => {
+                state.isError = true
+                state.loadingIsDone = true
+            })
+            .addCase(createSubject.fulfilled, (state, action: PayloadAction<TCreateSubject>) => {
+                state.loadingIsDone = true
+
+                const payload = action.payload
+                state.items.push({
+                    id: payload.id,
+                    name: payload.name,
+                    tab: "subjects"
+                })
+            })
+            .addCase(editSubject.fulfilled, (state, action: PayloadAction<TEntityEditResponse<TSubjectEdit>>) => {
+                state.items = updateEditedEntity<ISubject>(state.items, action.payload)
             })
     }
 })

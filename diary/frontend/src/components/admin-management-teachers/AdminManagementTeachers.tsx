@@ -18,7 +18,7 @@ const AdminManagementTeachers = () => {
             <div
                 key={teacher.id}
                 className={`${styles.listItem} ${selectedItem?.id === teacher.id ? styles.selected : ''}`}
-                onClick={() => setSelected(teacher)}
+                onClick={() => setSelected({...teacher, tab: 'teachers'})}
             >
                 {teacher.first_name
                     ? teacher.first_name + ' ' + teacher.last_name

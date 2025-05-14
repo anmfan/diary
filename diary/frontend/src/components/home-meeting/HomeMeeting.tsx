@@ -10,9 +10,9 @@ const HomeMeeting = () => {
     return (
         <motion.div
             className={styles.container}
-            initial={{x: -100, opacity: 0}}
-            animate={{x: 0, opacity: 1}}
-            transition={{type: "spring", stiffness: 100}}
+            initial={{y: -300, opacity: 0}}
+            animate={{y: 0, opacity: 1}}
+            transition={{type: "tween", stiffness: 100}}
         >
             {!isAuth && <HomeMeetingNotAuth/>}
             {isAuth && <HomeMeetingAuth/>}

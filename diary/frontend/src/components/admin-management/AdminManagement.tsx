@@ -9,6 +9,11 @@ import {TTabsOptions} from "./types.ts";
 import AdminManagementTitles from "../admin-management-titles/AdminManagementTitles.tsx";
 import AdminManagementDetails from "../admin-management-details/AdminManagementDetails.tsx";
 import {getAllGroups} from "@/redux/thunks/groups-thunk.ts";
+import {getAllSubjects} from "@/redux/thunks/subjects-thunk.ts";
+import useModal from "@/hooks/useModal.tsx";
+import AdminManagementModal from "@/components/admin-management-modal/AdminManagementModal.tsx";
+import AdminManagementEditNewButton
+    from "@/components/admin-management-edit-new-button/AdminManagementEditNewButton.tsx";
 
 const TabsOptions = {
     teachers: 'teachers',
@@ -17,17 +22,17 @@ const TabsOptions = {
     subjects: 'subjects',
 } as const;
 
-
 const AdminManagement = () => {
     const [activeTab, setActiveTab] = useState<TTabsOptions>(TabsOptions.teachers);
     const dispatch = useAppDispatch()
+    const { modalIsOpen } = useModal()
 
     useEffect(() => {
         Promise.all([
             dispatch(getAllTeachers()),
             dispatch(getAllStudents()),
             dispatch(getAllGroups()),
-            //dispatch(getAllSubjects())
+            dispatch(getAllSubjects())
         ])
     },[dispatch])
 
@@ -39,6 +44,7 @@ const AdminManagement = () => {
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                 />
+                <AdminManagementEditNewButton activeTab={activeTab}/>
             </div>
             <div className={styles.content}>
                 <div className={styles.listContainer}>
@@ -56,6 +62,7 @@ const AdminManagement = () => {
                     />
                 </div>
             </div>
+            {modalIsOpen && <AdminManagementModal/>}
         </div>
     );
 };

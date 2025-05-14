@@ -27,7 +27,7 @@ const BurgerMenuButton = (
             const rect = burgerMenuRef.current.getBoundingClientRect();
             const menuIsVisible = rect.left >= 0 && rect.width > 0;
 
-            if (menuIsVisible && !clickedOutsideBurgerMenu && !clickedOutsideBurgerButton) {
+            if (menuIsVisible && !clickedOutsideBurgerMenu || !clickedOutsideBurgerButton) {
                 setBurgerIsOpen(false);
             }
         }

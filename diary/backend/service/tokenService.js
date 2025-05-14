@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
+const {Users} = require("../models/models");
 require("dotenv").config();
 
 class TokenService {
     generateTokens(payload) {
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-            expiresIn: '15m',
+            expiresIn: '7d',
         });
 
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
@@ -12,6 +13,24 @@ class TokenService {
         });
 
         return { accessToken, refreshToken };
+    }
+
+    async saveToken(user_id, refreshToken, transaction = null) {
+        return Users.update(
+            { refresh_token: refreshToken },
+            {
+                where: { id: user_id },
+                transaction,
+                returning: true
+            }
+        );
+    }
+
+    async removeToken(refreshToken) {
+        return await Users.update(
+            { refresh_token: null },
+            { where: { refresh_token: refreshToken }}
+        )
     }
 
     validateAccessToken(token) {
@@ -28,6 +47,10 @@ class TokenService {
         } catch (e) {
             return null;
         }
+    }
+
+    async findToken(refreshToken) {
+        return await Users.findOne({where: {refresh_token: refreshToken}})
     }
 }
 

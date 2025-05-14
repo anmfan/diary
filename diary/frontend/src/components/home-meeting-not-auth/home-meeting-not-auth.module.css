@@ -5,17 +5,26 @@
 }
 
 .loginButton {
-    padding: 10px 20px;
-    background-color: #007BFF;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0 10px 15px;
+    background-color: var(--active-menu-color);
     color: white;
     font-size: 16px;
     border: none;
     text-decoration: none;
     border-radius: 8px;
     cursor: pointer;
+    max-width: 100%;
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: var(--active-menu-color);
+    }
+
+    > svg {
+        padding-left: 4px;
+        flex-shrink: 0;
     }
 }

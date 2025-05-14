@@ -1,84 +1,135 @@
 .header {
-    background: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     position: sticky;
-    top: 0;
+    left: 0;
     z-index: 1000;
-    margin-bottom: 15px;
+    max-width: 240px;
+    height: calc(100vh - calc(2 * var(--aside-block-padding)));
+    margin-right: 15px;
+    padding: var(--aside-block-padding) 1rem;
+    border-right: 1px solid #dee2e6;
+
+    .toggleAside {
+        position: absolute;
+        z-index: 1000;
+        right: -18px;
+        top: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--active-menu-color);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.6);
+        }
+
+        > svg {
+            transition: transform 0.3s;
+        }
+    }
+}
+
+.asideIsClosed {
+    width: 60px;
+
+    .toggleAside > svg {
+        transform: rotate(180deg);
+    }
+
+    .list {
+        span {
+            display: none;
+        }
+    }
 }
 
 .container {
-    max-width: 1470px;
-    padding: 10px 20px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 1rem;
 }
 
 .menu {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 1.5rem;
 
     .list {
-        list-style: none;
+        width: 100%;
+        padding: 0;
         display: flex;
-        align-items: center;
-        gap: 30px;
+        flex-direction: column;
+        gap: 10px;
+        list-style-type: none;
 
-        &:last-of-type {
-            padding-right: 11px;
-        }
+        .liElement {
+            width: 100%;
+            transition: all 0.2s ease;
+            user-select: none;
 
-        li {
-
-            a {
-                position: relative;
+            > a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 14px 10px 15px;
+                border-radius: 10px;
+                color: #343a40;
                 text-decoration: none;
-                color: #333;
-                font-size: 18px;
                 font-weight: 500;
-                transition: color 0.3s ease-in-out;
+                transition: background 0.2s, color 0.2s;
+
+                svg {
+                    flex-shrink: 0;
+                }
 
                 &:hover {
-                    color: #007bff;
+                    background-color: #dee2e6;
+                    color: #212529;
                 }
             }
 
             .active {
-                color: #007bff;
-                font-weight: 600;
+                background-color: var(--active-menu-color);
+                color: #fff;
 
-                &::after {
-                    content: "";
-                    position: absolute;
-                    width: 100%;
-                    height: 2px;
-                    background: #007bff;
-                    left: 0;
-                    bottom: -15px;
-                    transition: width 0.3s ease-in-out;
+                &:hover {
+                    color: #fff;
+                    background-color: #0056b3;
                 }
             }
         }
     }
-
-    .account {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        position: relative;
-    }
 }
 
 @media (max-width: 600px) {
+    .header {
+        .toggleAside {
+            display: none;
+        }
+    }
     .menu {
         position: fixed;
         height: 100%;
         width: 220px;
         top: 0;
-        left: -260px;
+        margin-top: 0;
+        left: -270px;
         display: flex;
         padding: 20px;
         background: #fff;
