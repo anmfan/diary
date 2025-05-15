@@ -9,7 +9,7 @@ interface RetryAxiosRequestConfig extends AxiosRequestConfig {
 
 export const createApi = (): AxiosInstance => {
     const server = axios.create({
-        baseURL: AXIOS_BASE_URL,
+        baseURL: "http://45.130.9.13/api/",
         timeout: AXIOS_TIMEOUT,
         withCredentials: true,
     })
