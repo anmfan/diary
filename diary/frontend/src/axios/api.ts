@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosError, AxiosRequestConfig} from 'axios';
-import {AXIOS_BASE_URL, AXIOS_TIMEOUT} from "../const.ts";
+import {AXIOS_TIMEOUT} from "../const.ts";
 import {store} from "../redux/store/store.ts";
 import {check, logout} from "../redux/thunks/user-thunk.ts";
 
