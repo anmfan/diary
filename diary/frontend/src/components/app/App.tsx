@@ -6,6 +6,7 @@ import {getAllTeachers} from "@/redux/thunks/teachers-thunk.ts";
 const App = () => {
     useAuthCheck();
     useEffect(() => {
+        console.log("Приложение запущено")
         getAllTeachers()
     }, []);
     return (
