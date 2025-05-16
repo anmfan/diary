@@ -4,6 +4,7 @@ import {AxiosInstance} from "axios";
 
 const login = createAsyncThunk<IUserReturned, IUser, {extra: AxiosInstance}>
 ('auth/login', async (body, {extra: api}) => {
+    console.log("API BASE URL in thunk:", api.defaults.baseURL);
     const { data } = await api.post<IUserReturned>('user/login', body, { withCredentials: true });
     return data;
 });
