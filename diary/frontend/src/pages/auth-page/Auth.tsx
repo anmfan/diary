@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {useNavigate} from "react-router-dom";
 import {ROUTES_ENDPOINTS} from "@/components/routes/const.tsx";
 import {formValidation} from "@/utils/formValidation.ts";
+import {toast} from "react-toastify";
 
 
 const Auth = () => {
@@ -19,15 +20,15 @@ const Auth = () => {
         }
     })
 
-    const submitForm = (data: {email: string, password: string}) => {
+    const submitForm = async (data: {email: string, password: string}) => {
         const isValid = formValidation(data);
         if (!isValid) return;
 
         try {
-            dispatch(login(data));
+            await dispatch(login(data)).unwrap();
             navigate(ROUTES_ENDPOINTS.HOME)
         } catch (error) {
-            console.error(error)
+            toast.error(typeof error === 'string' ? error : 'Произошла ошибка');
         }
     }
 

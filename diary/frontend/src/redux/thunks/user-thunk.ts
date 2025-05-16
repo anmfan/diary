@@ -1,12 +1,21 @@
 import {IUser, IUserReturned, TEdit, TEditResponse} from "../types.ts";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {AxiosInstance} from "axios";
+import axios, {AxiosInstance} from "axios";
 
-const login = createAsyncThunk<IUserReturned, IUser, {extra: AxiosInstance}>
-('auth/login', async (body, {extra: api}) => {
-    console.log("API BASE URL in thunk:", api.defaults.baseURL);
-    const { data } = await api.post<IUserReturned>('user/login', body, { withCredentials: true });
-    return data;
+const login = createAsyncThunk<
+    IUserReturned,
+    IUser,
+    {extra: AxiosInstance, rejectValue: string}>
+('auth/login', async (body, {extra: api, rejectWithValue}) => {
+    try {
+        const { data } = await api.post<IUserReturned>('user/login', body, { withCredentials: true });
+        return data;
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            return rejectWithValue(err.response?.data.message || "Ошибка при авторизации")
+        }
+        return rejectWithValue("Неизвестная ошибка при авторизации")
+    }
 });
 
 const check = createAsyncThunk<IUserReturned, undefined, {extra: AxiosInstance}>
