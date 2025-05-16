@@ -13,7 +13,6 @@ const AdminManagementTeachers = () => {
         return <ManagementEmptyList tab={"Преподавателей"}/>
     }
 
-    console.log(list)
     return (
         list.map(teacher => (
             <div
