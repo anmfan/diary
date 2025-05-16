@@ -40,7 +40,5 @@ export const createApi = (): AxiosInstance => {
         }
     );
 
-    console.log('AXIOS_BASE_URL:', server.defaults.baseURL);
-
     return server;
 }
