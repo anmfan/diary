@@ -2,48 +2,37 @@ import { useAppSelector } from "@/hooks/store.ts";
 import { headerAvatar } from "@/redux/selectors/user-selector.ts";
 import styles from './header-auth.module.css';
 import HeaderAvatar from "../header-avatar/HeaderAvatar.tsx";
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import HeaderDropdownMenu from "../header-dropdown-menu/HeaderDropdownMenu.tsx";
 import Spinner from "../spinner/Spinner.tsx";
+import { MouseEvent } from "react";
 
 const HeaderAuth = () => {
     const { username, avatar, role } = useAppSelector(headerAvatar)
     const [dropdownIsOpen, setDropdownIsOpen] = useState<boolean>(false);
     const menuListRef = useRef<HTMLDivElement | null>(null);
 
-    // useEffect(() => {
-    //     const handleClickOutsideDropdownMenu = (e: Event) => {
-    //         if (menuListRef.current && !menuListRef.current.contains(e.target as Node)) {
-    //             setDropdownIsOpen(false);
-    //         }
-    //     }
-    //
-    //     if (dropdownIsOpen) {
-    //         document.addEventListener("click", handleClickOutsideDropdownMenu)
-    //     }
-    //
-    //     return () => {
-    //         document.removeEventListener("click", handleClickOutsideDropdownMenu)
-    //     }
-    //
-    // },[dropdownIsOpen])
-
-    const handleDropdown = () => {
+    const handleDropdown = (event: MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation()
         setDropdownIsOpen(prev => !prev)
     }
 
     if (!username) {
         return <Spinner />;
     }
-
     return (
         <>
-            <div onClick={handleDropdown} tabIndex={0} ref={menuListRef} className={styles.user}>
+            <div
+                onClick={handleDropdown}
+                tabIndex={0}
+                ref={menuListRef}
+                className={styles.user}
+            >
                 <>
                     <HeaderAvatar width={28} height={28} avatar={avatar}/>
                     <span style={{userSelect: 'none'}}>{username}</span>
                 </>
-                {dropdownIsOpen && <HeaderDropdownMenu role={role}/>}
+                {dropdownIsOpen && <HeaderDropdownMenu role={role} />}
             </div>
         </>
     );

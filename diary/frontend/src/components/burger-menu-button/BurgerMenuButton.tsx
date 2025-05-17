@@ -6,13 +6,14 @@ type TBurgerMenuButton = {
     setBurgerIsOpen: Dispatch<SetStateAction<boolean>>;
     burgerMenuRef: RefObject<HTMLDivElement | null>;
     burgerIsOpen: boolean;
+    dropdownRef?: RefObject<HTMLDivElement | null>;
 }
 
 const BurgerMenuButton = (
     {
         setBurgerIsOpen,
         burgerMenuRef,
-        burgerIsOpen
+        burgerIsOpen,
     }: TBurgerMenuButton) => {
     const loc = useLocation();
     const btnRef = useRef<HTMLDivElement | null>(null);
@@ -21,13 +22,10 @@ const BurgerMenuButton = (
         const handleClickOutsideBurgerMenu = (e: Event) => {
             if (!burgerMenuRef.current || !btnRef.current) return;
 
-            const clickedOutsideBurgerButton = btnRef.current?.contains(e.target as Node);
-            const clickedOutsideBurgerMenu = burgerMenuRef.current?.contains(e.target as Node);
+            const clickedOutsideButton = !btnRef.current?.contains(e.target as Node);
+            const clickedOutsideMenu = !burgerMenuRef.current?.contains(e.target as Node);
 
-            const rect = burgerMenuRef.current.getBoundingClientRect();
-            const menuIsVisible = rect.left >= 0 && rect.width > 0;
-
-            if (menuIsVisible && !clickedOutsideBurgerMenu || !clickedOutsideBurgerButton) {
+            if (clickedOutsideMenu && clickedOutsideButton) {
                 setBurgerIsOpen(false);
             }
         }

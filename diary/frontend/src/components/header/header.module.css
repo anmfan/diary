@@ -119,6 +119,7 @@
 
 @media (max-width: 600px) {
     .header {
+        width: 120px;
         .toggleAside {
             display: none;
         }
@@ -157,6 +158,9 @@
                         transition: width 0.3s ease-in-out;
                     }
                 }
+            }
+            span {
+                display: inline;
             }
         }
 

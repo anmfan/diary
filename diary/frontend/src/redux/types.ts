@@ -99,7 +99,7 @@ type IUserData = {
     username: string;
     firstName: string;
     lastName: string;
-    avatar: string;
+    avatar: string | null;
     email: string;
     group: string | null;
     role: UserRole;

@@ -1,11 +1,11 @@
 import styles from './header.module.css';
 import {Link} from "react-router-dom";
 import {ROUTES_ENDPOINTS} from "../routes/const.tsx";
-import HeaderMenuList from "../header-menu-list/HeaderMenuList.tsx";
 import { motion } from 'motion/react';
 import {useRef, useState} from "react";
 import BurgerMenuButton from "../burger-menu-button/BurgerMenuButton.tsx";
 import { transitionParams } from "@/components/header/const.tsx";
+import HeaderMenuList from "@/components/header-menu-list/HeaderMenuList.tsx";
 
 const Header = () => {
     const [burgerIsOpen, setBurgerIsOpen] = useState<boolean>(false);
@@ -39,7 +39,7 @@ const Header = () => {
                     />
                 </Link>
                 <div ref={burgerMenuRef} className={`${styles.menu} ${burgerIsOpen ? styles.active : ""}`}>
-                    <HeaderMenuList/>
+                    <HeaderMenuList />
                 </div>
                 <BurgerMenuButton
                     setBurgerIsOpen={setBurgerIsOpen}

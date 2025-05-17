@@ -6,8 +6,11 @@ import { NavLink } from "react-router-dom";
 import { UserRole } from "@/redux/types.ts";
 import { dropdownMenuItems } from "@/components/header-dropdown-menu/helper.tsx";
 
+type TDropdownMenu = {
+    role: UserRole,
+}
 
-const HeaderDropdownMenu = ({role}: {role: UserRole}) => {
+const HeaderDropdownMenu = ({role}: TDropdownMenu) => {
     const dispatch = useAppDispatch();
 
     const exit = () => {
