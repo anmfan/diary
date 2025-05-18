@@ -23,7 +23,7 @@ export interface IGroups extends IBase {
     name: string;
     course: string | null;
     students_count: number;
-    teacher: {
+    curator?: {
         user_id: string;
         user: {
             email: string;
@@ -51,7 +51,11 @@ export type ITeacher = IBase & {
     first_name: string | null;
     last_name: string | null;
     avatar: string | null;
-    tab: "teachers"
+    tab: "teachers";
+    curated_groups: {
+        name: string;
+        course: string;
+    }[];
 }
 
 export interface IBase {
@@ -101,7 +105,10 @@ type IUserData = {
     lastName: string;
     avatar: string | null;
     email: string;
-    group: string | null;
+    group: {
+        name: string;
+        course: string;
+    };
     role: UserRole;
 }
 
