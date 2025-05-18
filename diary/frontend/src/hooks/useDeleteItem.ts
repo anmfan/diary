@@ -27,7 +27,7 @@ const useDeleteItem = () => {
     const { setSelected } = useSetSelectedItem();
 
     const deleteItem = () => {
-        const teacherHasCuratedGroup = groups.find(group => group.curator?.user_id === selectedItem.id);
+        const teacherHasCuratedGroup = groups.find(group => group.curator?.user_id === selectedItem.id) || null;
 
         if (selectedItem.tab === "teachers" && teacherHasCuratedGroup) {
             return toast.error(MessagesForFailDeleteItem.failForTeacher)

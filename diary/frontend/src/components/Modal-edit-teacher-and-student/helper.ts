@@ -6,7 +6,7 @@ export const isUser = (item: TSelectedItem): item is ITeacher => {
 }
 
 export const isStudent = (item: TSelectedItem): item is IStudent => {
-    return item?.tab === 'students' && item.group !== null;
+    return item?.tab === 'students';
 }
 
 export const isTeacher = (item: TSelectedItem): item is ITeacher => {
@@ -14,7 +14,7 @@ export const isTeacher = (item: TSelectedItem): item is ITeacher => {
 }
 
 export const mappingGroups = (item: TSelectedItem) => {
-    if (isStudent(item)) return item.group;
-    if (isTeacher(item)) return item.curated_groups.map(group => group.name).join(', ') || 'Нет группы';
+    if (isStudent(item)) return item.group ? item.group : "Нет группы"
+    if (isTeacher(item)) return item.curated_groups.length > 0 ? item.curated_groups.map(group => group.name).join(', ') : 'Нет группы';
     return 'Нет группы';
 }
