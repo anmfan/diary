@@ -15,6 +15,6 @@ export const isTeacher = (item: TSelectedItem): item is ITeacher => {
 
 export const mappingGroups = (item: TSelectedItem) => {
     if (isStudent(item)) return item.group ? item.group : "Нет группы"
-    if (isTeacher(item)) return item.curated_groups.length > 0 ? item.curated_groups.map(group => group.name).join(', ') : 'Нет группы';
+    if (isTeacher(item)) return item.curated_groups.map(group => group.name).join(', ') || 'Нет группы';
     return 'Нет группы';
 }
