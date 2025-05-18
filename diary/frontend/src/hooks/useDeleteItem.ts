@@ -11,6 +11,7 @@ import {allGroups} from "@/redux/selectors/groups-selector.ts";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 import {AsyncThunk} from "@reduxjs/toolkit";
 import {AxiosInstance} from "axios";
+import {MessagesForFailDeleteItem} from "@/hooks/const.ts";
 
 const deleteActions: Record<TTabsOptions, AsyncThunk<any, TDeleteItem, { extra: AxiosInstance }>> = {
     teachers: deleteTeacher,
@@ -26,11 +27,16 @@ const useDeleteItem = () => {
     const { setSelected } = useSetSelectedItem();
 
     const deleteItem = () => {
-        if (selectedItem.tab === "teachers") {
-            if (groups.find(group => group.teacher?.user_id === selectedItem.id)) {
-                return toast.error("Пока к преподавателю прикреплена группа, его нельзя удалить")
-            }
+        const teacherHasCuratedGroup = groups.find(group => group.curator?.user_id === selectedItem.id);
+
+        if (selectedItem.tab === "teachers" && teacherHasCuratedGroup) {
+            return toast.error(MessagesForFailDeleteItem.failForTeacher)
         }
+
+        if (selectedItem.tab === "groups" && selectedItem.students_count > 0) {
+            return toast.error(MessagesForFailDeleteItem.failForGroup)
+        }
+
         const thunk = deleteActions[selectedItem.tab];
         dispatch(thunk({ id: selectedItem.id }));
         setSelected(null);

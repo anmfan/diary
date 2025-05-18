@@ -1,15 +1,19 @@
 import {TSelectedItem} from "@/components/admin-management/types.ts";
 import {IGroups, IStudent, ISubject, ITeacher} from "@/redux/types.ts";
 
+export type TAdminManagementDetails<T> = {
+    selectedItem: T;
+}
+
 export const fioIsExist = (
-    firstName: string,
-    lastName: string,
+    firstName: string | null,
+    lastName: string | null,
     email: string,
     type: string,
     selectedItem?: TSelectedItem
 ) => {
-    if (type === "group" && "teacher" in selectedItem!) {
-        const curatorUser = selectedItem.teacher;
+    if (type === "group" && "curator" in selectedItem!) {
+        const curatorUser = selectedItem.curator;
         return curatorUser && curatorUser.user.first_name
             ? `${curatorUser.user.first_name} ${curatorUser.user.last_name}`
             : email

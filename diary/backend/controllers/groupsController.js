@@ -8,6 +8,7 @@ class GroupsService {
                 attributes: ['id','name', 'students_count', 'course'],
                 include: [{
                     model: Teachers,
+                    as: 'curator',
                     attributes: ['user_id'],
                     include: [{
                         model: Users,
@@ -18,6 +19,7 @@ class GroupsService {
 
             return res.json(groups);
         } catch (e) {
+            console.log(e)
             return next(e);
         }
     }
@@ -35,37 +37,50 @@ class GroupsService {
                 return next(ApiError.badRequest('Такая группа уже существует'));
             }
 
-            const teacher = await Teachers.findOne({
-                where: { user_id: curator_id },
-                include: [{
-                    model: Users,
-                    attributes: ['email', 'first_name', 'last_name']
-                }]
-            });
-            if (!teacher) {
-                return next(ApiError.badRequest('Преподаватель не найден'));
+            let curator = null;
+            let curatorIdToSave = null;
+
+            if (curator_id) {
+                curator = await Teachers.findOne({
+                    where: { user_id: curator_id },
+                    include: [{
+                        model: Users,
+                        attributes: ['email', 'first_name', 'last_name']
+                    }]
+                });
+
+                if (!curator) {
+                    return next(ApiError.badRequest('Преподаватель не найден'));
+                }
+
+                curatorIdToSave = curator.id;
             }
 
             const newGroup = await Groups.create({
                 name,
                 course,
-                curator_id: teacher.id,
+                curator_id: curatorIdToSave,
             });
 
-            return res.status(201).json({
+            const responseData = {
                 id: newGroup.id,
                 name: newGroup.name,
                 course: newGroup.course,
                 students_count: newGroup.students_count,
-                teacher: {
-                    user_id: teacher.user_id,
+            };
+
+            if (curator) {
+                responseData.curator = {
+                    user_id: curator.user_id,
                     user: {
-                        email: teacher.user.email,
-                        first_name: teacher.user.first_name,
-                        last_name: teacher.user.last_name
+                        email: curator.user.email,
+                        first_name: curator.user.first_name,
+                        last_name: curator.user.last_name
                     }
-                }
-            });
+                };
+            }
+
+            return res.status(201).json(responseData);
         } catch (e) {
             return next(e);
         }

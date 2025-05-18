@@ -51,8 +51,8 @@ const ModalAddTeacher = () => {
             </label>
 
             <label className={styles.label}>
-                Куратор
-                <select {...register('curator_id')} className={styles.selector} required>
+                Куратор (необязательно)
+                <select {...register('curator_id')} className={styles.selector}>
                     <option value="">Выберите куратора</option>
                     {list.map(teacher => (
                         <option

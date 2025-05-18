@@ -1,15 +1,38 @@
-const {Teachers, Users} = require("../models/models");
+const {Teachers, Users, Groups} = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class TeacherService {
     async getAllTeachers(req, res, next) {
         try {
-            const teachers = await Users.findAll({
-                where: { role_id: 2 },
-                attributes: ['id','username', 'email', 'first_name', 'last_name', 'avatar']
+            const teachers = await Teachers.findAll({
+                include: [
+                    {
+                        model: Users,
+                        attributes: ['id', 'username', 'email', 'first_name', 'last_name', 'avatar']
+                    },
+                    {
+                        model: Groups,
+                        as: 'curated_groups',
+                        attributes: ['name', 'course']
+                    }
+                ]
             });
 
-            return res.json(teachers);
+            const response = teachers.map(teacher => {
+                const user = teacher.user;
+
+                return {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    avatar: user.avatar,
+                    curated_groups: teacher.curated_groups || []
+                };
+            });
+
+            return res.json(response);
         } catch (e) {
             return next(e);
         }

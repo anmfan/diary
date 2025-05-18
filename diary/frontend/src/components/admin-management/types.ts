@@ -16,9 +16,4 @@ export const tabs = [
     { key: TabsOptions.subjects, label: "Предметы" },
 ];
 
-export type TSelectedItem =
-    | (ITeacher & { tab: 'teachers' })
-    | (IStudent & { tab: 'students' })
-    | (IGroups & { tab: 'groups' })
-    | (ISubject & { tab: 'subjects' })
-    | null;
+export type TSelectedItem = ITeacher | IStudent | IGroups | ISubject | null;

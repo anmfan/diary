@@ -48,7 +48,8 @@ const teachersSlice = createSlice({
                     first_name: user.firstName,
                     last_name: user.lastName,
                     avatar: user.avatar,
-                    tab: "teachers"
+                    tab: "teachers",
+                    curated_groups: [user.group],
                 })
             })
             .addCase(createTeacher.rejected, (state) => {

@@ -213,8 +213,8 @@ Teachers.belongsTo(Users, { foreignKey: 'user_id' });
 Users.hasOne(Students, { foreignKey: 'user_id' });
 Students.belongsTo(Users, { foreignKey: 'user_id' });
 
-Teachers.hasMany(Groups, { foreignKey: "curator_id" })
-Groups.belongsTo(Teachers, { foreignKey: "curator_id" });
+Teachers.hasMany(Groups, { foreignKey: "curator_id", as: "curated_groups" });
+Groups.belongsTo(Teachers, { foreignKey: "curator_id", as: "curator" });
 
 Teachers.belongsToMany(Groups, { through: 'GroupTeachers', foreignKey: 'teacherId' });
 Groups.belongsToMany(Teachers, { through: 'GroupTeachers', foreignKey: 'groupId' });

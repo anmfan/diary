@@ -5,7 +5,7 @@ import useModal from "@/hooks/useModal.tsx";
 import {edit} from "@/redux/thunks/user-thunk.ts";
 import {TEdit} from "@/redux/types.ts";
 import {selectSelectedItem} from "@/redux/selectors/user-selector.ts";
-import {isStudent, isUser} from "@/components/Modal-edit-teacher-and-student/helper.ts";
+import {isUser, mappingGroups} from "@/components/Modal-edit-teacher-and-student/helper.ts";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 
 const ModalEditTeacherAndStudent = () => {
@@ -52,7 +52,7 @@ const ModalEditTeacherAndStudent = () => {
             </label>
 
             <label className={styles.label}>
-                Группа: {isStudent(selectedItem) ? selectedItem.group : 'Нет группы'}
+                Группа: {mappingGroups(selectedItem)}
             </label>
 
             <label className={styles.label}>

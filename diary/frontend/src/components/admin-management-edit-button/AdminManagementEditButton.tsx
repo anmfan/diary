@@ -1,5 +1,5 @@
 import styles from "@/pages/management-page/management.module.css";
-import useDeleteItem from "@/hooks/useManage.ts";
+import useDeleteItem from "@/hooks/useDeleteItem.ts";
 import {TTabsOptions} from "@/components/admin-management/types.ts";
 import useModal from "@/hooks/useModal.tsx";
 import {ModalEditOptions} from "@/components/admin-management-tabs/const.tsx";

@@ -93,7 +93,9 @@ class UserService {
                 );
 
                 const group = await Groups.findByPk(group_id, { transaction });
-                groupName = group?.name ?? null;
+                groupName = group
+                    ? { name: group.name, course: group.course }
+                    : null;
             }
         }
 

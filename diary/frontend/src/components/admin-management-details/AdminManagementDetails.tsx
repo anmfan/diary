@@ -1,10 +1,19 @@
 import {useAppSelector} from "@/hooks/store.ts";
 import styles from "@/pages/management-page/management.module.css";
 import {TabsOptions, TTabsOptions} from "../admin-management/types.ts";
-import {fioIsExist, isGroup, isStudent, isSubject, isTeacher} from './helper.ts';
+import {isGroup, isStudent, isSubject, isTeacher} from './helper.ts';
+import AdminManagementDetailsTeachers
+    from "@/components/admin-management-details-teachers/AdminManagementDetailsTeachers.tsx";
+import {selectSelectedItem} from "@/redux/selectors/user-selector.ts";
+import AdminManagementDetailsStudents
+    from "@/components/admin-management-details-students/AdminManagementDetailsStudents.tsx";
+import AdminManagementDetailsGroups
+    from "@/components/admin-management-details-groups/AdminManagementDetailsGroups.tsx";
+import AdminManagementDetailsSubjects
+    from "@/components/admin-management-details-subjects/AdminManagementDetailsSubjects.tsx";
 
 const AdminManagementDetails = ({activeTab}: {activeTab: TTabsOptions}) => {
-    const selectedItem = useAppSelector(state => state.user.selectedItem);
+    const selectedItem = useAppSelector(selectSelectedItem);
 
     if (!selectedItem) {
         return <div className={styles.emptyDetail}>Ничего не выбрано</div>
@@ -14,40 +23,16 @@ const AdminManagementDetails = ({activeTab}: {activeTab: TTabsOptions}) => {
         <div className={styles.detailContent}>
             <h3>Подробная информация</h3>
             {activeTab === TabsOptions.teachers && isTeacher(selectedItem) && (
-                <>
-                    <p><strong>ФИО:</strong> {fioIsExist(
-                        selectedItem.first_name!,
-                        selectedItem.last_name!,
-                        selectedItem.email,
-                        "teacher"
-                    )}</p>
-                    <p><strong>Логин:</strong> {selectedItem.username}</p>
-                </>
+                <AdminManagementDetailsTeachers selectedItem={selectedItem}/>
             )}
             {activeTab === TabsOptions.students && isStudent(selectedItem) && (
-                <>
-                    <p><strong>ФИО:</strong> {fioIsExist(
-                        selectedItem.first_name!,
-                        selectedItem.last_name!,
-                        selectedItem.email,
-                        "student"
-                    )}</p>
-                    <p><strong>Логин:</strong> {selectedItem.username}</p>
-                    <p><strong>Группа:</strong> {selectedItem.group ? selectedItem.group : 'Нет группы'}</p>
-                </>
+                <AdminManagementDetailsStudents selectedItem={selectedItem}/>
             )}
             {activeTab === TabsOptions.groups && isGroup(selectedItem) && (
-                <>
-                    <p><strong>Название:</strong> {selectedItem.name}</p>
-                    <p><strong>Куратор:</strong> {fioIsExist("", "", "","group", selectedItem)}</p>
-                    <p><strong>Курс:</strong> {selectedItem.course}</p>
-                    <p><strong>Количество студентов:</strong> {selectedItem.students_count}</p>
-                </>
+                <AdminManagementDetailsGroups selectedItem={selectedItem}/>
             )}
             {activeTab === TabsOptions.subjects && isSubject(selectedItem) && (
-                <>
-                    <p><strong>Название:</strong> {selectedItem.name}</p>
-                </>
+                <AdminManagementDetailsSubjects selectedItem={selectedItem}/>
             )}
         </div>
     );
