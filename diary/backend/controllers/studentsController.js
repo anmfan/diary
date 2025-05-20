@@ -114,7 +114,9 @@ class StudentsService {
 
     async removeGroup(req, res, next) {
         try {
-            const { userId } = req.body;
+            const { user_id } = req.body;
+
+            const userId = user_id;
 
             if (!userId) {
                 return res.status(400).json({ message: 'userId обязателен' });
@@ -140,7 +142,12 @@ class StudentsService {
                 await oldGroup.save();
             }
 
-            return res.json({ message: 'Студент успешно откреплён от группы' });
+            return res.json({
+                    message: 'Студент успешно откреплён от группы',
+                    deletedStudentId: userId,
+                    studentsGroup: oldGroup.id,
+                    students_count: oldGroup.students_count,
+            });
         } catch (e) {
             return next(e)
         }

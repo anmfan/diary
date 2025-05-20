@@ -39,4 +39,14 @@ const updateEditedEntity = <T extends IGroups | ISubject>(items: T[], editedData
     });
 }
 
-export { updateFilteredList, updateEditedUser, updateEditedEntity }
+const updateForUnpinStudentFromGroup = (item: IGroups, students_count: number, deletedStudentId: string) => {
+    return {
+        ...item,
+        students_count,
+        students: item.students.filter(student =>
+            student.user_id !== deletedStudentId
+        )
+    }
+}
+
+export { updateFilteredList, updateEditedUser, updateEditedEntity, updateForUnpinStudentFromGroup }

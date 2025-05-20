@@ -1,7 +1,9 @@
-import {IUserInitialState, IUserReturned} from "../types.ts";
+import {IUserInitialState, IUserReturned, TDeleteItemResponse} from "../types.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {check, login, logout, register} from "../thunks/user-thunk.ts";
 import {TSelectedItem} from "@/components/admin-management/types.ts";
+import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
+import {updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
 
 export const UsersRoles = {
     student: "Студент",
@@ -25,7 +27,7 @@ const initialState: IUserInitialState = {
     selectedItem: null,
 }
 
-const fulfilledUserQuery = (state: IUserInitialState, action: PayloadAction<IUserReturned>) => {
+const fulfilledUserQuery = (state: IUserInitialState, action: PayloadAction<IUserReturned<string | null>>) => {
     const user = action.payload.userData.user
     state.loadingIsDone = true
     state.isAuthenticated = true
@@ -90,6 +92,14 @@ const userSlice = createSlice({
                 state.user.avatar = null
                 state.user.role = UsersRoles.unknown
                 localStorage.removeItem("token");
+            })
+            .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
+                const { studentsGroup, deletedStudentId, students_count } = action.payload;
+                const selectedItem = state.selectedItem;
+
+                if (selectedItem?.tab === 'groups' && selectedItem.id === studentsGroup) {
+                    state.selectedItem = updateForUnpinStudentFromGroup(selectedItem, students_count, deletedStudentId)
+                }
             })
     }
 })

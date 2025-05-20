@@ -69,7 +69,7 @@
     max-height: 300px;
     overflow-y: auto;
 
-    &:has(.listItem:nth-child(n+6))::-webkit-scrollbar {
+    &:has(:nth-child(n+6))::-webkit-scrollbar {
         width: 6px;
         background: #f0f0f0;
     }

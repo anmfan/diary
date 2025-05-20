@@ -13,12 +13,42 @@
     text-align: center;
 }
 
+.listStudents {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalListContainer {
+    max-height: 200px;
+    overflow-y: auto;
+
+    &:has(:nth-child(n+5))::-webkit-scrollbar {
+        width: 6px;
+        background: #f0f0f0;
+    }
+}
+
 .label {
     display: flex;
     flex-direction: column;
     font-weight: 500;
     font-size: 0.95rem;
     color: #333;
+}
+
+.svgUnpinGroup {
+    flex-shrink: 0;
+    margin-right: 10px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 30%;
+    transition: background 0.2s, fill 0.2s;
+
+    &:hover {
+        background: #f5f5f5;
+        fill: red;
+    }
 }
 
 .input {

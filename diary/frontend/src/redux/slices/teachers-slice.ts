@@ -1,5 +1,11 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ITeacher, ITeachersInitialState, IUserReturned, TDelete} from "../types.ts";
+import {
+    ITeacher,
+    ITeachersInitialState,
+    IUserReturned,
+    IUserReturnedGroupData,
+    TDelete,
+} from "../types.ts";
 import {createTeacher, deleteTeacher, getAllTeachers} from "../thunks/teachers-thunk.ts";
 import {updateEditedUser, updateFilteredList} from "@/redux/helper.ts";
 import {edit} from "@/redux/thunks/user-thunk.ts";
@@ -37,7 +43,7 @@ const teachersSlice = createSlice({
                 state.isError = true
                 state.loadingIsDone = true
             })
-            .addCase(createTeacher.fulfilled, (state, action: PayloadAction<IUserReturned>) => {
+            .addCase(createTeacher.fulfilled, (state, action: PayloadAction<IUserReturned<IUserReturnedGroupData>>) => {
                 state.loadingIsDone = true
                 const user = action.payload.userData.user
 

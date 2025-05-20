@@ -21,9 +21,9 @@ const deleteStudent = createAsyncThunk<TDelete<'studentId'>, TDeleteItem, {extra
     return { data, studentId: body.id};
 });
 
-const createStudent = createAsyncThunk<IUserReturned, TCreateUser<3>, {extra: AxiosInstance}>
+const createStudent = createAsyncThunk<IUserReturned<string | null>, TCreateUser<3>, {extra: AxiosInstance}>
 ('student/create', async (body, {extra: api}) => {
-    const {data} = await api.post<IUserReturned>('user/register', body);
+    const {data} = await api.post<IUserReturned<string | null>>('user/register', body);
     return data;
 });
 

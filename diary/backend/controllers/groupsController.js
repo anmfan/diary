@@ -1,4 +1,4 @@
-const {Groups, Teachers, Users} = require("../models/models");
+const {Groups, Teachers, Users, Students} = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class GroupsService {
@@ -6,7 +6,8 @@ class GroupsService {
         try {
             const groups = await Groups.findAll({
                 attributes: ['id','name', 'students_count', 'course'],
-                include: [{
+                include: [
+                    {
                     model: Teachers,
                     as: 'curator',
                     attributes: ['user_id'],
@@ -14,7 +15,16 @@ class GroupsService {
                         model: Users,
                         attributes: ['first_name', 'last_name', 'email']
                     }]
-                }]
+                },
+                    {
+                        model: Students,
+                        attributes: ['user_id'],
+                        include: [{
+                            model: Users,
+                            attributes: ['first_name', 'last_name', 'email']
+                        }]
+                    }
+                ]
             });
 
             return res.json(groups);

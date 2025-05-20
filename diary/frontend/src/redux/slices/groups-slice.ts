@@ -1,13 +1,13 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IGroups, IGroupsInitialState, TDelete, TEntityEditResponse, TGroupEdit} from "../types.ts";
+import {IGroups, IGroupsInitialState, TDelete, TDeleteItemResponse, TEntityEditResponse, TGroupEdit} from "../types.ts";
 import {
     createGroup,
     deleteGroup,
     editGroup,
     getAllGroups,
-    TCreateGroupResponse,
+    TCreateGroupResponse, unpinStudentFromGroup,
 } from "../thunks/groups-thunk.ts";
-import {updateEditedEntity, updateFilteredList} from "@/redux/helper.ts";
+import {updateEditedEntity, updateFilteredList, updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
 
 const initialState: IGroupsInitialState = {
     items: [],
@@ -42,9 +42,7 @@ const groupsSlice = createSlice({
             })
             .addCase(createGroup.fulfilled, (state, action: PayloadAction<TCreateGroupResponse>) => {
                 state.loadingIsDone = true
-                const group = action.payload
-
-                state.items.push(group)
+                state.items.push(action.payload)
             })
             .addCase(createGroup.rejected, (state) => {
                 state.isError = true
@@ -52,6 +50,20 @@ const groupsSlice = createSlice({
             })
             .addCase(editGroup.fulfilled, (state, action: PayloadAction<TEntityEditResponse<TGroupEdit>>) => {
                 state.items = updateEditedEntity<IGroups>(state.items, action.payload)
+            })
+            .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
+                const { studentsGroup, deletedStudentId, students_count } = action.payload;
+
+                state.items = state.items.map(group => {
+                    if (group.id === studentsGroup) {
+                        return updateForUnpinStudentFromGroup(group, students_count, deletedStudentId)
+                    }
+                    return group;
+                });
+            })
+            .addCase(unpinStudentFromGroup.rejected, (state) => {
+                state.isError = true
+                state.loadingIsDone = true
             })
     }
 })

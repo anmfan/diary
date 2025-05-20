@@ -5,13 +5,13 @@ const AdminManagementDetailsStudents = ({selectedItem}: TAdminManagementDetails<
     return (
         <>
             <p><strong>ФИО:</strong> {fioIsExist(
-                selectedItem.first_name!,
-                selectedItem.last_name!,
+                selectedItem.first_name,
+                selectedItem.last_name,
                 selectedItem.email,
                 "student"
             )}</p>
             <p><strong>Логин:</strong> {selectedItem.username}</p>
-            <p><strong>Группа:</strong> {selectedItem.group ? selectedItem.group : 'Нет группы'}</p>
+            <p><strong>Группа:</strong> {selectedItem.group || 'Нет группы'}</p>
         </>
     );
 };

@@ -1,4 +1,5 @@
 import styles from '../modal-add-teacher/styles.module.css';
+import listStyles from '@/pages/management-page/management.module.css';
 import {useAppDispatch, useAppSelector} from "@/hooks/store.ts";
 import { useForm } from "react-hook-form";
 import useModal from "@/hooks/useModal.tsx";
@@ -7,6 +8,8 @@ import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 import {isSubject} from "@/components/admin-management-details/helper.ts";
 import { TGroupEdit, TSubjectEdit } from "@/redux/types.ts";
 import { TModalEditGroupSubjectCommonType } from "@/components/modal-edit-teacher-student-choose/const.ts";
+import ModalEditGroupAndSubjectListStudents
+    from "@/components/modal-edit-group-and-subject-list-students/modalEditGroupAndSubjectListStudents.tsx";
 
 const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEditGroupSubjectCommonType) => {
     const dispatch = useAppDispatch();
@@ -14,9 +17,11 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
     const selectedItem = useAppSelector(selectSelectedItem)
     const { setSelected } = useSetSelectedItem();
 
+    const selectedItemId = selectedItem!.id;
+
     const { register, handleSubmit } = useForm<TGroupEdit | TSubjectEdit>({
         defaultValues: {
-            [entityId]: selectedItem!.id,
+            [entityId]: selectedItemId,
             [entityName]: isSubject(selectedItem) ? selectedItem.name : '',
         }
     });
@@ -44,6 +49,15 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
                     required
                 />
             </label>
+
+            {type === 'group' && (
+                <label className={styles.label}>
+                    Студенты группы
+                    <div className={`${listStyles.listContainer} ${styles.modalListContainer}`} style={{marginTop: '0.3rem', display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
+                        <ModalEditGroupAndSubjectListStudents selectedItemId={selectedItemId}/>
+                    </div>
+                </label>
+            )}
 
             <button type="submit" className={styles.submitBtn}>
                 Сохранить

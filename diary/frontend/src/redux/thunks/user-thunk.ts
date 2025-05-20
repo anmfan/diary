@@ -3,12 +3,12 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios, {AxiosInstance} from "axios";
 
 const login = createAsyncThunk<
-    IUserReturned,
+    IUserReturned<string | null>,
     IUser,
     {extra: AxiosInstance, rejectValue: string}>
 ('auth/login', async (body, {extra: api, rejectWithValue}) => {
     try {
-        const { data } = await api.post<IUserReturned>('user/login', body, { withCredentials: true });
+        const { data } = await api.post<IUserReturned<string | null>>('user/login', body, { withCredentials: true });
         return data;
     } catch (err) {
         if (axios.isAxiosError(err)) {
@@ -18,15 +18,15 @@ const login = createAsyncThunk<
     }
 });
 
-const check = createAsyncThunk<IUserReturned, undefined, {extra: AxiosInstance}>
+const check = createAsyncThunk<IUserReturned<string | null>, undefined, {extra: AxiosInstance}>
 ('auth/check', async (_, {extra: api}) => {
-    const { data } = await api.get<IUserReturned>('user/refresh', { withCredentials: true });
+    const { data } = await api.get<IUserReturned<string | null>>('user/refresh', { withCredentials: true });
     return data;
 });
 
-const register = createAsyncThunk<IUserReturned, IUser, {extra: AxiosInstance}>
+const register = createAsyncThunk<IUserReturned<string | null>, IUser, {extra: AxiosInstance}>
 ('auth/register', async (body, {extra: api}) => {
-    const { data } = await api.post<IUserReturned>('user/register', body);
+    const { data } = await api.post<IUserReturned<string | null>>('user/register', body);
     return data;
 });
 

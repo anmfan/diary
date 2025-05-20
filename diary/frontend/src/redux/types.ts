@@ -30,7 +30,15 @@ export interface IGroups extends IBase {
             first_name: string | null;
             last_name: string | null;
         }
-    }
+    },
+    students: {
+        user_id: string;
+        user: {
+            first_name: string;
+            last_name: string;
+            email: string;
+        }
+    }[]
     tab: "groups"
 }
 
@@ -98,30 +106,35 @@ export interface IUser {
     password: string;
 }
 
-type IUserData = {
+type IUserData<T> = {
     id: number;
     username: string;
     firstName: string;
     lastName: string;
     avatar: string | null;
     email: string;
-    group: {
-        name: string;
-        course: string;
-    };
+    group: T;
     role: UserRole;
 }
 
-export type IUserReturned = {
+export type IUserReturnedGroupData = {
+    name: string;
+    course: string;
+}
+
+export type IUserReturned<T> = {
     message: string;
     userData: {
         accessToken: string;
         refreshToken: string;
-        user: IUserData;
+        user: IUserData<T>;
     };
 }
 
 export type TDeleteItemResponse = {
+    deletedStudentId: string;
+    studentsGroup: string;
+    students_count: number;
     message: string;
 }
 

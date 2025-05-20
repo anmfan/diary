@@ -6,15 +6,19 @@ import { formValidation } from "@/utils/formValidation.ts";
 import useModal from "@/hooks/useModal.tsx";
 import { generateLogin } from "@/components/modal-add-teacher/helpers.ts";
 import { TModalAddTeacherStudentCommonType } from "@/components/modal-add-teacher-student-choose/const.ts";
-import {IGroups, TCreateUser} from "@/redux/types.ts";
+import {IGroups, IUserReturnedGroupData, TCreateUser} from "@/redux/types.ts";
 import useAppSelectorsForLists from "@/hooks/useAppSelectorsForLists.ts";
 import {TabsOptions} from "@/components/admin-management/types.ts";
 import {toast} from "react-toastify";
 
-const ModalAddTeacherAndStudent = <T extends 2 | 3>({
-                                                        roleId,
-                                                        thunk
-                                                    }: TModalAddTeacherStudentCommonType<T>) => {
+const ModalAddTeacherAndStudent =
+    <
+        T extends 2 | 3,
+        F extends IUserReturnedGroupData | string | null
+    >({
+         roleId,
+         thunk
+    }: TModalAddTeacherStudentCommonType<T, F>) => {
     const dispatch = useAppDispatch();
     const { closeModal } = useModal();
     const { list } = useAppSelectorsForLists<"groups", IGroups[]>(TabsOptions.groups);

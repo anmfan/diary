@@ -3,7 +3,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios, {AxiosInstance} from "axios";
 import {
     ITeacher,
-    IUserReturned,
+    IUserReturned, IUserReturnedGroupData,
     TCreateUser,
     TDelete,
     TDeleteItem,
@@ -23,12 +23,12 @@ const deleteTeacher = createAsyncThunk<TDelete<'teacherId'>, TDeleteItem, {extra
 });
 
 const createTeacher = createAsyncThunk<
-    IUserReturned,
+    IUserReturned<IUserReturnedGroupData>,
     TCreateUser<2>,
     { extra: AxiosInstance, rejectValue: string }>
 ('teacher/create', async (body, {extra: api, rejectWithValue}) => {
     try {
-        const { data } = await api.post<IUserReturned>('user/register', body);
+        const { data } = await api.post<IUserReturned<IUserReturnedGroupData>>('user/register', body);
         return data;
     } catch (err) {
         if (axios.isAxiosError(err)) {
