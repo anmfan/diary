@@ -1,0 +1,44 @@
+.selectWrapper {
+    display: inline-block;
+    position: relative;
+    font-family: 'Segoe UI', sans-serif;
+    margin-left: auto;
+
+    &::after {
+        content: '▾';
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #666;
+        font-size: 12px;
+    }
+}
+
+.select {
+    appearance: none;
+    padding: 10px 34px 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+
+    &:hover {
+        border-color: #007bff;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+    }
+}
+
+option {
+    padding: 8px;
+    background-color: #fff;
+    color: #333;
+}

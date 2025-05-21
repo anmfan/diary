@@ -90,6 +90,8 @@ export interface IStudentsInitialState {
     items: IStudent[];
     loadingIsDone: boolean;
     isError: boolean;
+    sortedItems: IStudent[] | null;
+    selectedStudentsByGroup: string;
 }
 
 export interface ISubjectsInitialState {
@@ -180,6 +182,7 @@ export type TEditResponse = {
 export type TGroupEdit = {
     groupId: string;
     newGroupName: string;
+    excelImportFile: FileList | null;
 }
 
 type TGroupEditUpdated = {
@@ -198,6 +201,7 @@ type TSubjectEditUpdated = {
 export type TSubjectEdit = {
     subjectId: string;
     newSubjectName: string;
+    excelImportFile: FileList | null;
 }
 
 export type TEntityEditResponse<T extends TGroupEdit | TSubjectEdit> = {

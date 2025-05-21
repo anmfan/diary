@@ -1,6 +1,6 @@
 import {
     IGroups,
-    IStudent,
+    IStudent, IStudentsInitialState,
     ISubject,
     ITeacher,
     TEditResponse,
@@ -8,6 +8,7 @@ import {
     TGroupEdit,
     TSubjectEdit
 } from "@/redux/types.ts";
+import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
 
 const updateFilteredList = <T extends {id: string}>(list: T[], deletedItemId: string): T[] => {
     return list.filter(item => item.id !== deletedItemId)
@@ -49,4 +50,26 @@ const updateForUnpinStudentFromGroup = (item: IGroups, students_count: number, d
     }
 }
 
-export { updateFilteredList, updateEditedUser, updateEditedEntity, updateForUnpinStudentFromGroup }
+const filterBySorterOptionsStudents =
+    (
+        state: IStudentsInitialState,
+        payload: string
+    ) => {
+        state.selectedStudentsByGroup = payload;
+
+    if (payload === SortingOptionsValues.All) {
+        state.sortedItems = state.items
+    } else if (payload === SortingOptionsValues.WithoutGroup) {
+        state.sortedItems = state.items.filter(student => student.group === null)
+    } else {
+        state.sortedItems = state.items.filter(student => student.group === payload)
+    }
+}
+
+export {
+    updateFilteredList,
+    updateEditedUser,
+    updateEditedEntity,
+    updateForUnpinStudentFromGroup,
+    filterBySorterOptionsStudents
+}

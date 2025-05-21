@@ -1,20 +1,27 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IStudentsInitialState, IStudent, TDelete, IUserReturned, TDeleteItemResponse} from "../types.ts";
 import {createStudent, deleteStudent, getAllStudents} from "../thunks/students-thunk.ts";
-import {updateEditedUser, updateFilteredList} from "@/redux/helper.ts";
+import {filterBySorterOptionsStudents, updateEditedUser, updateFilteredList} from "@/redux/helper.ts";
 import {edit} from "@/redux/thunks/user-thunk.ts";
 import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
+import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
 
 const initialState: IStudentsInitialState = {
     items: [],
     loadingIsDone: false,
     isError: false,
+    sortedItems: null,
+    selectedStudentsByGroup: SortingOptionsValues.All
 }
 
 const studentsSlice = createSlice({
     name: "students",
     initialState,
-    reducers: {},
+    reducers: {
+        sortingStudentByGroup: (state, action: PayloadAction<string>) => {
+            filterBySorterOptionsStudents(state, action.payload)
+        }
+    },
     extraReducers: builder => {
         builder
             .addCase(getAllStudents.pending, (state) => {
@@ -31,6 +38,7 @@ const studentsSlice = createSlice({
             .addCase(deleteStudent.fulfilled, (state, action: PayloadAction<TDelete<'studentId'>>) => {
                 state.loadingIsDone = true
                 state.items = updateFilteredList(state.items, action.payload.studentId)
+                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
             .addCase(deleteStudent.rejected, (state) => {
                 state.isError = true
@@ -50,6 +58,8 @@ const studentsSlice = createSlice({
                     group: user.group,
                     tab: "students"
                 })
+
+                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
             .addCase(edit.fulfilled, (state, action) => {
                 state.items = updateEditedUser<IStudent>(state.items, action.payload)

@@ -23,15 +23,28 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
         defaultValues: {
             [entityId]: selectedItemId,
             [entityName]: isSubject(selectedItem) ? selectedItem.name : '',
+            excelImportFile: null
         }
     });
 
     const handleSubmitForm = (data: TGroupEdit | TSubjectEdit) => {
-        if (type === 'group') {
-            dispatch(thunk(data as TGroupEdit));
+        const formData = new FormData();
+
+        if (type === "group") {
+            const groupData = data as TGroupEdit;
+            formData.append('groupId', groupData.groupId);
+            formData.append('newGroupName', groupData.newGroupName);
         } else {
-            dispatch(thunk(data as TSubjectEdit));
+            const subjectData = data as TSubjectEdit;
+            formData.append('subjectId', subjectData.subjectId);
+            formData.append('newSubjectName', subjectData.newSubjectName);
         }
+
+        if (data.excelImportFile?.[0]) {
+            formData.append("excelImportFile", data.excelImportFile[0]);
+        }
+
+        dispatch(thunk(formData));
         setSelected(null)
         closeModal();
     }
@@ -51,12 +64,25 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
             </label>
 
             {type === 'group' && (
-                <label className={styles.label}>
-                    Студенты группы
-                    <div className={`${listStyles.listContainer} ${styles.modalListContainer}`} style={{marginTop: '0.3rem', display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
+                <>
+                <div className={styles.label}>
+                    <div className={styles.aboveTitle}>
+                        <span>Студенты группы</span>
+                        <label title="Добавить студентов через Excel файл" aria-label="Импортировать Excel файл" htmlFor="excel-upload" className={styles.customUpload}>
+                            <img width={23} height={23} src="public/ms-excel.svg" alt="Upload Excel" />
+                        </label>
+                        <input
+                            {...register("excelImportFile")}
+                            id="excel-upload"
+                            type="file"
+                            accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                    </div>
+                    <div className={`${listStyles.listContainer} ${styles.modalListContainer}`}
+                         style={{marginTop: '0.3rem', display: 'flex', flexDirection: 'column', rowGap: '1rem'}}>
                         <ModalEditGroupAndSubjectListStudents selectedItemId={selectedItemId}/>
                     </div>
-                </label>
+                </div>
+                </>
             )}
 
             <button type="submit" className={styles.submitBtn}>

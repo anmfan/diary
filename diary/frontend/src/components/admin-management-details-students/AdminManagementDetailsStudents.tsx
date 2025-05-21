@@ -4,6 +4,7 @@ import { IStudent } from "@/redux/types.ts";
 const AdminManagementDetailsStudents = ({selectedItem}: TAdminManagementDetails<IStudent>) => {
     return (
         <>
+            <p><strong>Идентификатор:</strong> {selectedItem.id}</p>
             <p><strong>ФИО:</strong> {fioIsExist(
                 selectedItem.first_name,
                 selectedItem.last_name,

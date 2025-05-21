@@ -4,17 +4,22 @@ import {IStudent} from "@/redux/types.ts";
 import {TabsOptions} from "../admin-management/types.ts";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 import ManagementEmptyList from "../management-empty-list/ManagementEmptyList.tsx";
+import {useAppSelector} from "@/hooks/store.ts";
+import {sortedStudentsByGroup} from "@/redux/selectors/students-selector.ts";
 
 const AdminManagementStudents = () => {
-    const { selectedItem, list } = useAppSelectorsForLists<"students", IStudent[]>(TabsOptions.students)
-    const { setSelected } = useSetSelectedItem()
+    const { selectedItem, list } = useAppSelectorsForLists<"students", IStudent[]>(TabsOptions.students);
+    const { setSelected } = useSetSelectedItem();
+    const sortedStudents = useAppSelector(sortedStudentsByGroup);
 
-    if (list.length === 0) {
+    const studentsList = sortedStudents === null ? list : sortedStudents;
+
+    if (studentsList.length === 0) {
         return <ManagementEmptyList tab={"Студентов"}/>
     }
 
     return (
-        list.map(student => (
+        studentsList.map(student => (
             <div
                 key={student.id}
                 className={`${styles.listItem} ${selectedItem?.id === student.id ? styles.selected : ''}`}

@@ -29,6 +29,21 @@
     }
 }
 
+.customUpload {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.aboveTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > input {
+        display: none;
+    }
+}
+
 .label {
     display: flex;
     flex-direction: column;
