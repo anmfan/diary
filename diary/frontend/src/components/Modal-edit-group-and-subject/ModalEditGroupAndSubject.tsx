@@ -69,7 +69,7 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
                     <div className={styles.aboveTitle}>
                         <span>Студенты группы</span>
                         <label title="Добавить студентов через Excel файл" aria-label="Импортировать Excel файл" htmlFor="excel-upload" className={styles.customUpload}>
-                            <img width={23} height={23} src="public/ms-excel.svg" alt="Upload Excel" />
+                            <img width={23} height={23} src="/ms-excel.svg" alt="Upload Excel" />
                         </label>
                         <input
                             {...register("excelImportFile")}
