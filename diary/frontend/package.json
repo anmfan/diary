@@ -27,7 +27,8 @@
     "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.5",
     "reselect": "^5.1.1",
-    "vite-bundle-analyzer": "^0.18.1"
+    "vite-bundle-analyzer": "^0.18.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
