@@ -7,7 +7,13 @@ import {
     getAllGroups,
     TCreateGroupResponse, unpinStudentFromGroup,
 } from "../thunks/groups-thunk.ts";
-import {updateEditedEntity, updateFilteredList, updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
+import {
+    updateEditedEntity,
+    updateFilteredList,
+    updateForUnpinStudentFromGroup,
+    updateStudentsCountInGroup
+} from "@/redux/helper.ts";
+import {createStudent, deleteStudent} from "@/redux/thunks/students-thunk.ts";
 
 const initialState: IGroupsInitialState = {
     items: [],
@@ -64,6 +70,37 @@ const groupsSlice = createSlice({
             .addCase(unpinStudentFromGroup.rejected, (state) => {
                 state.isError = true
                 state.loadingIsDone = true
+            })
+            .addCase(deleteStudent.fulfilled, (state, action) => {
+                if (action.payload.data.groupName) {
+                    state.items = updateStudentsCountInGroup(state.items, action.payload.data)
+                }
+            })
+            .addCase(createStudent.fulfilled, (state, action) => {
+                const data = action.payload.userData.user;
+
+                if (action.payload.userData.user.groupStudentCount) {
+                    state.items = state.items.map(group => {
+                        if (group.name === data.group) {
+                            return {
+                                ...group,
+                                students_count: data.groupStudentCount,
+                                students: [
+                                    ...group.students,
+                                    {
+                                        user_id: String(data.id),
+                                        user: {
+                                            first_name: data.firstName,
+                                            last_name: data.lastName,
+                                            email: data.lastName
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                        return group
+                    })
+                }
             })
     }
 })

@@ -63,6 +63,7 @@ const studentsSlice = createSlice({
             })
             .addCase(edit.fulfilled, (state, action) => {
                 state.items = updateEditedUser<IStudent>(state.items, action.payload)
+                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
             .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
                 const { deletedStudentId  } = action.payload;
@@ -71,6 +72,7 @@ const studentsSlice = createSlice({
                 if (index > -1) {
                     state.items[index].group = null;
                 }
+                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
     }
 })

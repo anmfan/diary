@@ -119,8 +119,6 @@ class GroupsService {
     }
 
     async edit(req, res, next) {
-        console.log('req.file', req.file);
-        console.log('req.body', req.body);
         try {
             const { groupId, newGroupName } = req.body;
             const file = req.file;

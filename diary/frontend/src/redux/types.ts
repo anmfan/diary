@@ -116,6 +116,7 @@ type IUserData<T> = {
     avatar: string | null;
     email: string;
     group: T;
+    groupStudentCount: number;
     role: UserRole;
 }
 
@@ -137,6 +138,9 @@ export type TDeleteItemResponse = {
     deletedStudentId: string;
     studentsGroup: string;
     students_count: number;
+    groupStudentCount: number;
+    userId: string;
+    groupName: string;
     message: string;
 }
 

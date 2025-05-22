@@ -136,6 +136,7 @@ const Students = sequelize.define('students', {
     },
     group_id: {
         type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
             model: Groups,
             key: 'id'

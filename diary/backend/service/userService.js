@@ -26,6 +26,8 @@ class UserService {
             last_name = nameParts.slice(1).join(" ");
         }
 
+        group_id = group_id || null;
+
         const user = await Users.create({
             email,
             username,
@@ -48,8 +50,6 @@ class UserService {
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(user.id, tokens.refreshToken, transaction);
 
-        let groupName = null;
-
         if (role_id === 3) {
             const student = await Students.findOne({
                 where: { user_id: user.id },
@@ -63,10 +63,17 @@ class UserService {
 
             if (student && group_id) {
                 await student.update({ group_id }, { transaction });
-            }
 
-            const group = await Groups.findByPk(group_id, { transaction });
-            groupName = group?.name ?? null;
+                const group = await Groups.findByPk(group_id, {
+                    attributes: ['name', 'students_count'],
+                    transaction
+                });
+
+                if (group) {
+                    userDto.group = group.name;
+                    userDto.groupStudentCount = Number(group.students_count);
+                }
+            }
         } else if (role_id === 2 && group_id) {
             const teacher = await Teachers.findOne({
                 where: { user_id: user.id },
@@ -93,13 +100,12 @@ class UserService {
                 );
 
                 const group = await Groups.findByPk(group_id, { transaction });
-                groupName = group
+                userDto.group = group
                     ? { name: group.name, course: group.course }
                     : null;
             }
         }
 
-        userDto.group = groupName;
         return { ...tokens, user: userDto };
     }
 

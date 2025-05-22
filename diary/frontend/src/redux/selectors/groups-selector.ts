@@ -10,5 +10,5 @@ export const selectStudentsByGroupId = (groupId: string) =>
 
 export const groupWithStudents = createSelector(
     (state: Pick<RootState, 'groups'>) => state.groups.items,
-    items => items.filter(item => item.students.length > 0)
+    items => items.filter(item => Array.isArray(item.students) && item.students.length > 0)
 )

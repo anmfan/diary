@@ -59,6 +59,8 @@ class StudentsService {
                 return next(ApiError.badRequest("Студент не найден."));
             }
 
+            const groupId = student.group_id;
+
             await student.destroy({ transaction });
 
             await Users.destroy({
@@ -66,8 +68,34 @@ class StudentsService {
                 transaction
             });
 
+            let groupData = null;
+            if (groupId !== null) {
+                const group = await Groups.findByPk(groupId, {
+                    attributes: ['students_count', 'name'],
+                    transaction
+                });
+
+                if (group) {
+                    groupData = {
+                        groupId,
+                        groupName: group.name,
+                        groupStudentCount: group.students_count
+                    };
+                }
+            }
+
             await transaction.commit();
-            return res.json({message: "Студент успешно удалён"})
+            const response = {
+                message: "Студент успешно удалён"
+            };
+
+            if (groupData) {
+                response.userId = id;
+                response.groupName = groupData.groupName;
+                response.groupStudentCount = groupData.groupStudentCount;
+            }
+
+            return res.json(response);
         } catch (e) {
             await transaction.rollback();
             return next(e);

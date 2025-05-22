@@ -14,7 +14,7 @@ const AdminManagementDetailsTeachers = ({selectedItem}: TAdminManagementDetails<
             <p><strong>Логин:</strong> {selectedItem.username}</p>
             <p><strong>Прикрепленные группы:</strong>
                 &nbsp;{
-                    selectedItem.curated_groups.length > 0
+                    selectedItem.curated_groups?.length > 0
                         ? selectedItem.curated_groups.map(group => group.name).join(', ')
                         : "Нет группы"
                 }
