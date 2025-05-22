@@ -2,7 +2,7 @@ import {
     IGroups,
     IStudent, IStudentsInitialState,
     ISubject,
-    ITeacher,
+    ITeacher, TDeleteItemResponse,
     TEditResponse,
     TEntityEditResponse,
     TGroupEdit,
@@ -66,10 +66,24 @@ const filterBySorterOptionsStudents =
     }
 }
 
+const updateStudentsCountInGroup = (items: IGroups[], data: TDeleteItemResponse) => {
+    return items = items.map((group) => {
+        if (group.name === data.groupName) {
+            return {
+                ...group,
+                students_count: data.groupStudentCount,
+                students: group.students.filter(student => student.user_id !== data.userId)
+            }
+        }
+        return group
+    })
+}
+
 export {
     updateFilteredList,
     updateEditedUser,
     updateEditedEntity,
     updateForUnpinStudentFromGroup,
-    filterBySorterOptionsStudents
+    filterBySorterOptionsStudents,
+    updateStudentsCountInGroup
 }
