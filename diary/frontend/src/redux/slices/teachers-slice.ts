@@ -82,7 +82,7 @@ const teachersSlice = createSlice({
 
                 if (data.type === 'teacher') {
                     state.items = state.items.map(teacher => {
-                        if (Number(teacher.id) === data.user.id) {
+                        if (teacher.id === String(data.user.id)) {
                             console.log('teacher.curated_groups', teacher.curated_groups)
                             console.log('data.group', data.group)
                             return {
