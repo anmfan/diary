@@ -208,6 +208,7 @@ const groupsSlice = createSlice({
                     }
                     return group
                 })
+                filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
             })
             .addCase(register.fulfilled, (state, action: PayloadAction<IUserReturned<IUserReturnedGroupData | null>>) => {
                 const data = action.payload.userData.user;

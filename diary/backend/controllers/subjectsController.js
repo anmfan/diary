@@ -40,7 +40,7 @@ class SubjectsService {
 
     async deleteSubject(req, res, next) {
         try {
-            const { id } = req.body;
+            const id = Number(req.query.id);
 
             if (!id) {
                 return next(ApiError.badRequest("Не указан ID предмета."))
@@ -64,7 +64,7 @@ class SubjectsService {
         try {
             const { subjectId, newSubjectName } = req.body;
 
-            const subject = await Subjects.findByPk(subjectId);
+            const subject = await Subjects.findByPk(Number(subjectId));
 
             if (!subject) {
                 return res.status(404).json({ message: 'Предмет не найден' });

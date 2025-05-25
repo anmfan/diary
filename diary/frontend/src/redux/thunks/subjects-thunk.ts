@@ -17,7 +17,7 @@ const getAllSubjects = createAsyncThunk<ISubject[], undefined, {extra: AxiosInst
 
 const deleteSubject = createAsyncThunk<TDelete<'subjectId'>, TDeleteItem, {extra: AxiosInstance}>
 ('subjects/delete', async (body, {extra: api}) => {
-    const { data } = await api.delete<TDeleteItemResponse>(`subjects/delete`, { data: body});
+    const { data } = await api.delete<TDeleteItemResponse>(`subjects/delete?id=${body.id}`);
     return { data, subjectId: body.id};
 });
 
