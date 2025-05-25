@@ -1,6 +1,6 @@
 import styles from './styles.module.css';
 import otherStyles from "@/components/modal-add-group/styles.module.css"
-import { useAppDispatch } from "@/hooks/store.ts";
+import {useAppDispatch, useAppSelector} from "@/hooks/store.ts";
 import { useForm } from "react-hook-form";
 import { formValidation } from "@/utils/formValidation.ts";
 import useModal from "@/hooks/useModal.tsx";
@@ -10,6 +10,7 @@ import {IGroups, IUserReturnedGroupData, TCreateUser} from "@/redux/types.ts";
 import useAppSelectorsForLists from "@/hooks/useAppSelectorsForLists.ts";
 import {TabsOptions} from "@/components/admin-management/types.ts";
 import {toast} from "react-toastify";
+import {groupsWithoutCurator} from "@/redux/selectors/groups-selector.ts";
 
 const ModalAddTeacherAndStudent =
     <
@@ -22,6 +23,9 @@ const ModalAddTeacherAndStudent =
     const dispatch = useAppDispatch();
     const { closeModal } = useModal();
     const { list } = useAppSelectorsForLists<"groups", IGroups[]>(TabsOptions.groups);
+    const groupsListWithoutCurator = useAppSelector(groupsWithoutCurator);
+
+    const mapList = roleId === 2 ? groupsListWithoutCurator : list;
 
     const { register, handleSubmit, setValue } = useForm<TCreateUser<T>>({
         defaultValues: {
@@ -46,7 +50,7 @@ const ModalAddTeacherAndStudent =
         try {
             await dispatch(thunk(data)).unwrap();
         } catch (e) {
-            toast.error(typeof e === 'string' ? e : 'Произошла ошибка');
+            toast.error(typeof e === 'string' && e);
         }
         closeModal();
     }
@@ -99,7 +103,7 @@ const ModalAddTeacherAndStudent =
                 Группа
                 <select {...register('group_id')} className={otherStyles.selector}>
                     <option value="">Выберите группу</option>
-                    {list.map(group => (
+                    {mapList.map(group => (
                         <option key={group.id} value={group.id}>
                             {group.name}
                         </option>

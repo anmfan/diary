@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {AxiosInstance} from "axios";
+import axios, {AxiosInstance} from "axios";
 import {
     ISubject,
     TDelete,
@@ -26,10 +26,20 @@ export type TCreateSubject = {
     name: string;
 }
 
-const createSubject = createAsyncThunk<TCreateSubject, { name: string }, {extra: AxiosInstance}>
-('subjects/create', async (body, {extra: api}) => {
-    const { data } = await api.post<TCreateSubject>(`subjects/create`, body);
-    return data;
+const createSubject = createAsyncThunk <
+    TCreateSubject,
+    { name: string },
+    {extra: AxiosInstance, rejectValue: string}>
+('subjects/create', async (body, {extra: api, rejectWithValue}) => {
+    try {
+        const { data } = await api.post<TCreateSubject>(`subjects/create`, body);
+        return data;
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            return rejectWithValue(err.response?.data.message || 'Ошибка при создании преподавателя')
+        }
+        return rejectWithValue('Неизвестная ошибка');
+    }
 });
 
 const editSubject = createAsyncThunk<TEntityEditResponse<TSubjectEdit>, TSubjectEdit, {extra: AxiosInstance}>

@@ -3,6 +3,7 @@ const {hash, compare} = require("bcrypt");
 const tokenService = require("../service/tokenService");
 const UserDto = require("../dto/userDto");
 const ApiError = require("../error/ApiError");
+const mailService = require('../service/mailService');
 const {Roles, Teachers, Students, Groups} = require("../models/models");
 
 class UserService {
@@ -49,6 +50,9 @@ class UserService {
         const userDto = new UserDto(userWithRole);
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(user.id, tokens.refreshToken, transaction);
+
+        mailService.sendRegistrationMail(email, password)
+            .catch(err => console.error('Ошибка при отправке письма (не критично):', err));
 
         if (role_id === 3) {
             const student = await Students.findOne({

@@ -78,8 +78,10 @@
 .listTitle {
     display: flex;
     align-items: center;
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin-block: 0 15px;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
     color: #444;
 }
 

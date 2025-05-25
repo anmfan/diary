@@ -46,6 +46,8 @@ export interface IGroupsInitialState {
     items: IGroups[];
     loadingIsDone: boolean;
     isError: boolean;
+    sortedItems: IGroups[] | null;
+    selectedGroupByCurator: string;
 }
 
 export interface ISubject extends IBase {
@@ -63,7 +65,7 @@ export type ITeacher = IBase & {
     curated_groups: {
         name: string;
         course: string;
-    }[];
+    }[] | null;
 }
 
 export interface IBase {
@@ -83,7 +85,8 @@ export interface ITeachersInitialState {
     items: ITeacher[],
     loadingIsDone: boolean;
     isError: boolean;
-    teachersIsExist: boolean;
+    sortedItems: ITeacher[] | null;
+    selectedTeachersByGroup: string;
 }
 
 export interface IStudentsInitialState {
@@ -108,7 +111,7 @@ export interface IUser {
     password: string;
 }
 
-type IUserData<T> = {
+export type IUserData<T> = {
     id: number;
     username: string;
     firstName: string;
@@ -180,6 +183,7 @@ export type TEditResponse = {
         first_name: string;
         last_name: string;
         group: string | null;
+        teacher?: string;
     }
 }
 
@@ -212,3 +216,9 @@ export type TEntityEditResponse<T extends TGroupEdit | TSubjectEdit> = {
     message: string;
     updated: T extends TGroupEdit ? TGroupEditUpdated : TSubjectEditUpdated
 }
+
+export type TAddGroupForm = {
+    groupId: string;
+}
+
+export type TAddGroup = TAddGroupForm & { userId: string }

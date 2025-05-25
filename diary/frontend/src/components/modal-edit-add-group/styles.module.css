@@ -1,0 +1,41 @@
+.groupsInfo {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 5px 5px 0;
+    align-items: center;
+
+    > div {
+        display: flex;
+        column-gap: 10px;
+
+        > button {
+            padding: 0.75rem;
+            background-color: var(--active-menu-color, #007bff);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+
+        .selector {
+            padding: 0.6rem 0.75rem;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+
+            &:focus {
+                border-color: var(--active-menu-color, #007bff);
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+            }
+        }
+    }
+}

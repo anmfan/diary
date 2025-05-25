@@ -3,7 +3,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios, {AxiosInstance} from "axios";
 import {
     ITeacher,
-    IUserReturned, IUserReturnedGroupData,
+    IUserReturned, IUserReturnedGroupData, TAddGroup,
     TCreateUser,
     TDelete,
     TDeleteItem,
@@ -38,4 +38,33 @@ const createTeacher = createAsyncThunk<
     }
 });
 
-export { getAllTeachers, deleteTeacher, createTeacher }
+type TAddGroupTeacherResponse = {
+    message: string;
+    group: { name: string; course: string };
+    students_count: string;
+    user: {
+        id: string;
+        first_name: string;
+        last_name: string;
+        email: string;
+    },
+    type: 'student' | 'teacher'
+}
+
+const addGroup = createAsyncThunk<
+    TAddGroupTeacherResponse,
+    TAddGroup,
+    {extra: AxiosInstance, rejectValue: string}>
+('teachers/add-group', async (body, {extra: api, rejectWithValue}) => {
+    try {
+        const { data } = await api.post<TAddGroupTeacherResponse>(`students/add-group`, body);
+        return data;
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            return rejectWithValue(err.response?.data.message || 'Ошибка при создании преподавателя')
+        }
+        return rejectWithValue('Неизвестная ошибка');
+    }
+});
+
+export { getAllTeachers, deleteTeacher, createTeacher, addGroup }

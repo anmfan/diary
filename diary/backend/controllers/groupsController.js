@@ -77,6 +77,7 @@ class GroupsService {
                 name: newGroup.name,
                 course: newGroup.course,
                 students_count: newGroup.students_count,
+                students: [],
             };
 
             if (curator) {
@@ -88,6 +89,10 @@ class GroupsService {
                         last_name: curator.user.last_name
                     }
                 };
+            }
+
+            if (!curator) {
+                responseData.curator = null;
             }
 
             return res.status(201).json(responseData);

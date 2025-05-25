@@ -1,10 +1,15 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IStudentsInitialState, IStudent, TDelete, IUserReturned, TDeleteItemResponse} from "../types.ts";
 import {createStudent, deleteStudent, getAllStudents} from "../thunks/students-thunk.ts";
-import {filterBySorterOptionsStudents, updateEditedUser, updateFilteredList} from "@/redux/helper.ts";
+import {
+    filterBySorterOptionsStudents,
+    updateEditedUser,
+    updateFilteredList
+} from "@/redux/helper.ts";
 import {edit} from "@/redux/thunks/user-thunk.ts";
 import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
 import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
+import {addGroup} from "@/redux/thunks/teachers-thunk.ts";
 
 const initialState: IStudentsInitialState = {
     items: [],
@@ -73,6 +78,23 @@ const studentsSlice = createSlice({
                     state.items[index].group = null;
                 }
                 filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
+            })
+            .addCase(addGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                if (data.type === 'student') {
+                    state.items = state.items.map(student => {
+                        if (student.id === data.user.id) {
+                            return {
+                                ...student,
+                                group: data.group.name
+                            }
+                        }
+                        return student
+                    })
+
+                    filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
+                }
             })
     }
 })

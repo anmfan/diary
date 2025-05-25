@@ -188,20 +188,25 @@ class UserController {
 
             await user.save();
 
+            const responseUser = {
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+            };
+
+            if (user.role_id === 2) {
+                responseUser.teacher = "teacher";
+            }
+
             return res.json({
                 message: "Данные пользователя обновлены",
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                }
+                user: responseUser
             });
         } catch (e) {
             return next(e);
         }
     }
-
 }
 
 module.exports = new UserController();

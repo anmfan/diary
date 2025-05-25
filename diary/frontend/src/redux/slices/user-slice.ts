@@ -1,6 +1,6 @@
 import {IUserInitialState, IUserReturned, TDeleteItemResponse} from "../types.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {check, login, logout, register} from "../thunks/user-thunk.ts";
+import {check, login, logout} from "../thunks/user-thunk.ts";
 import {TSelectedItem} from "@/components/admin-management/types.ts";
 import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
 import {updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
@@ -74,13 +74,13 @@ const userSlice = createSlice({
                 state.isAuthenticated = false;
                 state.isError = true;
             })
-            .addCase(register.pending, (state) => {
-                state.loadingIsDone = false
-            })
-            .addCase(register.fulfilled, fulfilledUserQuery)
-            .addCase(register.rejected, (state) => {
-                state.loadingIsDone = false
-            })
+            // .addCase(register.pending, (state) => {
+            //     state.loadingIsDone = false
+            // })
+            // .addCase(register.fulfilled, fulfilledUserQuery)
+            // .addCase(register.rejected, (state) => {
+            //     state.loadingIsDone = false
+            // })
             .addCase(logout.fulfilled, (state) => {
                 state.loadingIsDone = true
                 state.isAuthenticated = false

@@ -1,12 +1,15 @@
 import * as XLSX from 'xlsx';
 import {IGroups, IStudent, ISubject, ITeacher} from "@/redux/types.ts";
+import {toast} from "react-toastify";
 
 export type TExportStudentsOrTeachersToExcel = {
-    arrayItems: IStudent[] | ITeacher[] | IGroups[] | ISubject[];
+    arrayItems: IStudent[] | ITeacher[] | IGroups[] | ISubject[] | null;
     label: string;
 }
 
-export const exportStudentsOrTeachersToExcel = ({arrayItems, label}: TExportStudentsOrTeachersToExcel) => {
+export const exportToExcel = ({arrayItems, label}: TExportStudentsOrTeachersToExcel) => {
+    if (arrayItems === null) return toast.error("Список пуст")
+
     const worksheet = XLSX.utils.json_to_sheet(arrayItems);
 
     const workbook = XLSX.utils.book_new();

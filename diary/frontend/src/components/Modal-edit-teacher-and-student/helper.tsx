@@ -1,5 +1,6 @@
 import {TSelectedItem} from "@/components/admin-management/types.ts";
 import {IStudent, ITeacher} from "@/redux/types.ts";
+import ModalEditAddGroup from "@/components/modal-edit-add-group/ModalEditAddGroup.tsx";
 
 export const isUser = (item: TSelectedItem): item is ITeacher => {
     return "first_name" in item!;
@@ -14,7 +15,10 @@ export const isTeacher = (item: TSelectedItem): item is ITeacher => {
 }
 
 export const mappingGroups = (item: TSelectedItem) => {
-    if (isStudent(item)) return item.group ? item.group : "Нет группы"
-    if (isTeacher(item)) return item.curated_groups.map(group => group.name).join(', ') || 'Нет группы';
-    return 'Нет группы';
+    if (isStudent(item)) return item.group ? item.group : <ModalEditAddGroup item={item}/>
+    if (isTeacher(item)) {
+        return item.curated_groups?.map(group => group.name).join(', ')
+            || <ModalEditAddGroup item={item}/>;
+    }
+    return "Нет группы"
 }

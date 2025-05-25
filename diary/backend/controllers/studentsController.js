@@ -1,4 +1,4 @@
-const {Users, Subjects, Students, Groups} = require("../models/models");
+const {Users, Subjects, Students, Groups, Teachers} = require("../models/models");
 const ApiError = require("../error/ApiError");
 const sequelize = require('../db');
 
@@ -111,9 +111,15 @@ class StudentsService {
             }
 
             const student = await Students.findOne({ where: { user_id: userId } });
+            const teacher = await Teachers.findOne({ where: { user_id: userId } });
+            const user = await Users.findByPk(userId);
 
-            if (!student) {
-                return next(ApiError.badRequest("Студент не найден"))
+            if (!user) {
+                return next(ApiError.badRequest("Пользователь не найден"));
+            }
+
+            if (!student && !teacher) {
+                return next(ApiError.badRequest("Пользователь не является ни студентом, ни преподавателем"));
             }
 
             const group = await Groups.findByPk(groupId);
@@ -121,20 +127,62 @@ class StudentsService {
                 return next(ApiError.badRequest("Группа не найдена"))
             }
 
-            if (student.group_id === groupId) {
-                return res.status(400).json({ message: 'Студент уже прикреплён к этой группе' });
+            if (student) {
+                if (student.group_id === groupId) {
+                    return next(ApiError.badRequest("Студент уже прикреплён к этой группе"))
+                }
+
+                const alreadyInGroup = !!student.group_id;
+
+                student.group_id = groupId;
+                await student.save();
+
+                if (!alreadyInGroup) {
+                    group.students_count += 1;
+                    await group.save();
+                }
+
+                return res.json({
+                    message: 'Студент прикреплён к группе',
+                    group: {
+                        name: group.name,
+                        course: group.course,
+                    },
+                    students_count: group.students_count,
+                    user: {
+                        id: user.id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        email: user.email
+                    },
+                    type: 'student'
+                });
             }
 
-            student.group_id = groupId;
-            await student.save();
+            if (teacher) {
+                if (group.curator_id === teacher.id) {
+                    return next(ApiError.badRequest("Преподаватель уже является куратором этой группы"))
+                }
 
-            group.students_count += 1;
-            await group.save();
+                group.curator_id = teacher.id;
+                await group.save();
 
-            return res.json({
-                    message: 'Студент прикреплён к группе',
-                    studentId: student.id
+                return res.json({
+                    message: 'Преподаватель назначен куратором группы',
+                    group: {
+                        name: group.name,
+                        course: group.course,
+                    },
+                    students_count: group.students_count,
+                    user: {
+                        id: user.id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        email: user.email
+                    },
+                    type: 'teacher'
                 });
+            }
         } catch (e) {
             return next(e);
         }

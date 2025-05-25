@@ -5,8 +5,9 @@ import useModal from "@/hooks/useModal.tsx";
 import {edit} from "@/redux/thunks/user-thunk.ts";
 import {TEdit} from "@/redux/types.ts";
 import {selectSelectedItem} from "@/redux/selectors/user-selector.ts";
-import {isUser, mappingGroups} from "@/components/Modal-edit-teacher-and-student/helper.ts";
+import {isUser, mappingGroups} from "@/components/Modal-edit-teacher-and-student/helper.tsx";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
+import {toast} from "react-toastify";
 
 const ModalEditTeacherAndStudent = () => {
     const dispatch = useAppDispatch();
@@ -31,8 +32,12 @@ const ModalEditTeacherAndStudent = () => {
         }
     });
 
-    const handleSubmitForm = (data: TEdit) => {
-        dispatch(edit({...data, id: userId}));
+    const handleSubmitForm = async (data: TEdit) => {
+        try {
+            await dispatch(edit({...data, id: userId})).unwrap();
+        } catch (error) {
+            toast.error(typeof error === 'string' && error || 'Произошла ошибка');
+        }
         setSelected(null)
         closeModal();
     }

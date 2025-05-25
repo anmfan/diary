@@ -14,11 +14,15 @@ const ModalAddSubject = () => {
         }
     });
 
-    const handleSubmitForm = (data: { name: string }) => {
+    const handleSubmitForm = async (data: { name: string }) => {
         if (data.name.length < 3) {
             return toast.error("Название предмета должно быть минимум 3 символа");
         }
-        dispatch(createSubject(data))
+        try {
+            await dispatch(createSubject(data)).unwrap()
+        } catch (e) {
+            toast.error(typeof e === 'string' ? e : 'Произошла ошибка');
+        }
         closeModal()
     }
 

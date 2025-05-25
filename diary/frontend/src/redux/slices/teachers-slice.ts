@@ -6,21 +6,31 @@ import {
     IUserReturnedGroupData,
     TDelete,
 } from "../types.ts";
-import {createTeacher, deleteTeacher, getAllTeachers} from "../thunks/teachers-thunk.ts";
-import {updateEditedUser, updateFilteredList} from "@/redux/helper.ts";
+import {addGroup, createTeacher, deleteTeacher, getAllTeachers} from "../thunks/teachers-thunk.ts";
+import {
+    filterBySorterOptionsTeachers,
+    updateEditedUser,
+    updateFilteredList
+} from "@/redux/helper.ts";
 import {edit} from "@/redux/thunks/user-thunk.ts";
+import {SortingOptionsTeachersValues} from "@/components/sorting-options-teachers/const.ts";
 
 const initialState: ITeachersInitialState = {
     items: [],
     loadingIsDone: false,
     isError: false,
-    teachersIsExist: false
+    sortedItems: null,
+    selectedTeachersByGroup: SortingOptionsTeachersValues.All
 }
 
 const teachersSlice = createSlice({
     name: "teachers",
     initialState,
-    reducers: {},
+    reducers: {
+        sortingTeachersByGroups: (state, action: PayloadAction<string>) => {
+            filterBySorterOptionsTeachers(state, action.payload)
+        }
+    },
     extraReducers: builder => {
         builder
             .addCase(getAllTeachers.pending, (state) => {
@@ -28,7 +38,6 @@ const teachersSlice = createSlice({
             })
             .addCase(getAllTeachers.fulfilled, (state, action: PayloadAction<ITeacher[]>) => {
                 state.loadingIsDone = true
-                state.teachersIsExist = true
                 state.items = action.payload
             })
             .addCase(getAllTeachers.rejected, (state) => {
@@ -38,6 +47,7 @@ const teachersSlice = createSlice({
             .addCase(deleteTeacher.fulfilled, (state, action: PayloadAction<TDelete<'teacherId'>>) => {
                 state.loadingIsDone = true
                 state.items = updateFilteredList(state.items, action.payload.teacherId)
+                filterBySorterOptionsTeachers(state, state.selectedTeachersByGroup)
             })
             .addCase(deleteTeacher.rejected, (state) => {
                 state.isError = true
@@ -55,8 +65,10 @@ const teachersSlice = createSlice({
                     last_name: user.lastName,
                     avatar: user.avatar,
                     tab: "teachers",
-                    curated_groups: [user.group],
+                    curated_groups: user.group ? [user.group] : [],
                 })
+
+                filterBySorterOptionsTeachers(state, state.selectedTeachersByGroup)
             })
             .addCase(createTeacher.rejected, (state) => {
                 state.loadingIsDone = true;
@@ -64,6 +76,23 @@ const teachersSlice = createSlice({
             })
             .addCase(edit.fulfilled, (state, action) => {
                 state.items = updateEditedUser<ITeacher>(state.items, action.payload)
+            })
+            .addCase(addGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                if (data.type === 'teacher') {
+                    state.items = state.items.map(teacher => {
+                        if (teacher.id === data.user.id) {
+                            return {
+                                ...teacher,
+                                curated_groups: data.group ? [data.group] : []
+                            }
+                        }
+                        return teacher
+                    })
+
+                    filterBySorterOptionsTeachers(state, state.selectedTeachersByGroup)
+                }
             })
     }
 })

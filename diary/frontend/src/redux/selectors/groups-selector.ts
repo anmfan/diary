@@ -12,3 +12,11 @@ export const groupWithStudents = createSelector(
     (state: Pick<RootState, 'groups'>) => state.groups.items,
     items => items.filter(item => Array.isArray(item.students) && item.students.length > 0)
 )
+
+export const groupsWithoutCurator = createSelector(
+    (state: Pick<RootState, 'groups'>) => state.groups.items,
+    items => items.filter(item => Array.isArray(item.students) && !item.curator)
+)
+
+export const sortedGroupsByCurator = (state: Pick<RootState, 'groups'>) => state.groups.sortedItems;
+export const selectedGroupsByCurator = (state: Pick<RootState, 'groups'>) => state.groups.selectedGroupByCurator;

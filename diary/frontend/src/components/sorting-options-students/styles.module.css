@@ -2,7 +2,6 @@
     display: inline-block;
     position: relative;
     font-family: 'Segoe UI', sans-serif;
-    margin-left: auto;
 
     &::after {
         content: '▾';
