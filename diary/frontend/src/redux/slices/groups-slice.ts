@@ -167,6 +167,7 @@ const groupsSlice = createSlice({
 
                 if (data.group !== null) {
                     state.items = updateGroup(state.items, data)
+                    filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
                 }
             })
             .addCase(addGroup.fulfilled, (state, action) => {
