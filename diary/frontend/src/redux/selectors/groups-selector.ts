@@ -2,7 +2,7 @@ import {RootState} from "@/redux/types.ts";
 import {createSelector} from "@reduxjs/toolkit";
 
 export const allGroups = (state: Pick<RootState, 'groups'>) => state.groups.items;
-export const selectStudentsByGroupId = (groupId: string) =>
+export const selectStudentsByGroupId = (groupId: number) =>
     (state: Pick<RootState, 'groups'>) => {
         const group = state.groups.items.find(g => g.id === groupId);
         return group?.students ?? [];

@@ -190,7 +190,7 @@ class StudentsService {
 
     async removeGroup(req, res, next) {
         try {
-            const { user_id } = req.body;
+            const { user_id } = req.query;
 
             const userId = user_id;
 
@@ -200,30 +200,51 @@ class StudentsService {
 
             const student = await Students.findOne({ where: { user_id: userId } });
 
-            if (!student) {
-                return res.status(404).json({ message: 'Студент не найден' });
-            }
+            if (student) {
+                if (!student.group_id) {
+                    return next(ApiError.badRequest("Студент не прикреплён к группе"))
+                }
 
-            if (!student.group_id) {
-                return res.status(400).json({ message: 'Студент не прикреплён к группе' });
-            }
+                const oldGroup = await Groups.findByPk(student.group_id);
 
-            const oldGroup = await Groups.findByPk(student.group_id);
+                student.group_id = null;
+                await student.save();
 
-            student.group_id = null;
-            await student.save();
+                if (oldGroup && oldGroup.students_count > 0) {
+                    oldGroup.students_count -= 1;
+                    await oldGroup.save();
+                }
 
-            if (oldGroup && oldGroup.students_count > 0) {
-                oldGroup.students_count -= 1;
-                await oldGroup.save();
-            }
-
-            return res.json({
+                return res.json({
+                    type: 'student',
                     message: 'Студент успешно откреплён от группы',
-                    deletedStudentId: userId,
-                    studentsGroup: oldGroup.id,
-                    students_count: oldGroup.students_count,
-            });
+                    deletedId: Number(user_id),
+                    oldGroup: oldGroup?.name,
+                    students_count: oldGroup?.students_count,
+                });
+            }
+
+            const teacher = await Teachers.findOne({ where: { user_id: userId } });
+
+            if (teacher) {
+                const group = await Groups.findOne({ where: { curator_id: teacher.id } });
+
+                if (!group) {
+                    return next(ApiError.badRequest("У преподавателя нет прикреплённой группы"))
+                }
+
+                group.curator_id = null;
+                await group.save();
+
+                return res.json({
+                    type: 'teacher',
+                    message: 'Группа успешно откреплена от преподавателя',
+                    deletedId: Number(user_id),
+                    oldGroup: group.name,
+                });
+            }
+
+            return next(ApiError.badRequest("Пользователь не найден как студент или преподаватель"))
         } catch (e) {
             return next(e)
         }

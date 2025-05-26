@@ -18,7 +18,11 @@ const initialState: ISubjectsInitialState = {
 const subjectsSlice = createSlice({
     name: "subjects",
     initialState,
-    reducers: {},
+    reducers: {
+        resetSubjectsSlice: () => {
+            return initialState
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(getAllSubjects.pending, (state) => {
@@ -45,7 +49,7 @@ const subjectsSlice = createSlice({
 
                 const payload = action.payload
                 state.items.push({
-                    id: payload.id,
+                    id: Number(payload.id),
                     name: payload.name,
                     tab: "subjects"
                 })

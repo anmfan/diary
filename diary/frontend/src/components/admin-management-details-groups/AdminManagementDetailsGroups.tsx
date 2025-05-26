@@ -2,6 +2,7 @@ import { fioIsExist, TAdminManagementDetails } from "@/components/admin-manageme
 import { IGroups } from "@/redux/types.ts";
 
 const AdminManagementDetailsGroups = ({selectedItem}: TAdminManagementDetails<IGroups>) => {
+    console.log(selectedItem)
     return (
         <>
             <p><strong>Идентификатор:</strong> {selectedItem.id}</p>

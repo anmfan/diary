@@ -1,19 +1,18 @@
 import styles from './home-meeting-auth.module.css';
 import {useAppSelector} from "@/hooks/store.ts";
-import {userName} from "@/redux/selectors/user-selector.ts";
+import {memoUserFIO} from "@/redux/selectors/user-selector.ts";
 import Spinner from "../spinner/Spinner.tsx";
 
+const HomeMeetingAuth = () => {
+    const name = useAppSelector(memoUserFIO);
 
-const HomeMeetingNotAuth = () => {
-    const username = useAppSelector(userName);
-
-    if (!username) {
+    if (!name) {
         return <Spinner />;
     }
 
     return (
-        <h2 className={styles.greeting}>Здравствуйте, {username}</h2>
+        <h2 className={styles.greeting}>Здравствуйте, {name.lastName || name.username}</h2>
     );
 };
 
-export default HomeMeetingNotAuth;
+export default HomeMeetingAuth;

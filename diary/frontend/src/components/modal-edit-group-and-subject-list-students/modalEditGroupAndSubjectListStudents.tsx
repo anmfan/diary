@@ -1,14 +1,14 @@
 import styles from "@/components/modal-add-teacher/styles.module.css";
 import {useAppDispatch, useAppSelector} from "@/hooks/store.ts";
-import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
 import {selectStudentsByGroupId} from "@/redux/selectors/groups-selector.ts";
+import {removeGroup} from "@/redux/thunks/teachers-thunk.ts";
 
-const ModalEditGroupAndSubjectListStudents = ({selectedItemId}: {selectedItemId: string}) => {
+const ModalEditGroupAndSubjectListStudents = ({selectedItemId}: {selectedItemId: number}) => {
     const dispatch = useAppDispatch();
     const studentsOfSelectedGroup = useAppSelector(selectStudentsByGroupId(selectedItemId))
 
-    const unpinStudentsGroup = (user_id: string) => {
-        dispatch(unpinStudentFromGroup({user_id}));
+    const unpinStudentsGroup = (user_id: number) => {
+        dispatch(removeGroup({user_id}));
     }
 
     return (

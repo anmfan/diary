@@ -7,7 +7,7 @@ import {
     TCreateUser,
     TDelete,
     TDeleteItem,
-    TDeleteItemResponse
+    TDeleteItemResponse, TRemoveGroupResponse
 } from "../types.ts";
 
 const getAllTeachers = createAsyncThunk<ITeacher[], undefined, {extra: AxiosInstance}>
@@ -43,7 +43,7 @@ type TAddGroupTeacherResponse = {
     group: { name: string; course: string };
     students_count: string;
     user: {
-        id: string;
+        id: number;
         first_name: string;
         last_name: string;
         email: string;
@@ -67,4 +67,13 @@ const addGroup = createAsyncThunk<
     }
 });
 
-export { getAllTeachers, deleteTeacher, createTeacher, addGroup }
+const removeGroup = createAsyncThunk<
+    TRemoveGroupResponse,
+    { user_id: number; },
+    {extra: AxiosInstance}
+>('user/remove-group', async ({user_id}, {extra: api}) => {
+    const { data } = await api.delete<TRemoveGroupResponse>(`students/remove-group?user_id=${user_id}`)
+    return data;
+})
+
+export { getAllTeachers, deleteTeacher, createTeacher, addGroup, removeGroup }

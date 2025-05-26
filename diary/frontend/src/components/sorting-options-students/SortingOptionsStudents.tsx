@@ -2,7 +2,7 @@ import {groupWithStudents} from "@/redux/selectors/groups-selector.ts";
 import {useAppDispatch, useAppSelector} from "@/hooks/store.ts";
 import styles from './styles.module.css';
 import {studentsActions} from "@/redux/slices/students-slice.ts";
-import {ChangeEvent} from "react";
+import {ChangeEvent, useEffect} from "react";
 import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 import {selectedStudentsByGroup} from "@/redux/selectors/students-selector.ts";
@@ -17,6 +17,12 @@ const SortingOptionsStudents = () => {
         dispatch(studentsActions.sortingStudentByGroup(event.target.value));
         setSelected(null);
     }
+
+    useEffect(() => {
+        if (sortStudentsCategories.length === 0) {
+            dispatch(studentsActions.sortingStudentByGroup(SortingOptionsValues.All));
+        }
+    }, [sortStudentsCategories, dispatch]);
 
     return (
         <div className={styles.selectWrapper}>

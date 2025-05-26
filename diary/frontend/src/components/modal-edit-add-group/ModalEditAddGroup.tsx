@@ -20,7 +20,7 @@ const ModalEditAddGroup = ({item}: {item: TSelectedItem}) => {
         groupId: ''
     })
 
-    const userId = item?.id || ''
+    const userId = item?.id || 0
 
     const handleClick = async () => {
         if (!addGroupData.groupId) return;

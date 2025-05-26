@@ -9,5 +9,6 @@ router.get('/all', GroupsController.getAllGroups);
 router.post('/create', GroupsController.create);
 router.delete('/delete', GroupsController.deleteGroup)
 router.post('/edit', upload.single('excelImportFile'), GroupsController.edit)
+router.get('/getOne', GroupsController.getOne)
 
 module.exports = router;

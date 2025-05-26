@@ -1,9 +1,9 @@
-import {IUserInitialState, IUserReturned, TDeleteItemResponse} from "../types.ts";
+import {IUserInitialState, IUserReturned} from "../types.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {check, login, logout} from "../thunks/user-thunk.ts";
 import {TSelectedItem} from "@/components/admin-management/types.ts";
-import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
 import {updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
+import {removeGroup} from "@/redux/thunks/teachers-thunk.ts";
 
 export const UsersRoles = {
     student: "Студент",
@@ -53,6 +53,9 @@ const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
+        resetUserSlice: () => {
+            return initialState
+        },
         setSelectedItem: (state, action: PayloadAction<TSelectedItem>) => {
             state.selectedItem = action.payload;
         }
@@ -74,13 +77,6 @@ const userSlice = createSlice({
                 state.isAuthenticated = false;
                 state.isError = true;
             })
-            // .addCase(register.pending, (state) => {
-            //     state.loadingIsDone = false
-            // })
-            // .addCase(register.fulfilled, fulfilledUserQuery)
-            // .addCase(register.rejected, (state) => {
-            //     state.loadingIsDone = false
-            // })
             .addCase(logout.fulfilled, (state) => {
                 state.loadingIsDone = true
                 state.isAuthenticated = false
@@ -93,12 +89,12 @@ const userSlice = createSlice({
                 state.user.role = UsersRoles.unknown
                 localStorage.removeItem("token");
             })
-            .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
-                const { studentsGroup, deletedStudentId, students_count } = action.payload;
+            .addCase(removeGroup.fulfilled, (state, action) => {
+                const { deletedId, oldGroup, students_count } = action.payload;
                 const selectedItem = state.selectedItem;
 
-                if (selectedItem?.tab === 'groups' && selectedItem.id === studentsGroup) {
-                    state.selectedItem = updateForUnpinStudentFromGroup(selectedItem, students_count, deletedStudentId)
+                if (selectedItem?.tab === 'groups' && selectedItem.name === oldGroup) {
+                    state.selectedItem = updateForUnpinStudentFromGroup(selectedItem, students_count || 0, deletedId)
                 }
             })
     }

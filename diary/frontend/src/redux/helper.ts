@@ -1,4 +1,5 @@
 import {
+    IBase,
     IGroups, IGroupsInitialState,
     IStudent, IStudentsInitialState,
     ISubject,
@@ -12,13 +13,15 @@ import {SortingOptionsValues} from "@/components/sorting-options-students/const.
 import {SortingOptionsGroupsValues} from "@/components/sorting-options-groups/const.ts";
 import {SortingOptionsTeachersValues} from "@/components/sorting-options-teachers/const.ts";
 
-const updateFilteredList = <T extends {id: string}>(list: T[], deletedItemId: string): T[] => {
+const updateFilteredList = <T extends IBase>(list: T[], deletedItemId: number): T[] => {
     return list.filter(item => item.id !== deletedItemId)
 }
 
 const updateEditedUser = <T extends ITeacher | IStudent>(items: T[], editedData: TEditResponse) => {
     return items.map(item => {
         if (item.id === editedData.user.id) {
+            console.log('item.id', item.id)
+            console.log('editedData.user.id', editedData.user.id)
             return {
                 ...item,
                 first_name: editedData.user.first_name,
@@ -32,7 +35,7 @@ const updateEditedUser = <T extends ITeacher | IStudent>(items: T[], editedData:
 
 const updateEditedEntity = <T extends IGroups | ISubject>(items: T[], editedData: TEntityEditResponse<TGroupEdit | TSubjectEdit>) => {
     return items.map(item => {
-        if (item.id === editedData.updated.id) {
+        if (item.id === Number(editedData.updated.id)) {
             return {
                 ...item,
                 name: editedData.updated.name,
@@ -42,7 +45,7 @@ const updateEditedEntity = <T extends IGroups | ISubject>(items: T[], editedData
     });
 }
 
-const updateForUnpinStudentFromGroup = (item: IGroups, students_count: number, deletedStudentId: string) => {
+const updateForUnpinStudentFromGroup = (item: IGroups, students_count: number, deletedStudentId: number) => {
     return {
         ...item,
         students_count,
@@ -58,7 +61,7 @@ const updateGroup = (items: IGroups[], data: IUserData<IUserReturnedGroupData | 
             return {
                 ...group,
                 curator: {
-                    user_id: String(data.id),
+                    user_id: data.id,
                     user: {
                         first_name: data.firstName,
                         last_name: data.lastName,
@@ -122,12 +125,12 @@ const filterBySorterOptionsTeachers =
     }
 
 const updateStudentsCountInGroup = (items: IGroups[], data: TDeleteItemResponse) => {
-    return items = items.map((group) => {
+    return items.map((group) => {
         if (group.name === data.groupName) {
             return {
                 ...group,
                 students_count: data.groupStudentCount,
-                students: group.students.filter(student => student.user_id !== data.userId)
+                students: group.students.filter(student => student.user_id !== Number(data.userId))
             }
         }
         return group

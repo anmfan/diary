@@ -4,7 +4,6 @@ import {
     IGroupsInitialState,
     IUserReturned, IUserReturnedGroupData,
     TDelete,
-    TDeleteItemResponse,
     TEntityEditResponse,
     TGroupEdit
 } from "../types.ts";
@@ -13,19 +12,19 @@ import {
     deleteGroup,
     editGroup,
     getAllGroups,
-    TCreateGroupResponse, unpinStudentFromGroup,
+    TCreateGroupResponse,
 } from "../thunks/groups-thunk.ts";
 import {
     filterBySorterOptionsGroups,
     updateEditedEntity,
     updateFilteredList,
-    updateForUnpinStudentFromGroup, updateGroup,
+    updateGroup,
     updateStudentsCountInGroup
 } from "@/redux/helper.ts";
 import {createStudent, deleteStudent} from "@/redux/thunks/students-thunk.ts";
 import {SortingOptionsGroupsValues} from "@/components/sorting-options-groups/const.ts";
 import {edit, register} from "@/redux/thunks/user-thunk.ts";
-import {addGroup, createTeacher} from "@/redux/thunks/teachers-thunk.ts";
+import {addGroup, createTeacher, removeGroup} from "@/redux/thunks/teachers-thunk.ts";
 
 const initialState: IGroupsInitialState = {
     items: [],
@@ -39,6 +38,9 @@ const groupsSlice = createSlice({
     name: "groups",
     initialState,
     reducers: {
+        resetGroupSlice: () => {
+            return initialState
+        },
         sortingGroupsByCurator: (state, action: PayloadAction<string>) => {
             filterBySorterOptionsGroups(state, action.payload)
         }
@@ -51,6 +53,7 @@ const groupsSlice = createSlice({
             .addCase(getAllGroups.fulfilled, (state, action: PayloadAction<IGroups[]>) => {
                 state.loadingIsDone = true
                 state.items = action.payload
+                filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
             })
             .addCase(getAllGroups.rejected, (state) => {
                 state.loadingIsDone = true
@@ -76,21 +79,7 @@ const groupsSlice = createSlice({
             })
             .addCase(editGroup.fulfilled, (state, action: PayloadAction<TEntityEditResponse<TGroupEdit>>) => {
                 state.items = updateEditedEntity<IGroups>(state.items, action.payload)
-            })
-            .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
-                const { studentsGroup, deletedStudentId, students_count } = action.payload;
-
-                state.items = state.items.map(group => {
-                    if (group.id === studentsGroup) {
-                        return updateForUnpinStudentFromGroup(group, students_count, deletedStudentId)
-                    }
-                    return group;
-                });
                 filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
-            })
-            .addCase(unpinStudentFromGroup.rejected, (state) => {
-                state.isError = true
-                state.loadingIsDone = true
             })
             .addCase(deleteStudent.fulfilled, (state, action) => {
                 if (action.payload.data.groupName) {
@@ -109,7 +98,7 @@ const groupsSlice = createSlice({
                                 students: [
                                     ...group.students,
                                     {
-                                        user_id: String(data.id),
+                                        user_id: data.id,
                                         user: {
                                             first_name: data.firstName,
                                             last_name: data.lastName,
@@ -197,7 +186,7 @@ const groupsSlice = createSlice({
                                 ...group,
                                 students_count: Number(group.students_count),
                                 curator: {
-                                    user_id: String(data.user.id),
+                                    user_id: data.user.id,
                                     user: {
                                         first_name: data.user.first_name,
                                         last_name: data.user.last_name,
@@ -216,6 +205,40 @@ const groupsSlice = createSlice({
                 if (data.group) {
                     state.items = updateGroup(state.items, data)
                 }
+            })
+            .addCase(removeGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                if (data.type === 'teacher') {
+                    state.items = state.items.map(group => {
+                        if (group.name === data.oldGroup) {
+                            return {
+                                ...group,
+                                curator: undefined,
+                            }
+                        }
+                        return group;
+                    })
+                    filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
+                }
+
+                if (data.type === 'student') {
+                    state.items = state.items.map(group => {
+                        if (group.name === data.oldGroup) {
+                            return {
+                                ...group,
+                                students_count: data.students_count || 0,
+                                students: group.students.filter(student => student.user_id !== data.deletedId)
+                            }
+                        }
+                        return group;
+                    })
+                    filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
+                }
+            })
+            .addCase(removeGroup.rejected, (state) => {
+                state.isError = true
+                state.loadingIsDone = true
             })
     }
 })

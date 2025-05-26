@@ -2,7 +2,6 @@ import {RootState} from "../types.ts";
 import {createSelector} from "@reduxjs/toolkit";
 
 export const userFIO = (state: Pick<RootState, 'user'>) => state.user.user;
-export const userName = (state: Pick<RootState, 'user'>) => state.user.user.username;
 export const userRole = (state: Pick<RootState, 'user'>) => state.user.user.role;
 export const selectSelectedItem = (state: Pick<RootState, 'user'>) => state.user.selectedItem;
 

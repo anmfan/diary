@@ -6,7 +6,7 @@ import {
     IUserReturnedGroupData,
     TDelete,
 } from "../types.ts";
-import {addGroup, createTeacher, deleteTeacher, getAllTeachers} from "../thunks/teachers-thunk.ts";
+import {addGroup, createTeacher, deleteTeacher, getAllTeachers, removeGroup} from "../thunks/teachers-thunk.ts";
 import {
     filterBySorterOptionsTeachers,
     updateEditedUser,
@@ -27,6 +27,9 @@ const teachersSlice = createSlice({
     name: "teachers",
     initialState,
     reducers: {
+        resetTeacherSlice: () => {
+            return initialState
+        },
         sortingTeachersByGroups: (state, action: PayloadAction<string>) => {
             filterBySorterOptionsTeachers(state, action.payload)
         }
@@ -58,7 +61,7 @@ const teachersSlice = createSlice({
                 const user = action.payload.userData.user
 
                 state.items.push({
-                    id: String(user.id),
+                    id: user.id,
                     username: user.username,
                     email: user.email,
                     first_name: user.firstName,
@@ -82,9 +85,7 @@ const teachersSlice = createSlice({
 
                 if (data.type === 'teacher') {
                     state.items = state.items.map(teacher => {
-                        if (teacher.id === String(data.user.id)) {
-                            console.log('teacher.curated_groups', teacher.curated_groups)
-                            console.log('data.group', data.group)
+                        if (String(teacher.id) === String(data.user.id)) {
                             return {
                                 ...teacher,
                                 curated_groups: data.group ? [data.group] : []
@@ -93,6 +94,23 @@ const teachersSlice = createSlice({
                         return teacher
                     })
 
+                    filterBySorterOptionsTeachers(state, state.selectedTeachersByGroup)
+                }
+            })
+            .addCase(removeGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                if (data.type === 'teacher') {
+                    state.items = state.items.map(teacher => {
+                        if (teacher.id === data.deletedId) {
+                            return {
+                                ...teacher,
+                                curated_groups: teacher.curated_groups &&
+                                    teacher.curated_groups.filter(teacherGroup => teacherGroup.name !== data.oldGroup)
+                            }
+                        }
+                        return teacher;
+                    })
                     filterBySorterOptionsTeachers(state, state.selectedTeachersByGroup)
                 }
             })

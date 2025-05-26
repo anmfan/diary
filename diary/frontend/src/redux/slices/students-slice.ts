@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IStudentsInitialState, IStudent, TDelete, IUserReturned, TDeleteItemResponse} from "../types.ts";
+import {IStudentsInitialState, IStudent, TDelete, IUserReturned} from "../types.ts";
 import {createStudent, deleteStudent, getAllStudents} from "../thunks/students-thunk.ts";
 import {
     filterBySorterOptionsStudents,
@@ -7,9 +7,9 @@ import {
     updateFilteredList
 } from "@/redux/helper.ts";
 import {edit} from "@/redux/thunks/user-thunk.ts";
-import {unpinStudentFromGroup} from "@/redux/thunks/groups-thunk.ts";
 import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
-import {addGroup} from "@/redux/thunks/teachers-thunk.ts";
+import {addGroup, removeGroup} from "@/redux/thunks/teachers-thunk.ts";
+import {editGroup} from "@/redux/thunks/groups-thunk.ts";
 
 const initialState: IStudentsInitialState = {
     items: [],
@@ -23,6 +23,9 @@ const studentsSlice = createSlice({
     name: "students",
     initialState,
     reducers: {
+        resetStudentsSlice: () => {
+            return initialState
+        },
         sortingStudentByGroup: (state, action: PayloadAction<string>) => {
             filterBySorterOptionsStudents(state, action.payload)
         }
@@ -54,7 +57,7 @@ const studentsSlice = createSlice({
                 const user = action.payload.userData.user
 
                 state.items.push({
-                    id: String(user.id),
+                    id: user.id,
                     username: user.username,
                     email: user.email,
                     first_name: user.firstName,
@@ -70,21 +73,12 @@ const studentsSlice = createSlice({
                 state.items = updateEditedUser<IStudent>(state.items, action.payload)
                 filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
-            .addCase(unpinStudentFromGroup.fulfilled, (state, action: PayloadAction<TDeleteItemResponse>) => {
-                const { deletedStudentId  } = action.payload;
-
-                const index = state.items.findIndex(student => student.id === deletedStudentId);
-                if (index > -1) {
-                    state.items[index].group = null;
-                }
-                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
-            })
             .addCase(addGroup.fulfilled, (state, action) => {
                 const data = action.payload;
 
                 if (data.type === 'student') {
                     state.items = state.items.map(student => {
-                        if (student.id === data.user.id) {
+                        if (String(student.id) === String(data.user.id)) {
                             return {
                                 ...student,
                                 group: data.group.name
@@ -95,6 +89,36 @@ const studentsSlice = createSlice({
 
                     filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
                 }
+            })
+            .addCase(removeGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                if (data.type === 'student') {
+                    state.items = state.items.map(student => {
+                        if (String(student.id) === String(data.deletedId)) {
+                            return {
+                                ...student,
+                                group: null,
+                            }
+                        }
+                        return student;
+                    })
+                    filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
+                }
+            })
+            .addCase(editGroup.fulfilled, (state, action) => {
+                const data = action.payload;
+
+                state.items = state.items.map(student => {
+                    if (student.group === data.oldGroupName) {
+                        return {
+                            ...student,
+                            group: data.updated.name,
+                        }
+                    }
+                    return student
+                })
+                filterBySorterOptionsStudents(state, state.selectedStudentsByGroup)
             })
     }
 })

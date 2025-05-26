@@ -134,13 +134,71 @@ class GroupsService {
                 return res.status(404).json({ message: 'Группа не найдена' });
             }
 
+            const oldGroupName = group.name;
+
             group.name = newGroupName;
             await group.save();
 
             const { created_at, updated_at, ...updated } = group.toJSON();
-            return res.json({ message: 'Название группы обновлено успешно', updated });
+            return res.json({
+                message: 'Название группы обновлено успешно',
+                updated,
+                oldGroupName,
+            });
         } catch (e) {
             return next(e);
+        }
+    }
+
+    async getOne(req, res, next) {
+        try {
+            const { email } = req.query;
+
+            if (!email) {
+                return next(ApiError.badRequest("Email не передан"))
+            }
+
+            const user = await Users.findOne({ where: { email } });
+            if (!user) {
+                return next(ApiError.badRequest("Пользователь не найден"))
+            }
+
+            const teacher = await Teachers.findOne({where: {user_id: user.id}})
+            if (!teacher) {
+                return next(ApiError.badRequest("Преподаватель не найден"))
+            }
+
+            const group = await Groups.findOne({
+                where: { curator_id: teacher.id },
+                attributes: ['id', 'name', 'students_count', 'course'],
+                include: [
+                    {
+                        model: Teachers,
+                        as: 'curator',
+                        attributes: ['user_id'],
+                        include: [{
+                            model: Users,
+                            attributes: ['first_name', 'last_name', 'email']
+                        }]
+                    },
+                    {
+                        model: Students,
+                        attributes: ['user_id'],
+                        include: [{
+                            model: Users,
+                            attributes: ['first_name', 'last_name', 'email']
+                        }]
+                    }
+                ]
+            });
+
+            if (!group) {
+                return next(ApiError.badRequest("Группа не найдена"))
+            }
+
+            return res.json(group);
+        } catch (err) {
+            next(err)
         }
     }
 }

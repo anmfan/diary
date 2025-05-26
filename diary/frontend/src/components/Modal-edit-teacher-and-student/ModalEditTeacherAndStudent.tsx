@@ -22,7 +22,7 @@ const ModalEditTeacherAndStudent = () => {
             : ''
 
     const userEmail = user ? selectedItem.email : '';
-    const userId = user ? selectedItem.id : '';
+    const userId = user ? selectedItem.id : 0;
 
     const { register, handleSubmit } = useForm<TEdit>({
         defaultValues: {
@@ -36,7 +36,7 @@ const ModalEditTeacherAndStudent = () => {
         try {
             await dispatch(edit({...data, id: userId})).unwrap();
         } catch (error) {
-            toast.error(typeof error === 'string' && error || 'Произошла ошибка');
+            toast.error(typeof error === 'string' && error  ||'Произошла ошибка');
         }
         setSelected(null)
         closeModal();

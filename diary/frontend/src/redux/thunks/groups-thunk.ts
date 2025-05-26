@@ -41,10 +41,5 @@ const editGroup = createAsyncThunk<TEntityEditResponse<TGroupEdit>, TGroupEdit, 
     return data
 })
 
-const unpinStudentFromGroup = createAsyncThunk<TDeleteItemResponse, {user_id: string}, {extra: AxiosInstance}>
-('group/unpinStudentFromGroup', async (body, {extra: api}) => {
-    const {data} = await api.delete<TDeleteItemResponse>('students/remove-group', { data: body });
-    return data;
-});
 
-export { getAllGroups, deleteGroup, createGroup, editGroup, unpinStudentFromGroup }
+export { getAllGroups, deleteGroup, createGroup, editGroup }

@@ -24,7 +24,7 @@ export interface IGroups extends IBase {
     course: string | null;
     students_count: number;
     curator?: {
-        user_id: string;
+        user_id: number;
         user: {
             email: string;
             first_name: string | null;
@@ -32,7 +32,7 @@ export interface IGroups extends IBase {
         }
     },
     students: {
-        user_id: string;
+        user_id: number;
         user: {
             first_name: string;
             last_name: string;
@@ -69,7 +69,7 @@ export type ITeacher = IBase & {
 }
 
 export interface IBase {
-    id: string;
+    id: number;
 }
 export type IStudent = IBase & {
     username: string;
@@ -152,11 +152,11 @@ type TDeleteDataResponse = {
 }
 
 export type TDelete<T extends string> = TDeleteDataResponse & {
-    [K in T]: string;
+    [K in T]: number;
 };
 
 export type TDeleteItem = {
-    id: string
+    id: number
 }
 
 export type TCreateUser<T extends 2 | 3> = {
@@ -169,7 +169,7 @@ export type TCreateUser<T extends 2 | 3> = {
 }
 
 export type TEdit = {
-    id: string;
+    id: number;
     fullName: string;
     email: string;
     group: string;
@@ -178,7 +178,7 @@ export type TEdit = {
 export type TEditResponse = {
     message: string;
     user: {
-        id: string;
+        id: number;
         email: string;
         first_name: string;
         last_name: string;
@@ -214,6 +214,7 @@ export type TSubjectEdit = {
 
 export type TEntityEditResponse<T extends TGroupEdit | TSubjectEdit> = {
     message: string;
+    oldGroupName?: string;
     updated: T extends TGroupEdit ? TGroupEditUpdated : TSubjectEditUpdated
 }
 
@@ -221,4 +222,16 @@ export type TAddGroupForm = {
     groupId: string;
 }
 
-export type TAddGroup = TAddGroupForm & { userId: string }
+export type TAddGroup = TAddGroupForm & { userId: number }
+
+export type TRemoveGroupResponse = {
+    type: 'student' | 'teacher';
+    message: string;
+    students_count?: number;
+    deletedId: number;
+    oldGroup: string;
+}
+
+export type initialStateTeacherManagement = {
+    items: IGroups[];
+}

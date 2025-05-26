@@ -1,6 +1,10 @@
 import {IUser, IUserReturned, IUserReturnedGroupData, TEdit, TEditResponse} from "../types.ts";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios, {AxiosInstance} from "axios";
+import {groupsActions} from "@/redux/slices/groups-slice.ts";
+import {teachersActions} from "@/redux/slices/teachers-slice.ts";
+import {studentsActions} from "@/redux/slices/students-slice.ts";
+import {userActions} from "@/redux/slices/user-slice.ts";
 
 const login = createAsyncThunk<
     IUserReturned<string | null>,
@@ -41,15 +45,30 @@ const register = createAsyncThunk<
 });
 
 const logout = createAsyncThunk<undefined, undefined, {extra: AxiosInstance}>
-('auth/logout', async (_, {extra: api}) => {
+('auth/logout', async (_, {extra: api, dispatch}) => {
+    dispatch(groupsActions.resetGroupSlice())
+    dispatch(teachersActions.resetTeacherSlice())
+    dispatch(studentsActions.resetStudentsSlice())
+    dispatch(userActions.resetUserSlice())
+
     const { data } = await api.post('user/logout');
     return data
 });
 
-const edit = createAsyncThunk<TEditResponse, TEdit, {extra: AxiosInstance}>
-('user/edit', async (body, {extra: api}) => {
-    const { data } = await api.post<TEditResponse>('user/edit', body);
-    return data
+const edit = createAsyncThunk<
+    TEditResponse,
+    TEdit,
+    {extra: AxiosInstance, rejectValue: string}>
+('user/edit', async (body, {extra: api, rejectWithValue}) => {
+    try {
+        const { data } = await api.post<TEditResponse>('user/edit', body);
+        return data
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            return rejectWithValue(err.response?.data.message || "Ошибка при редактировании")
+        }
+        return rejectWithValue("Неизвестная ошибка при редактировании")
+    }
 });
 
 export { login, register, check, logout, edit };
