@@ -150,6 +150,7 @@ const groupsSlice = createSlice({
                     }
                     return group
                 })
+                filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
             })
             .addCase(createTeacher.fulfilled, (state, action) => {
                 const data = action.payload.userData.user;
