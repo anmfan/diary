@@ -8,7 +8,7 @@ type TSelectorForLists<U> = {
     list: U;
 }
 
-export const useAppSelectorsForLists = <T extends keyof Omit<RootState, 'user'>, U>(storeList: T): TSelectorForLists<U> => {
+export const useAppSelectorsForLists = <T extends keyof Omit<RootState, 'user' | 'teacherManagementApi'>, U>(storeList: T): TSelectorForLists<U> => {
     const selectedItem = useAppSelector(selectSelectedItem)
     const list = useAppSelector(state => state[storeList].items as U)
 

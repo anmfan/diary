@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosError, AxiosRequestConfig} from 'axios';
-import {AXIOS_TIMEOUT} from "../const.ts";
+import {AXIOS_TIMEOUT, AXIOS_BASE_URL} from "../const.ts";
 import {store} from "../redux/store/store.ts";
 import {check, logout} from "../redux/thunks/user-thunk.ts";
 
@@ -9,7 +9,7 @@ interface RetryAxiosRequestConfig extends AxiosRequestConfig {
 
 export const createApi = (): AxiosInstance => {
     const server = axios.create({
-        baseURL: "http://45.130.9.13/api/",
+        baseURL: AXIOS_BASE_URL,
         timeout: AXIOS_TIMEOUT,
         withCredentials: true,
     })

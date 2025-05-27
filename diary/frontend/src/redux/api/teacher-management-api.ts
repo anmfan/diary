@@ -1,12 +1,12 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import { AXIOS_BASEURL, AXIOS_TIMEOUT } from "@/const.ts";
+import { AXIOS_BASE_URL, AXIOS_TIMEOUT } from "@/const.ts";
 import {IGroups, RootState} from "@/redux/types.ts";
 import {TDeleteStudent, TDeleteStudentId, TGetGroupDataByCuratorEmail} from "@/redux/api/types.ts";
 
 export const teacherManagementApi = createApi({
     reducerPath: 'teacherManagementApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: AXIOS_BASEURL,
+        baseUrl: AXIOS_BASE_URL,
         timeout: AXIOS_TIMEOUT
     }),
     endpoints: (builder) => ({
