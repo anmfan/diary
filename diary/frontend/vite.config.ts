@@ -21,8 +21,8 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vue: ['vue'],
-                    'vendor': ['axios', 'pinia', 'vue-router'],
+                    react: ['react', 'react-dom'],
+                    vendor: ['axios', 'react-router-dom'],
                 }
             }
         }
