@@ -79,6 +79,22 @@ const groupsSlice = createSlice({
             })
             .addCase(editGroup.fulfilled, (state, action: PayloadAction<TEntityEditResponse<TGroupEdit>>) => {
                 state.items = updateEditedEntity<IGroups>(state.items, action.payload)
+
+                if (action.payload.successfullyAdded.length > 0) {
+                    state.items = state.items.map(group => {
+                        if (group.id === action.payload.updated.id) {
+                            return {
+                                ...group,
+                                students_count: action.payload.updated.students_count,
+                                students: [
+                                    ...group.students,
+                                    ...action.payload.successfullyAdded
+                                ]
+                            }
+                        }
+                        return group
+                    })
+                }
                 filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
             })
             .addCase(deleteStudent.fulfilled, (state, action) => {
@@ -110,6 +126,7 @@ const groupsSlice = createSlice({
                         }
                         return group
                     })
+                    filterBySorterOptionsGroups(state, state.selectedGroupByCurator)
                 }
             })
             .addCase(edit.fulfilled, (state, action) => {

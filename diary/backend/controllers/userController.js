@@ -1,10 +1,10 @@
 const ApiError = require('../error/ApiError');
-const {Users, Roles} = require("../models/models");
-const TokenService = require("../service/tokenService");
+const {Users, Roles, Groups} = require("../models/models");
 const UserService = require("../service/userService");
 const {validationResult } = require("express-validator");
 const sequelize = require('../db');
-const tokenService = require("../service/tokenService");
+const {generateRandomPassword, generateUsername} = require("../helper");
+const BulkRegistration = require("../service/bulkRegistration");
 
 const ACCESS_TOKEN = "AccessToken";
 
@@ -32,6 +32,15 @@ class UserController {
     async register(req, res, next) {
         const transaction = await sequelize.transaction();
         try {
+            if (req.file) {
+                const results = await BulkRegistration.handleBulkRegistration(req.file, transaction);
+                await transaction.commit();
+                return res.json({
+                    message: 'Массовая регистрация завершена',
+                    results
+                });
+            }
+
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 await transaction.rollback();
@@ -39,11 +48,10 @@ class UserController {
             }
 
             const {
-                username,
                 email,
-                password,
                 role_id,
                 group_id,
+                group_name,
                 fullName,
             } = req.body;
 
@@ -53,12 +61,23 @@ class UserController {
                 return next(ApiError.badRequest(`Пользователь с адресом ${email} уже существует`));
             }
 
+            let actualGroupId = group_id;
+
+            if (!group_id && group_name && Number(role_id) === 3) {
+                let group = await Groups.findOne({ where: { name: group_name }, transaction });
+
+                actualGroupId = group.id;
+            }
+
+            const password = generateRandomPassword();
+            const username = generateUsername();
+
             const userData = await UserService.registration(
                 email,
                 password,
                 username,
-                role_id,
-                group_id,
+                Number(role_id),
+                actualGroupId,
                 fullName,
                 transaction
             );
@@ -71,42 +90,7 @@ class UserController {
             }
             );
         } catch (e) {
-            return next(e);
-        }
-    }
-    async check(req, res, next) {
-        try {
-            const token = req.cookies.AccessToken;
-            if (!token) {
-                return next(ApiError.unauthorized("Токен отсутствует"));
-            }
-
-            const userData = TokenService.validateAccessToken(token);
-            if (!userData) {
-                res.clearCookie(ACCESS_TOKEN);
-                return next(ApiError.forbidden("Токен недействителен"));
-            }
-
-            const user = await Users.findByPk(userData.id, {
-                include: [{ model: Roles, attributes: ['name'] }]
-            });
-
-            if (!user) {
-                res.clearCookie(ACCESS_TOKEN);
-                return next(ApiError.unauthorized("Пользователь не найден"));
-            }
-
-            return res.json({
-                message: "Токен валиден",
-                user: {
-                    email: user.email,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    role: user.role.name,
-                }
-            });
-        } catch (e) {
+            console.log(e)
             return next(e);
         }
     }

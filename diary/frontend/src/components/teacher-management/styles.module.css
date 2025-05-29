@@ -38,8 +38,6 @@
     border-radius: 8px;
     padding: 15px;
     background: #fff;
-    max-height: 400px;
-    overflow-y: auto;
 }
 
 .listTitle {
@@ -48,12 +46,24 @@
     justify-content: space-between;
     margin-bottom: 15px;
     color: #444;
+    padding-inline: 15px;
+
+    > h2 > span {
+        font-size: 18px;
+    }
 }
 
 .list {
-    list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    list-style: none;
+
+    &:has(:nth-child(n+5))::-webkit-scrollbar {
+        width: 6px;
+        background: #f0f0f0;
+    }
 }
 
 .listItem {
@@ -131,6 +141,25 @@
 .removeBtn:hover {
     background-color: #f8d7da;
     color: #d9534f;
+}
+
+.rightTitleBlock {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.biFiletypeXlsx {
+    padding: 5px;
+    border-radius: 30%;
+    transition: background 0.2s, fill 0.2s;
+    cursor: pointer;
+
+    &:hover {
+        background: #f5f5f5;
+    }
 }
 
 .addBtn:hover {

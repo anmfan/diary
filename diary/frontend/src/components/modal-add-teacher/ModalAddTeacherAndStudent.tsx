@@ -2,9 +2,7 @@ import styles from './styles.module.css';
 import otherStyles from "@/components/modal-add-group/styles.module.css"
 import {useAppDispatch, useAppSelector} from "@/hooks/store.ts";
 import { useForm } from "react-hook-form";
-import { formValidation } from "@/utils/formValidation.ts";
 import useModal from "@/hooks/useModal.tsx";
-import { generateLogin } from "@/components/modal-add-teacher/helpers.ts";
 import { TModalAddTeacherStudentCommonType } from "@/components/modal-add-teacher-student-choose/const.ts";
 import {IGroups, IUserReturnedGroupData, TCreateUser} from "@/redux/types.ts";
 import useAppSelectorsForLists from "@/hooks/useAppSelectorsForLists.ts";
@@ -27,25 +25,19 @@ const ModalAddTeacherAndStudent =
 
     const mapList = roleId === 2 ? groupsListWithoutCurator : list;
 
-    const { register, handleSubmit, setValue } = useForm<TCreateUser<T>>({
+    const { register, handleSubmit } = useForm<TCreateUser<T>>({
         defaultValues: {
-            username: '',
             fullName: '',
             email: '',
-            password: '',
             role_id: roleId,
             group_id: ''
         }
     });
 
-    const generatePassword = () => {
-        const generated = Math.random().toString(15).slice(-13);
-        setValue('password', generated);
-    }
-
     const handleSubmitForm = async (data: TCreateUser<T>) => {
-        const isValid = formValidation(data);
-        if (!isValid) return;
+        if (data.email.length < 3) {
+            return toast.error('Введите email');
+        }
 
         try {
             await dispatch(thunk(data)).unwrap();
@@ -58,26 +50,6 @@ const ModalAddTeacherAndStudent =
     return (
         <form className={styles.form} onSubmit={handleSubmit(handleSubmitForm)}>
             <h3 className={styles.title}>Добавить {roleId === 2 ? "преподавателя" : "студента"}</h3>
-
-            <label className={styles.label}>
-                Логин
-                <div className={styles.passwordRow}>
-                    <input
-                        {...register('username')}
-                        type="text"
-                        className={styles.input}
-                        readOnly
-                        required
-                    />
-                    <button
-                        type="button"
-                        className={styles.generateBtn}
-                        onClick={() => generateLogin(setValue)}
-                    >
-                        Генерировать
-                    </button>
-                </div>
-            </label>
 
             <label className={styles.label}>
                 ФИО
@@ -109,26 +81,6 @@ const ModalAddTeacherAndStudent =
                         </option>
                     ))}
                 </select>
-            </label>
-
-            <label className={styles.label}>
-                Пароль
-                <div className={styles.passwordRow}>
-                    <input
-                        {...register('password')}
-                        type="text"
-                        className={styles.input}
-                        readOnly
-                        required
-                    />
-                    <button
-                        type="button"
-                        className={styles.generateBtn}
-                        onClick={generatePassword}
-                    >
-                        Генерировать
-                    </button>
-                </div>
             </label>
 
             <button type="submit" className={styles.submitBtn}>

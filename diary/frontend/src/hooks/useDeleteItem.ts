@@ -37,6 +37,10 @@ const useDeleteItem = () => {
             return toast.error(MessagesForFailDeleteItem.failForGroup)
         }
 
+        if (selectedItem.tab === "students" && selectedItem.group) {
+            return toast.error(MessagesForFailDeleteItem.failForStudent)
+        }
+
         const thunk = deleteActions[selectedItem.tab];
         dispatch(thunk({ id: selectedItem.id }));
         setSelected(null);

@@ -1,5 +1,6 @@
 const {Groups, Teachers, Users, Students} = require("../models/models");
 const ApiError = require("../error/ApiError");
+const XLSX = require('xlsx');
 
 class GroupsService {
     async getAllGroups(req, res, next) {
@@ -129,21 +130,81 @@ class GroupsService {
             const file = req.file;
 
             const group = await Groups.findByPk(groupId);
-
             if (!group) {
-                return res.status(404).json({ message: 'Группа не найдена' });
+                return next(ApiError.badRequest("Группа не найдена"))
             }
 
             const oldGroupName = group.name;
+            if (newGroupName) {
+                group.name = newGroupName;
+                await group.save();
+            }
 
-            group.name = newGroupName;
+            const successfullyAdded = [];
+            const skipped = [];
+
+            if (file) {
+                const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const studentsFromExcel = XLSX.utils.sheet_to_json(sheet);
+
+                for (const studentData of studentsFromExcel) {
+                    const { email } = studentData;
+
+                    if (!email) {
+                        skipped.push({ reason: 'Нет email', data: studentData });
+                        continue;
+                    }
+
+                    const user = await Users.findOne({ where: { email } });
+                    if (!user) {
+                        skipped.push({ reason: 'Пользователь не найден', email });
+                        continue;
+                    }
+
+                    if (user.role_id !== 3) {
+                        skipped.push({ reason: 'Пользователь не является студентом', email });
+                        continue;
+                    }
+
+                    const student = await Students.findOne({ where: { user_id: user.id } });
+                    if (!student) {
+                        skipped.push({ reason: 'Студентская запись не найдена', email });
+                        continue;
+                    }
+
+                    if (student.group_id) {
+                        skipped.push({ reason: 'Студент уже состоит в группе', email });
+                        continue;
+                    }
+
+                    student.group_id = groupId;
+                    await student.save();
+
+                    successfullyAdded.push({
+                        user_id: user.id,
+                        user: {
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email
+                        }
+                    });
+                }
+            }
+
+            const addedCount = successfullyAdded.length;
+            group.students_count = group.students_count + addedCount;
             await group.save();
 
             const { created_at, updated_at, ...updated } = group.toJSON();
+
             return res.json({
-                message: 'Название группы обновлено успешно',
+                message: 'Группа обновлена',
                 updated,
                 oldGroupName,
+                successfullyAdded,
+                skipped
             });
         } catch (e) {
             return next(e);

@@ -4,9 +4,14 @@ const UserController = require('../controllers/userController');
 const {validateLogin} = require("../middleware/userMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
 const {body} = require("express-validator");
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 router.post('/login', ...validateLogin, UserController.login);
-router.post('/register', body('email').isEmail(), body('password').isLength({min: 6, max: 32}),
+router.post('/register',
+    upload.single('excelImportFile'),
+    body('email').isEmail(),
     UserController.register);
 router.post('/logout', UserController.logout);
 

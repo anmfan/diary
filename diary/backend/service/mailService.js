@@ -4,7 +4,9 @@ const nodemailer = require('nodemailer');
 class MailService {
     constructor() {
         this.transporter = nodemailer.createTransport({
+            pool: true,
             host: 'smtp.mail.ru',
+            maxConnections: 5,
             port: 587,
             secure: false,
             auth: {

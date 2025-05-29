@@ -17,7 +17,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    user-select: none;
 }
 
 .modalListContainer {
@@ -120,4 +119,20 @@
     &:hover {
         opacity: 0.8;
     }
+}
+
+.customUpload {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.customInput {
+    display: none;
+}
+
+.aboveTitle {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
 }

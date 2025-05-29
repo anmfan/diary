@@ -20,8 +20,6 @@ const updateFilteredList = <T extends IBase>(list: T[], deletedItemId: number): 
 const updateEditedUser = <T extends ITeacher | IStudent>(items: T[], editedData: TEditResponse) => {
     return items.map(item => {
         if (item.id === editedData.user.id) {
-            console.log('item.id', item.id)
-            console.log('editedData.user.id', editedData.user.id)
             return {
                 ...item,
                 first_name: editedData.user.first_name,

@@ -108,9 +108,10 @@ const studentsSlice = createSlice({
             })
             .addCase(editGroup.fulfilled, (state, action) => {
                 const data = action.payload;
+                const addedUserIds = data.successfullyAdded.map(s => s.user_id);
 
                 state.items = state.items.map(student => {
-                    if (student.group === data.oldGroupName) {
+                    if (student.group === data.oldGroupName || addedUserIds.includes(student.id)) {
                         return {
                             ...student,
                             group: data.updated.name,

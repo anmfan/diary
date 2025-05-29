@@ -19,6 +19,15 @@ export interface IUserInitialState {
     selectedItem: TSelectedItem;
 }
 
+export type TGroupStudents = {
+    user_id: number;
+    user: {
+        first_name: string;
+        last_name: string;
+        email: string;
+    }
+}
+
 export interface IGroups extends IBase {
     name: string;
     course: string | null;
@@ -31,14 +40,7 @@ export interface IGroups extends IBase {
             last_name: string | null;
         }
     },
-    students: {
-        user_id: number;
-        user: {
-            first_name: string;
-            last_name: string;
-            email: string;
-        }
-    }[]
+    students: TGroupStudents[]
     tab: "groups"
 }
 
@@ -160,10 +162,8 @@ export type TDeleteItem = {
 }
 
 export type TCreateUser<T extends 2 | 3> = {
-    username: string;
     email: string;
     fullName: string;
-    password: string;
     role_id: T;
     group_id: string;
 }
@@ -184,7 +184,7 @@ export type TEditResponse = {
         last_name: string;
         group: string | null;
         teacher?: string;
-    }
+    },
 }
 
 export type TGroupEdit = {
@@ -194,9 +194,9 @@ export type TGroupEdit = {
 }
 
 type TGroupEditUpdated = {
-    id: string;
+    id: number;
     name: string;
-    students_count: string;
+    students_count: number;
     course: 0 | 1 | 2 | 3 | 4;
     curator_id: string | null;
 }
@@ -215,6 +215,8 @@ export type TSubjectEdit = {
 export type TEntityEditResponse<T extends TGroupEdit | TSubjectEdit> = {
     message: string;
     oldGroupName?: string;
+    successfullyAdded: TGroupStudents[];
+    skipped: { reason: string; email: string; }
     updated: T extends TGroupEdit ? TGroupEditUpdated : TSubjectEditUpdated
 }
 
