@@ -116,8 +116,14 @@ const ModalEditGroupAndSubject = ({type, entityName, entityId, thunk}: TModalEdi
                         <label className={styles.label}>
                             Выбрать преподавателя предмета
                             <select className={otherStyles.selector} {...register("subjectTeacherId")} required>
-                                {teachersOfSubject.map(({id, user: {first_name, last_name}}) => (
-                                    <option key={id} value={id}>{first_name && first_name + " " + last_name}</option>
+                                {teachersOfSubject.map((teacher) => (
+                                    <option
+                                        key={teacher.id}
+                                        value={teacher.id}
+                                    >
+                                        {teacher.user.first_name &&
+                                            teacher.user.first_name + " " + teacher.user.last_name}
+                                    </option>
                                 ))}
                             </select>
                         </label>

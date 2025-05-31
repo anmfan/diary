@@ -1,4 +1,4 @@
-const { Subjects, Users, Groups, Teachers, SubjectTeachers, GroupSubjectAssignments} = require("../models/models");
+const { Subjects, Users, Groups, GroupSubjects, Teachers, SubjectTeachers, GroupSubjectAssignments} = require("../models/models");
 const { badRequest } = require("../error/ApiError");
 
 class SubjectsService {
@@ -98,12 +98,12 @@ class SubjectsService {
             if (teacher_id) {
                 const user = await Users.findByPk(teacher_id);
                 if (!user) {
-                    return next(ApiError.badRequest("Пользователь не найден"))
+                    return next(badRequest("Пользователь не найден"))
                 }
 
                 const teacher = await Teachers.findOne({where: {user_id: user.id}});
                 if (!teacher) {
-                    return next(ApiError.badRequest("Преподаватель не найден"))
+                    return next(badRequest("Преподаватель не найден"))
                 }
 
                 const existingTeacherLink = await SubjectTeachers.findOne({
@@ -121,8 +121,9 @@ class SubjectsService {
                 }
 
                 teacherAdded = {
-                    id: user.id,
+                    id: teacher.id,
                     user: {
+                        id: user.id,
                         first_name: user.first_name,
                         last_name: user.last_name,
                         email: user.email
@@ -135,9 +136,12 @@ class SubjectsService {
                     return next(badRequest("Нельзя добавить группу без выбора преподавателя для предмета"));
                 }
 
-                const teacher = await Teachers.findOne({where: {user_id: subjectTeacherId}});
-
-                const subjectTeacher = await SubjectTeachers.findOne({where: { teacherId: teacher.id }});
+                const subjectTeacher = await SubjectTeachers.findOne({
+                    where: {
+                        teacherId: subjectTeacherId,
+                        subjectId: subject.id,
+                    }
+                });
                 if (!subjectTeacher) {
                     return next(badRequest("Связь преподавателя с предметом не найдена"));
                 }
@@ -182,6 +186,7 @@ class SubjectsService {
                 },
             });
         } catch (e) {
+            console.log(e)
             return next(e);
         }
     }
