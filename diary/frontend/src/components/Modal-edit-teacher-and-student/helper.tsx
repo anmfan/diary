@@ -3,8 +3,8 @@ import {IStudent, ITeacher} from "@/redux/types.ts";
 import ModalEditAddGroup from "@/components/modal-edit-add-group/ModalEditAddGroup.tsx";
 import ModalEditRemoveGroup from "@/components/modal-edit-remove-group/ModalEditRemoveGroup.tsx";
 
-export const isUser = (item: TSelectedItem): item is ITeacher => {
-    return "first_name" in item!;
+export const isUser = (item: TSelectedItem) => {
+    return item?.tab === 'teachers' || item?.tab === 'students';
 }
 
 export const isStudent = (item: TSelectedItem): item is IStudent => {

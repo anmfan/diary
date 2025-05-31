@@ -54,7 +54,25 @@ export interface IGroupsInitialState {
 
 export interface ISubject extends IBase {
     name: string;
-    tab: "subjects"
+    teachers: ISubjectTeachersList[];
+    assigned_groups: ISubjectGroupsList[];
+    tab: "subjects";
+}
+
+export type ISubjectGroupsList = {
+    id: number;
+    name: string;
+    course: string;
+}
+
+export type ISubjectTeachersList = {
+    id: number;
+    user: {
+        id: number;
+        first_name: string;
+        last_name: string;
+        email: string;
+    }
 }
 
 export type ITeacher = IBase & {
@@ -201,14 +219,33 @@ type TGroupEditUpdated = {
     curator_id: string | null;
 }
 
-type TSubjectEditUpdated = {
-    id: string;
-    name: string;
+export type TSubjectEditUpdated = {
+    message: string;
+    updated: {
+        id: number;
+        name: string;
+        teacherAdded: {
+            id: number;
+            user: {
+                first_name: string;
+                last_name: string;
+                email: string;
+            }
+        } | null;
+        groupAttached: {
+            id: number;
+            name: string;
+            course: string;
+        } | null;
+    };
 }
 
 export type TSubjectEdit = {
     subjectId: string;
     newSubjectName: string;
+    group_id: string;
+    teacher_id: string;
+    subjectTeacherId: string;
     excelImportFile: FileList | null;
 }
 

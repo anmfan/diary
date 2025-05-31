@@ -1,13 +1,109 @@
 .container {
-    padding: 20px;
     max-width: 1200px;
+    display: flex;
     margin: 0 auto;
+    padding: 20px;
 }
 
 .title {
     text-align: center;
     margin-bottom: 30px;
     color: #333;
+}
+
+.subjectsContainer {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    transition: all 0.3s ease;
+    min-width: 300px;
+    max-height: 500px;
+}
+
+.subjectsTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.subjectsList {
+    list-style: none;
+    padding: 0;
+    user-select: none;
+    margin: 0;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.subjectsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.subjectsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.subjectsList::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.subjectsList::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.subjectItem {
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+    border-radius: 8px;
+}
+
+.subjectItem:hover {
+    background-color: #f9fafb;
+}
+
+.subjectInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 10px;
+}
+
+.subjectName {
+    font-weight: 500;
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.teacherName {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .listContainer,
+    .subjectsContainer {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+.studentsListContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .content {
@@ -33,11 +129,15 @@
 }
 
 .listContainer {
-    flex: 1;
+    flex: 3;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
     background: #fff;
+}
+
+.subjectTeacherName {
+    font-size: 0.8rem;
 }
 
 .listTitle {

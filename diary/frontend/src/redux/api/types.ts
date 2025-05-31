@@ -29,6 +29,21 @@ export type TResultAddStudents = {
     user: IUserData<string | null>
 }
 
+export type TGetSubjectsResponse = {
+    subject: {
+        id: number;
+        name: string;
+    };
+    teacher: {
+        id: number;
+        user: {
+            first_name: string;
+            last_name: string;
+            email: string;
+        }
+    }
+}[]
+
 export type RTKQueryError = FetchBaseQueryError & {
     error?:{
         data?: {

@@ -207,6 +207,89 @@ const Marks = sequelize.define('marks', {
     timestamps: true
 });
 
+const GroupSubjects = sequelize.define('GroupSubjects', {}, {
+    groupId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Groups,
+            key: 'id'
+        }
+    },
+    subjectId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Subjects,
+            key: 'id'
+        }
+    },
+    timestamps: true,
+});
+
+const SubjectTeachers = sequelize.define('SubjectTeachers', {
+    subjectId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Subjects,
+            key: 'id'
+        }
+    },
+    teacherId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Teachers,
+            key: 'id'
+        }
+    },
+}, {
+    timestamps: true
+});
+
+const GroupSubjectAssignments = sequelize.define('GroupSubjectAssignments', {
+    groupId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Groups,
+            key: 'id'
+        }
+    },
+    subjectId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Subjects,
+            key: 'id'
+        }
+    },
+    teacherId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Teachers,
+            key: 'id'
+        }
+    }
+}, {
+    timestamps: true
+});
+
+Groups.belongsToMany(Subjects, {through: GroupSubjectAssignments, foreignKey: 'groupId',
+    otherKey: 'subjectId',
+    as: 'assigned_subjects'
+});
+
+Subjects.belongsToMany(Groups, {through: GroupSubjectAssignments, foreignKey: 'subjectId',
+    otherKey: 'groupId',
+    as: 'assigned_groups'
+});
+
+GroupSubjectAssignments.belongsTo(Groups, { foreignKey: 'groupId' });
+GroupSubjectAssignments.belongsTo(Subjects, { foreignKey: 'subjectId' });
+GroupSubjectAssignments.belongsTo(Teachers, { foreignKey: 'teacherId' });
+
+Groups.hasMany(GroupSubjectAssignments, { foreignKey: 'groupId' });
+Subjects.hasMany(GroupSubjectAssignments, { foreignKey: 'subjectId' });
+Teachers.hasMany(GroupSubjectAssignments, { foreignKey: 'teacherId' });
 
 Users.hasOne(Teachers, { foreignKey: 'user_id' });
 Teachers.belongsTo(Users, { foreignKey: 'user_id' });
@@ -226,14 +309,17 @@ Users.belongsTo(Roles, {foreignKey: 'role_id', as: 'role'})
 Groups.hasMany(Students, { foreignKey: 'group_id' });
 Students.belongsTo(Groups, { foreignKey: 'group_id' });
 
-Groups.belongsToMany(Subjects, { through: 'GroupSubjects' });
-Subjects.belongsToMany(Groups, { through: 'GroupSubjects' });
+// Groups.belongsToMany(Subjects, { through: GroupSubjects });
+// Subjects.belongsToMany(Groups, { through: GroupSubjects });
 
 Students.belongsToMany(Subjects, { through: Marks });
 Subjects.belongsToMany(Students, { through: Marks });
 
 Marks.belongsTo(Students, { foreignKey: 'studentId' });
 Marks.belongsTo(Subjects, { foreignKey: 'subjectId' });
+
+Teachers.belongsToMany(Subjects, { through: SubjectTeachers, foreignKey: 'teacherId' });
+Subjects.belongsToMany(Teachers, { through: SubjectTeachers, foreignKey: 'subjectId' });
 
 module.exports = {
     Users,
@@ -242,5 +328,8 @@ module.exports = {
     Students,
     Roles,
     Marks,
-    Teachers
+    Teachers,
+    SubjectTeachers,
+    GroupSubjects,
+    GroupSubjectAssignments
 };

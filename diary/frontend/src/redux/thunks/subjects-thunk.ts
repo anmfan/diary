@@ -5,8 +5,7 @@ import {
     TDelete,
     TDeleteItem,
     TDeleteItemResponse,
-    TEntityEditResponse,
-    TSubjectEdit
+    TSubjectEdit, TSubjectEditUpdated
 } from "../types.ts";
 
 const getAllSubjects = createAsyncThunk<ISubject[], undefined, {extra: AxiosInstance}>
@@ -42,9 +41,10 @@ const createSubject = createAsyncThunk <
     }
 });
 
-const editSubject = createAsyncThunk<TEntityEditResponse<TSubjectEdit>, TSubjectEdit, {extra: AxiosInstance}>
+const editSubject = createAsyncThunk<TSubjectEditUpdated, TSubjectEdit, {extra: AxiosInstance}>
 ('subjects/edit', async (body, {extra: api}) => {
-    const { data } = await api.post<TEntityEditResponse<TSubjectEdit>>('subjects/edit', body)
+    const { data } = await api.post<TSubjectEditUpdated>('subjects/edit', body)
+    console.log(data)
     return data
 })
 

@@ -22,7 +22,7 @@ const TeacherManagementListStudentsItem = (props: TTeacherManagementListStudents
                 onClick={() => handleDeleteStudent(user_id)}
                 className={styles.removeButton}
             >
-                Удалить</button>
+                Открепить</button>
         </li>
     );
 };

@@ -1,13 +1,12 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import  {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {
-    ISubject,
-    ISubjectsInitialState,
+    ISubject, ISubjectGroupsList,
+    ISubjectsInitialState, ISubjectTeachersList,
     TDelete,
-    TEntityEditResponse,
-    TSubjectEdit
+    TSubjectEditUpdated
 } from "../types.ts";
 import {createSubject, deleteSubject, editSubject, getAllSubjects, TCreateSubject} from "../thunks/subjects-thunk.ts";
-import {updateEditedEntity, updateFilteredList} from "@/redux/helper.ts";
+import {updateFilteredList} from "@/redux/helper.ts";
 
 const initialState: ISubjectsInitialState = {
     items: [],
@@ -51,11 +50,38 @@ const subjectsSlice = createSlice({
                 state.items.push({
                     id: Number(payload.id),
                     name: payload.name,
+                    teachers: [],
+                    assigned_groups: [],
                     tab: "subjects"
                 })
             })
-            .addCase(editSubject.fulfilled, (state, action: PayloadAction<TEntityEditResponse<TSubjectEdit>>) => {
-                state.items = updateEditedEntity<ISubject>(state.items, action.payload)
+            .addCase(editSubject.fulfilled, (state, action: PayloadAction<TSubjectEditUpdated>) => {
+                const updated = action.payload.updated;
+
+                state.items = state.items.map(subject => {
+                    if (subject.id !== updated.id) return subject;
+
+                    const updatedSubject = {
+                        ...subject,
+                        name: updated.name,
+                    };
+
+                    if (updated.groupAttached) {
+                        updatedSubject.assigned_groups = [
+                            ...subject.assigned_groups,
+                            updated.groupAttached as ISubjectGroupsList
+                        ];
+                    }
+
+                    if (updated.teacherAdded) {
+                        updatedSubject.teachers = [
+                            ...subject.teachers,
+                            updated.teacherAdded as ISubjectTeachersList
+                        ];
+                    }
+
+                    return updatedSubject;
+                });
             })
     }
 })

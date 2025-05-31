@@ -7,7 +7,7 @@ import {
     TEditResponse,
     TEntityEditResponse,
     TGroupEdit,
-    TSubjectEdit
+    TSubjectEditUpdated
 } from "@/redux/types.ts";
 import {SortingOptionsValues} from "@/components/sorting-options-students/const.ts";
 import {SortingOptionsGroupsValues} from "@/components/sorting-options-groups/const.ts";
@@ -31,9 +31,9 @@ const updateEditedUser = <T extends ITeacher | IStudent>(items: T[], editedData:
     });
 }
 
-const updateEditedEntity = <T extends IGroups | ISubject>(items: T[], editedData: TEntityEditResponse<TGroupEdit | TSubjectEdit>) => {
+const updateEditedEntity = <T extends IGroups | ISubject>(items: T[], editedData: TEntityEditResponse<TGroupEdit> | TSubjectEditUpdated) => {
     return items.map(item => {
-        if (item.id === Number(editedData.updated.id)) {
+        if (item.id === editedData.updated.id) {
             return {
                 ...item,
                 name: editedData.updated.name,

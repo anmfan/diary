@@ -8,7 +8,7 @@ import {TabsOptions }  from "@/components/admin-management/types.ts";
 import { ITeacher } from "@/redux/types.ts";
 import { fioIsExist } from '@/components/admin-management-details/helper.ts';
 
-const ModalAddTeacher = () => {
+const ModalAddGroup = () => {
     const dispatch = useAppDispatch();
     const { closeModal } = useModal()
     const { list } = useAppSelectorsForLists<"teachers", ITeacher[]>(TabsOptions.teachers);
@@ -78,4 +78,4 @@ const ModalAddTeacher = () => {
     );
 };
 
-export default ModalAddTeacher;
+export default ModalAddGroup;

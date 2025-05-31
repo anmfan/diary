@@ -1,12 +1,12 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { AXIOS_BASE_URL, AXIOS_TIMEOUT } from "@/const.ts";
-import {IGroups, IUserReturned, RootState} from "@/redux/types.ts";
+import { IGroups, IUserReturned, RootState } from "@/redux/types.ts";
 import {
     RTKQueryError,
     TAddStudentToGroup, TAddStudentToGroupResponse,
     TDeleteStudent,
     TDeleteStudentId,
-    TGetGroupDataByCuratorEmail
+    TGetGroupDataByCuratorEmail, TGetSubjectsResponse
 } from "@/redux/api/types.ts";
 import {toast} from "react-toastify";
 import {updateNewStudentsList} from "@/redux/api/const.ts";
@@ -99,12 +99,20 @@ export const teacherManagementApi = createApi({
                     toast.error(error.error?.data?.message)
                 }
             }
-        })
+        }),
+        getSubjects: builder.query<TGetSubjectsResponse, { groupId: number }>({
+            query: ({ groupId }) => ({
+                url: `subjects/getByGroup?groupId=${groupId}`,
+                method: "GET"
+            }),
+            keepUnusedDataFor: 0
+        }),
     })
 })
 
 export const {
     useGetGroupDataQuery,
     useDeleteStudentMutation,
-    useAddStudentMutation
+    useAddStudentMutation,
+    useGetSubjectsQuery,
 } = teacherManagementApi;

@@ -9,5 +9,6 @@ router.get('/all', SubjectsController.getAllSubjects);
 router.delete('/delete', SubjectsController.deleteSubject)
 router.post('/create', SubjectsController.create)
 router.post('/edit', upload.single('excelImportFile'), SubjectsController.edit)
+router.get('/getByGroup', SubjectsController.getSubjectsByGroup)
 
 module.exports = router;
