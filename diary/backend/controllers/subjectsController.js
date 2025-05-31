@@ -1,4 +1,4 @@
-const { Subjects, Users, Groups, GroupSubjects, Teachers, SubjectTeachers, GroupSubjectAssignments} = require("../models/models");
+const { Subjects, Users, Groups, Teachers, SubjectTeachers, GroupSubjectAssignments} = require("../models/models");
 const { badRequest } = require("../error/ApiError");
 
 class SubjectsService {
@@ -135,7 +135,9 @@ class SubjectsService {
                     return next(badRequest("Нельзя добавить группу без выбора преподавателя для предмета"));
                 }
 
-                const subjectTeacher = await SubjectTeachers.findOne({where: { teacherId: subjectTeacherId }});
+                const teacher = await Teachers.findOne({where: {user_id: subjectTeacherId}});
+
+                const subjectTeacher = await SubjectTeachers.findOne({where: { teacherId: teacher.id }});
                 if (!subjectTeacher) {
                     return next(badRequest("Связь преподавателя с предметом не найдена"));
                 }
