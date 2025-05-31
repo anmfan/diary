@@ -136,8 +136,12 @@ class SubjectsService {
                 }
 
                 const subjectTeacher = await SubjectTeachers.findOne({where: { teacherId: subjectTeacherId }});
-                if (!subjectTeacher || subjectTeacher.subjectId !== subject.id) {
-                    return next(badRequest("Такой преподаватель не ведёт данный предмет"));
+                if (!subjectTeacher) {
+                    return next(badRequest("Связь преподавателя с предметом не найдена"));
+                }
+
+                if (subjectTeacher.subjectId !== subject.id) {
+                    return next(badRequest("Указанный преподаватель не относится к этому предмету"));
                 }
 
                 const group = await Groups.findByPk(group_id);
