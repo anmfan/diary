@@ -16,8 +16,8 @@ app.use(cors({
     credentials: true,
 }))
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, 'static/avatars')));
-app.use('/api', router);
+
+app.use('/avatars', express.static(path.resolve(__dirname, 'uploads/avatars')));
 
 app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
