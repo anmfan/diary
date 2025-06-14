@@ -21,6 +21,8 @@ app.use('/avatars', express.static(path.resolve(__dirname, 'uploads/avatars')));
 
 app.use(express.static(path.resolve(__dirname, '../frontend/dist')));
 
+app.use('/api', router);
+
 app.use(errorHandler);
 
 app.get('/', (req, res) => {
