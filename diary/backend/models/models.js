@@ -78,7 +78,9 @@ const Teachers = sequelize.define("teachers", {
         onDelete: "CASCADE"
     },
 }, {
-    timestamps: true
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
 });
 
 const Groups = sequelize.define('groups', {
@@ -116,6 +118,11 @@ const Subjects = sequelize.define('subjects', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+    },
+    classroom: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null
     }
 }, {
     timestamps: true,
@@ -156,19 +163,15 @@ const Students = sequelize.define('students', {
             }
         },
         afterUpdate: async (student, options) => {
-            // Проверяем, изменилась ли группа
             if (student.changed('group_id')) {
-                // 1. Получаем старую и новую группу
                 const previousGroupId = student.previous('group_id');
                 const newGroupId = student.group_id;
-                // 2. Уменьшаем старую группу
                 if (previousGroupId) {
                     await Groups.decrement('students_count', {
                         where: { id: previousGroupId },
                         transaction: options.transaction
                     });
                 }
-                // 3. Увеличиваем новую группу
                 if (newGroupId) {
                     await Groups.increment('students_count', {
                         where: { id: newGroupId },
@@ -182,11 +185,11 @@ const Students = sequelize.define('students', {
 
 const Marks = sequelize.define('marks', {
     mark: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     studentId: {
@@ -194,35 +197,21 @@ const Marks = sequelize.define('marks', {
         references: {
             model: Students,
             key: 'id'
-        }
+        },
+        field: 'student_id',
     },
     subjectId: {
         type: DataTypes.INTEGER,
         references: {
             model: Subjects,
             key: 'id'
-        }
+        },
+        field: 'subject_id',
     }
 }, {
-    timestamps: true
-});
-
-const GroupSubjects = sequelize.define('GroupSubjects', {}, {
-    groupId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Groups,
-            key: 'id'
-        }
-    },
-    subjectId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Subjects,
-            key: 'id'
-        }
-    },
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
 });
 
 const SubjectTeachers = sequelize.define('SubjectTeachers', {
@@ -263,7 +252,7 @@ const GroupSubjectAssignments = sequelize.define('GroupSubjectAssignments', {
     },
     teacherId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Teachers,
             key: 'id'
@@ -272,6 +261,57 @@ const GroupSubjectAssignments = sequelize.define('GroupSubjectAssignments', {
 }, {
     timestamps: true
 });
+
+const Schedule = sequelize.define('schedule', {
+    date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    lesson_number: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    classroom: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    groupId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Groups,
+            key: 'id'
+        }
+    },
+    subjectId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Subjects,
+            key: 'id'
+        }
+    },
+    teacherId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Teachers,
+            key: 'id'
+        }
+    }
+}, {
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+});
+
+Schedule.belongsTo(Groups, { foreignKey: 'groupId' });
+Schedule.belongsTo(Subjects, { foreignKey: 'subjectId' });
+Schedule.belongsTo(Teachers, { foreignKey: 'teacherId' });
+
+Groups.hasMany(Schedule, { foreignKey: 'groupId' });
+Subjects.hasMany(Schedule, { foreignKey: 'subjectId' });
+Teachers.hasMany(Schedule, { foreignKey: 'teacherId' });
 
 Groups.belongsToMany(Subjects, {through: GroupSubjectAssignments, foreignKey: 'groupId',
     otherKey: 'subjectId',
@@ -309,9 +349,6 @@ Users.belongsTo(Roles, {foreignKey: 'role_id', as: 'role'})
 Groups.hasMany(Students, { foreignKey: 'group_id' });
 Students.belongsTo(Groups, { foreignKey: 'group_id' });
 
-// Groups.belongsToMany(Subjects, { through: GroupSubjects });
-// Subjects.belongsToMany(Groups, { through: GroupSubjects });
-
 Students.belongsToMany(Subjects, { through: Marks });
 Subjects.belongsToMany(Students, { through: Marks });
 
@@ -330,6 +367,6 @@ module.exports = {
     Marks,
     Teachers,
     SubjectTeachers,
-    GroupSubjects,
-    GroupSubjectAssignments
+    GroupSubjectAssignments,
+    Schedule
 };

@@ -14,6 +14,7 @@ const AdminManagementDetailsSubjects = ({ selectedItem }: TAdminManagementDetail
                   </span>
                 )) : " Не прикреплены"}
             </p>
+            <p><strong>Аудитория:</strong> {selectedItem.classroom || "Нет аудитории"}</p>
             <p><strong>Группы:</strong>
                 {selectedItem.assigned_groups.length > 0 ? selectedItem.assigned_groups.map((group, index) => (
                     <span key={group.id}>

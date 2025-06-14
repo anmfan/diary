@@ -1,11 +1,6 @@
-const sequelize = require('../db');
 const XLSX = require('xlsx');
-const {badRequest} = require("../error/ApiError");
 const {Users, Groups, Teachers, Students} = require("../models/models");
 const {generateRandomPassword, generateUsername} = require("../helper");
-const {hash} = require("bcrypt");
-const mailService = require('../service/mailService');
-const PQueue = require('p-queue').default;
 const UserService = require("../service/userService");
 
 class BulkRegistration {

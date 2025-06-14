@@ -6,17 +6,20 @@ export type UserRole = typeof UsersRoles[keyof typeof UsersRoles]
 
 export interface IUserInitialState {
     isAuthenticated: boolean;
-    user: {
-        username: string | null;
-        email: string | null;
-        firstName: string | null;
-        lastName: string | null;
-        avatar: string | null;
-        role: UserRole;
-    },
+    user: TUserInfo,
     loadingIsDone: boolean;
     isError: boolean;
     selectedItem: TSelectedItem;
+}
+
+export type TUserInfo = {
+    username: string | null;
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    avatar: string | null;
+    role: UserRole;
+    group: number | null;
 }
 
 export type TGroupStudents = {
@@ -54,6 +57,7 @@ export interface IGroupsInitialState {
 
 export interface ISubject extends IBase {
     name: string;
+    classroom: string | null;
     teachers: ISubjectTeachersList[];
     assigned_groups: ISubjectGroupsList[];
     tab: "subjects";

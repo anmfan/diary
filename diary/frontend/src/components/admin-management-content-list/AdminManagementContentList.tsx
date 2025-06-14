@@ -3,6 +3,7 @@ import AdminManagementTeachers from "../admin-management-teachers/AdminManagemen
 import AdminManagementStudents from "../admin-management-students/AdminManagementStudents.tsx";
 import AdminManagementSubjects from "../admin-management-subjects/AdminManagementSubjects.tsx";
 import AdminManagementGroups from "../admin-management-groups/AdminManagementGroups.tsx";
+import AdminManagementSchedule from "@/components/admin-management-schedule/AdminManagementSchedule.tsx";
 
 const AdminManagementContentList = ({activeTab}: { activeTab: TTabsOptions }) => {
     const defineConfig = () => {
@@ -11,6 +12,7 @@ const AdminManagementContentList = ({activeTab}: { activeTab: TTabsOptions }) =>
             case TabsOptions.students: return <AdminManagementStudents/>;
             case TabsOptions.groups: return <AdminManagementGroups/>;
             case TabsOptions.subjects: return <AdminManagementSubjects/>;
+            case TabsOptions.schedule: return <AdminManagementSchedule />;
             default: return null;
         }
     }

@@ -1,17 +1,12 @@
 import useModal from "@/hooks/useModal.tsx";
 import {useForm} from "react-hook-form";
-import useGetCachedGroupData from "@/hooks/useCachedGroupData.tsx";
-import {useAppSelector} from "@/hooks/store.ts";
-import {userFIO} from "@/redux/selectors/user-selector.ts";
 import styles from './styles.module.css';
 import {TAddStudentToGroup} from "@/redux/api/types.ts";
 import {useAddStudentMutation} from "@/redux/api/teacher-management-api.ts";
 import {toast} from "react-toastify";
 
-const TeacherManagementAddStudent = () => {
+const TeacherManagementAddStudent = ({currentGroupName}: {currentGroupName: string}) => {
     const { closeModal } = useModal();
-    const { email } = useAppSelector(userFIO)
-    const { data } = useGetCachedGroupData({ email: email! })
     const [ addStudent ] = useAddStudentMutation()
 
     const { register, handleSubmit } = useForm<TAddStudentToGroup>({
@@ -19,7 +14,7 @@ const TeacherManagementAddStudent = () => {
             fullName: '',
             email: '',
             role_id: 3,
-            group_name: data?.name,
+            group_name: currentGroupName,
             excelImportFile: null,
         }
     });
@@ -74,7 +69,7 @@ const TeacherManagementAddStudent = () => {
             </label>
 
             <label className={`${styles.label} ${styles.aboveTitle}`}>
-                <span>Группа: {data?.name}</span>
+                <span>Группа: {currentGroupName}</span>
                 <label title="Добавить студентов через Excel файл" aria-label="Импортировать Excel файл" htmlFor="excel-upload" className={styles.customUpload}>
                     <img width={23} height={23} src="/ms-excel.svg" alt="Upload Excel" />
                 </label>

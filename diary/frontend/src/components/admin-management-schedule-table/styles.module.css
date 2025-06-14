@@ -1,0 +1,243 @@
+.scheduleTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.scheduleTable:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.timeColumn {
+    width: 100px;
+    background: #f8fafc;
+    margin-bottom: 10px
+}
+
+.dayHeader {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #334155;
+    padding: 14px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.dayHeader::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: #e2e8f0;
+}
+
+.dayHeader:last-child::after {
+    display: none;
+}
+
+.tableRow {
+    transition: background 0.2s ease;
+}
+
+.tableRow:hover {
+    background: #f8fafc !important;
+}
+
+.evenRow {
+    background: #ffffff;
+}
+
+.oddRow {
+    background: #fafcff;
+}
+
+.timeCell {
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: 500;
+    color: #475569;
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.timeCell::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 4px;
+    background: #cbd5e1;
+    border-radius: 50%;
+}
+
+.lessonCell {
+    padding: 4px;
+    border-bottom: 1px solid #f1f5f9;
+    border-right: 1px solid #f1f5f9;
+    height: 70px;
+    transition: background 0.2s ease;
+    position: relative;
+}
+
+.lessonCell:hover {
+    background: #f1f7ff;
+}
+
+.lessonCell:last-child {
+    border-right: none;
+}
+
+.tableRow:last-child .lessonCell {
+    border-bottom: none;
+}
+
+/* Стили для урока */
+.lessonCompact {
+    height: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #e0f2fe, #dbeafe);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    border: 1px solid #dbeafe;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.lessonCompact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    border-color: #bfdbfe;
+}
+
+.lessonCompact::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #3b82f6;
+    opacity: 0.7;
+}
+
+.subjectCompact {
+    font-weight: 600;
+    font-size: 12px;
+    color: #1e293b;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    z-index: 1;
+}
+
+.detailsCompact {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #475569;
+    gap: 4px;
+    z-index: 1;
+}
+
+.classroomCompact {
+    background: #3b82f6;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+}
+
+.teacherCompact {
+    font-size: 10px;
+    padding: 2px 4px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    flex-grow: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Стили для пустых ячеек */
+.emptyCell {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.emptyCell span {
+    background: rgba(241, 245, 249, 0.7);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Анимация при появлении урока */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lessonCompact {
+    animation: fadeInUp 0.3s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+    .scheduleTable {
+        border-radius: 8px;
+    }
+
+    .timeCell {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .dayHeader {
+        padding: 10px 6px;
+        font-size: 13px;
+    }
+
+    .lessonCell {
+        height: 65px;
+        padding: 2px;
+    }
+
+    .lessonCompact {
+        padding: 6px;
+    }
+
+    .subjectCompact {
+        font-size: 11px;
+    }
+
+    .teacherCompact {
+        font-size: 9px;
+    }
+}

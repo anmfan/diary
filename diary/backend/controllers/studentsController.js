@@ -1,6 +1,7 @@
-const {Users, Subjects, Students, Groups, Teachers} = require("../models/models");
+const {Users, Subjects, Students, Groups, Teachers, Roles, Schedule, Marks} = require("../models/models");
 const ApiError = require("../error/ApiError");
 const sequelize = require('../db');
+const {Op} = require("sequelize");
 
 class StudentsService {
     async getAllStudents(req, res, next) {
@@ -190,7 +191,7 @@ class StudentsService {
 
     async removeGroup(req, res, next) {
         try {
-            const { user_id } = req.query;
+            const { user_id, group_name } = req.query;
 
             const userId = user_id;
 
@@ -227,10 +228,19 @@ class StudentsService {
             const teacher = await Teachers.findOne({ where: { user_id: userId } });
 
             if (teacher) {
-                const group = await Groups.findOne({ where: { curator_id: teacher.id } });
+                if (!group_name) {
+                    return next(ApiError.badRequest("Для преподавателя требуется указать поле group_name"));
+                }
+
+                const group = await Groups.findOne({
+                    where: {
+                        curator_id: teacher.id,
+                        name: group_name
+                    }
+                });
 
                 if (!group) {
-                    return next(ApiError.badRequest("У преподавателя нет прикреплённой группы"))
+                    return next(ApiError.badRequest("Группа с таким названием не найдена у преподавателя"))
                 }
 
                 group.curator_id = null;
@@ -247,6 +257,119 @@ class StudentsService {
             return next(ApiError.badRequest("Пользователь не найден как студент или преподаватель"))
         } catch (e) {
             return next(e)
+        }
+    }
+
+    async getGroup(req, res, next) {
+        try {
+            const { email } = req.query;
+
+            if (!email) {
+                return res.status(400).json({ message: "Email обязателен" });
+            }
+
+            const user = await Users.findOne({
+                where: { email },
+                include: [{
+                    model: Roles,
+                    as: 'role',
+                    attributes: ['name']
+                }]
+            });
+
+            if (!user) {
+                return res.status(404).json({ message: "Пользователь не найден" });
+            }
+
+            if (user.role && user.role.name.toLowerCase() === 'студент') {
+                const student = await Students.findOne({
+                    where: { user_id: user.id },
+                    include: [{
+                        model: Groups,
+                        as: 'group',
+                        attributes: ['id']
+                    }]
+                });
+
+                if (student && student.group) {
+                    return res.json({ group: student.group.id });
+                } else {
+                    return res.json({ group: null });
+                }
+            }
+
+            return res.json({ group: null });
+        } catch (e) {
+            console.log(e)
+            next(e)
+        }
+    }
+
+    async getStudentDashboard (req, res, next) {
+        try {
+            const { email } = req.query;
+
+            // Создаем даты в правильном формате
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayStr = today.toISOString().split('T')[0]; // Формат YYYY-MM-DD
+
+            const dayAfterTomorrow = new Date();
+            dayAfterTomorrow.setDate(today.getDate() + 2);
+            dayAfterTomorrow.setHours(23, 59, 59, 999);
+            const dayAfterTomorrowStr = dayAfterTomorrow.toISOString().split('T')[0];
+
+            const result = {};
+
+            const user = await Users.findOne({ where: { email } });
+            if (!user) {
+                return next(ApiError.badRequest("Пользователь не найден"));
+            }
+
+            if (user.role_id === 3) {
+                const student = await Students.findOne({
+                    where: { user_id: user.id },
+                    include: [Groups]
+                });
+
+                if (!student) {
+                    return next(ApiError.badRequest("Студент не найден"));
+                }
+
+                if (!student.group_id) {
+                    result.upcomingClasses = [];
+                } else {
+                    result.upcomingClasses = await Schedule.findAll({
+                        where: {
+                            groupId: student.group_id,
+                            date: {
+                                [Op.between]: [todayStr, dayAfterTomorrowStr]
+                            }
+                        },
+                        include: [
+                            { model: Subjects, attributes: ['name'] }
+                        ],
+                        order: [
+                            ['date', 'ASC'],
+                            ['lesson_number', 'ASC']
+                        ],
+                        limit: 10
+                    });
+                }
+
+                result.recentMarks = await Marks.findAll({
+                    where: { studentId: student.id },
+                    include: [
+                        { model: Subjects, attributes: ['name'] }
+                    ],
+                    order: [['created_at', 'DESC']],
+                    limit: 5
+                });
+            }
+
+            return res.json(result);
+        } catch (e) {
+            next(e)
         }
     }
 }

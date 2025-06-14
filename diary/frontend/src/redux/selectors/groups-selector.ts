@@ -5,7 +5,7 @@ export const allGroups = (state: Pick<RootState, 'groups'>) => state.groups.item
 export const groupsWithoutSubjects = (subjectId: number) => (state: Pick<RootState, 'groups' | 'subjects'>) => {
     const subject = state.subjects.items.find(subject => subject.id === subjectId)
     const availableGroups = subject?.assigned_groups.map(group => group.id);
-    return state.groups.items.filter(group => group.id !== subjectId && !availableGroups?.includes(group.id))
+    return state.groups.items.filter(group => !availableGroups?.includes(group.id))
 }
 
 export const selectStudentsByGroupId = (groupId: number) =>

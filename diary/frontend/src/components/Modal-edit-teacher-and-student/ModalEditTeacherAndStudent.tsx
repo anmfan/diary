@@ -5,9 +5,10 @@ import useModal from "@/hooks/useModal.tsx";
 import {edit} from "@/redux/thunks/user-thunk.ts";
 import {TEdit} from "@/redux/types.ts";
 import {selectSelectedItem} from "@/redux/selectors/user-selector.ts";
-import {isUser, mappingGroups} from "@/components/Modal-edit-teacher-and-student/helper.tsx";
+import {isTeacher, isStudent, isUser, mappingGroups} from "@/components/Modal-edit-teacher-and-student/helper.tsx";
 import useSetSelectedItem from "@/hooks/useSetSelectedItem.ts";
 import {toast} from "react-toastify";
+import ModalEditAddGroup from "@/components/modal-edit-add-group/ModalEditAddGroup.tsx";
 
 const ModalEditTeacherAndStudent = () => {
     const dispatch = useAppDispatch();
@@ -56,9 +57,15 @@ const ModalEditTeacherAndStudent = () => {
                 />
             </label>
 
-            <label className={styles.label}>
-                Группа: {mappingGroups(selectedItem)}
-            </label>
+            <div className={styles.groupSection}>
+                {
+                    (isTeacher(selectedItem)
+                    || (isStudent(selectedItem) && !selectedItem.group))
+                    && <ModalEditAddGroup item={selectedItem} />}
+                <span style={{rowGap: "10px"}} className={styles.label}>
+                    Группа: {mappingGroups(selectedItem)}
+                </span>
+            </div>
 
             <label className={styles.label}>
                 Email

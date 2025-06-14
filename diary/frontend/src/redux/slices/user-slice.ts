@@ -4,6 +4,8 @@ import {check, login, logout} from "../thunks/user-thunk.ts";
 import {TSelectedItem} from "@/components/admin-management/types.ts";
 import {updateForUnpinStudentFromGroup} from "@/redux/helper.ts";
 import {removeGroup} from "@/redux/thunks/teachers-thunk.ts";
+import {checkTabIsGroups} from "@/components/admin-management-details/helper.ts";
+import {getStudentGroup} from "@/redux/thunks/students-thunk.ts";
 
 export const UsersRoles = {
     student: "Студент",
@@ -20,7 +22,8 @@ const initialState: IUserInitialState = {
         firstName: null,
         lastName: null,
         avatar: null,
-        role: UsersRoles.unknown
+        role: UsersRoles.unknown,
+        group: null
     },
     loadingIsDone: false,
     isError: false,
@@ -58,6 +61,9 @@ const userSlice = createSlice({
         },
         setSelectedItem: (state, action: PayloadAction<TSelectedItem>) => {
             state.selectedItem = action.payload;
+        },
+        updateAvatar: (state, action) => {
+            state.user.avatar = action.payload
         }
     },
     extraReducers: builder => {
@@ -87,15 +93,18 @@ const userSlice = createSlice({
                 state.user.username = null
                 state.user.avatar = null
                 state.user.role = UsersRoles.unknown
-                localStorage.removeItem("token");
+                state.user.group = null
             })
             .addCase(removeGroup.fulfilled, (state, action) => {
                 const { deletedId, oldGroup, students_count } = action.payload;
                 const selectedItem = state.selectedItem;
 
-                if (selectedItem?.tab === 'groups' && selectedItem.name === oldGroup) {
+                if (checkTabIsGroups(selectedItem) && selectedItem.name === oldGroup) {
                     state.selectedItem = updateForUnpinStudentFromGroup(selectedItem, students_count || 0, deletedId)
                 }
+            })
+            .addCase(getStudentGroup.fulfilled, (state, action) => {
+                state.user.group = action.payload.group
             })
     }
 })

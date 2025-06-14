@@ -11,7 +11,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 30px;
-    width: 100%;
+    width: clamp(150px, 50vw, 460px);
     max-width: 400px;
     display: flex;
     flex-direction: column;
@@ -22,6 +22,19 @@
     margin-bottom: 20px;
     color: #1a73e8;
     font-size: 24px;
+}
+
+.forgotPassword {
+    background: none;
+    border: none;
+    padding: 5px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #3a7bd5;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    align-self: flex-end;
 }
 
 .inputGroup {
@@ -66,7 +79,7 @@
 }
 
 .submitButton {
-    width: 400px;
+    width: 100%;
     padding: 12px;
     font-size: 16px;
     font-weight: 600;

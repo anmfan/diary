@@ -1,7 +1,5 @@
 import styles from "@/pages/management-page/management.module.css";
 import AdminManagementEditButton from "@/components/admin-management-edit-button/AdminManagementEditButton.tsx";
-import {ModalAddOptions} from "@/components/admin-management-tabs/const.tsx";
-import useModal from "@/hooks/useModal.tsx";
 import {TabsOptions, TTabsOptions} from "@/components/admin-management/types.ts";
 import {useAppSelector} from "@/hooks/store.ts";
 import {selectSelectedItem} from "@/redux/selectors/user-selector.ts";
@@ -11,9 +9,9 @@ import {sortedStudentsByGroup} from "@/redux/selectors/students-selector.ts";
 import {sortedGroupsByCurator} from "@/redux/selectors/groups-selector.ts";
 import {allSubjects} from "@/redux/selectors/subjects-selector.ts";
 import {useMemo} from "react";
+import AdminManagementAddButton from "@/components/admin-management-add-button/AdminManagementAddButton.tsx";
 
 const AdminManagementEditNewButton = ({activeTab}: {activeTab: TTabsOptions}) => {
-    const { openModal } = useModal()
     const selectedItem = useAppSelector(selectSelectedItem);
     const teachers = useAppSelector(sortedTeacherByGroup);
     const students = useAppSelector(sortedStudentsByGroup);
@@ -26,25 +24,15 @@ const AdminManagementEditNewButton = ({activeTab}: {activeTab: TTabsOptions}) =>
             case TabsOptions.students: return { arrayItems: students, label: "Студенты" };
             case TabsOptions.groups: return { arrayItems: groups, label: "Группы" };
             case TabsOptions.subjects: return { arrayItems: subjects, label: "Предметы" };
+            case TabsOptions.schedule: return { arrayItems: null, label: "расписание"};
         }
     },[activeTab, groups, students, subjects, teachers])
 
     return (
         <div className={styles.editButtons}>
-            {selectedItem && <AdminManagementEditButton activeTab={activeTab} w="20" h="20"/>}
-            <svg
-                onClick={() => openModal(ModalAddOptions[activeTab])}
-                aria-label={"Добавить"}
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="currentColor"
-                className={styles.biPlusLg}
-                viewBox="0 0 16 16">
-                <path fillRule="evenodd"
-                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-                <title>Добавить</title>
-            </svg>
+            {selectedItem && <AdminManagementEditButton activeTab={activeTab} w="20" h="20"/> }
+            {activeTab !== TabsOptions.schedule && <AdminManagementAddButton activeTab={activeTab}/> }
+            {activeTab === TabsOptions.schedule && selectedItem && <AdminManagementAddButton activeTab={activeTab}/> }
             <svg onClick={() => exportToExcel(arrayItemsForExport)} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                  className="bi bi-filetype-xlsx" viewBox="0 0 16 16">
                 <path fillRule="evenodd"

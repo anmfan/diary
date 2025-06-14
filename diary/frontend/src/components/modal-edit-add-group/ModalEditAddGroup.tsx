@@ -41,8 +41,7 @@ const ModalEditAddGroup = ({item}: {item: TSelectedItem}) => {
 
     return (
         <div className={styles.groupsInfo}>
-            <span>Нет группы</span>
-            <div>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
                 <select onChange={onChangeGroup} className={styles.selector}>
                     <option value="">Выберите группу</option>
                     {list.map(group => (
@@ -51,7 +50,7 @@ const ModalEditAddGroup = ({item}: {item: TSelectedItem}) => {
                         </option>
                     ))}
                 </select>
-                <button onClick={handleClick} type="button">Прикрепить</button>
+                <button onClick={handleClick} type="button" title="Прикрепить группу">Прикрепить</button>
             </div>
         </div>
     );

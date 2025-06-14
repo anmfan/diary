@@ -1,10 +1,12 @@
 import {IGroups, IStudent, ISubject, ITeacher} from "@/redux/types.ts";
+import {Nullable} from "@/const.ts";
 
 export const TabsOptions = {
     teachers: "teachers",
     students: "students",
     groups: "groups",
-    subjects: "subjects"
+    subjects: "subjects",
+    schedule: "schedule"
 } as const
 
 export type TTabsOptions = typeof TabsOptions[keyof typeof TabsOptions];
@@ -14,6 +16,7 @@ export const tabs = [
     { key: TabsOptions.students, label: "Студенты" },
     { key: TabsOptions.groups, label: "Группы" },
     { key: TabsOptions.subjects, label: "Предметы" },
+    { key: TabsOptions.schedule, label: "Расписание" },
 ];
 
-export type TSelectedItem = ITeacher | IStudent | IGroups | ISubject | null;
+export type TSelectedItem = Nullable<ITeacher | IStudent | IGroups | ISubject>;

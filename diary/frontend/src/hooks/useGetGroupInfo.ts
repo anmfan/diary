@@ -6,14 +6,14 @@ const useGetGroupInfo = () => {
     const { email } = useAppSelector(userFIO)
     const { data: groupData, isLoading } = useGetGroupDataQuery({ email: email! })
 
-    const groupId = groupData?.id || 0;
+    const groupIds = groupData?.map(group => group.id) ?? [];
 
     const { data: subjects, isLoading: isSubjectsLoading } = useGetSubjectsQuery(
-        { groupId },
-        { skip: !groupId }
+        { groupIds },
+        { skip: groupIds.length === 0 }
     )
 
-    return { groupData, isLoading, subjects, isSubjectsLoading }
+    return { groupIds, groupData, isLoading, subjects, isSubjectsLoading }
 };
 
 export default useGetGroupInfo;

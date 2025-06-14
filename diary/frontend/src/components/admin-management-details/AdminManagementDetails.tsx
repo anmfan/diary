@@ -11,6 +11,8 @@ import AdminManagementDetailsGroups
     from "@/components/admin-management-details-groups/AdminManagementDetailsGroups.tsx";
 import AdminManagementDetailsSubjects
     from "@/components/admin-management-details-subjects/AdminManagementDetailsSubjects.tsx";
+import AdminManagementDetailsSchedule
+    from "@/components/admin-management-details-schedule/AdminManagementDetailsSchedule.tsx";
 
 const AdminManagementDetails = ({activeTab}: {activeTab: TTabsOptions}) => {
     const selectedItem = useAppSelector(selectSelectedItem);
@@ -19,21 +21,20 @@ const AdminManagementDetails = ({activeTab}: {activeTab: TTabsOptions}) => {
         return <div className={styles.emptyDetail}>Ничего не выбрано</div>
     }
 
+    const tabIsSchedule = activeTab === TabsOptions.schedule && isGroup(selectedItem);
+
+    const switchTabs = () => {
+        if (activeTab === TabsOptions.teachers && isTeacher(selectedItem)) return <AdminManagementDetailsTeachers selectedItem={selectedItem}/>;
+        if (activeTab === TabsOptions.students && isStudent(selectedItem)) return <AdminManagementDetailsStudents selectedItem={selectedItem}/>;
+        if (activeTab === TabsOptions.groups && isGroup(selectedItem)) return <AdminManagementDetailsGroups selectedItem={selectedItem}/>;
+        if (activeTab === TabsOptions.subjects && isSubject(selectedItem)) return <AdminManagementDetailsSubjects selectedItem={selectedItem}/>;
+        if (tabIsSchedule) return <AdminManagementDetailsSchedule selectedItem={selectedItem}/>;
+    }
+
     return (
         <div className={styles.detailContent}>
-            <h3>Подробная информация</h3>
-            {activeTab === TabsOptions.teachers && isTeacher(selectedItem) && (
-                <AdminManagementDetailsTeachers selectedItem={selectedItem}/>
-            )}
-            {activeTab === TabsOptions.students && isStudent(selectedItem) && (
-                <AdminManagementDetailsStudents selectedItem={selectedItem}/>
-            )}
-            {activeTab === TabsOptions.groups && isGroup(selectedItem) && (
-                <AdminManagementDetailsGroups selectedItem={selectedItem}/>
-            )}
-            {activeTab === TabsOptions.subjects && isSubject(selectedItem) && (
-                <AdminManagementDetailsSubjects selectedItem={selectedItem}/>
-            )}
+            {!tabIsSchedule && <h3>Подробная информация</h3>}
+            {switchTabs()}
         </div>
     );
 };

@@ -1,11 +1,11 @@
-const { Subjects, Users, Groups, GroupSubjects, Teachers, SubjectTeachers, GroupSubjectAssignments} = require("../models/models");
+const { Subjects, Users, Groups, GroupSubjects, Teachers, SubjectTeachers, GroupSubjectAssignments, Students} = require("../models/models");
 const { badRequest } = require("../error/ApiError");
 
 class SubjectsService {
     async getAllSubjects(req, res, next) {
         try {
             const subjects = await Subjects.findAll({
-                attributes: ['id','name'],
+                attributes: ['id','name', 'classroom'],
                 include: [
                     {
                         model: Teachers,
@@ -27,17 +27,20 @@ class SubjectsService {
 
             return res.json(subjects);
         } catch (e) {
-            console.log(e)
             return next(e);
         }
     }
 
     async create(req, res, next) {
         try {
-            const { name } = req.body;
+            const { name, classroom } = req.body;
 
             if(!name) {
                 return next(badRequest("Требуется название предмета"))
+            }
+
+            if(!classroom) {
+                return next(badRequest("Требуется номер аудитории"))
             }
 
             const existingSubject = await Subjects.findOne({ where: { name } });
@@ -46,7 +49,7 @@ class SubjectsService {
                 return next(badRequest("Такой предмет уже существует"));
             }
 
-            const newSubject = await Subjects.create({ name })
+            const newSubject = await Subjects.create({ name, classroom })
 
             const { created_at, updated_at, ...responseData } = newSubject.toJSON();
 
@@ -193,14 +196,18 @@ class SubjectsService {
 
     async getSubjectsByGroup(req, res, next) {
         try {
-            const { groupId } = req.query;
+            const { groupIds } = req.query;
 
-            if (!groupId) {
-                return next(badRequest("groupId обязателен"));
+            if (!groupIds) {
+                return next(badRequest("groupIds обязателен"));
             }
 
+            const groupIdArray = groupIds.split(',').map(id => parseInt(id.trim())).filter(Boolean);
+
             const assignments = await GroupSubjectAssignments.findAll({
-                where: { groupId },
+                where: {
+                    groupId: groupIdArray
+                },
                 include: [
                     {
                         model: Subjects,
@@ -224,6 +231,7 @@ class SubjectsService {
                 const user = teacher?.user;
 
                 return {
+                    groupId: assignment.groupId,
                     subject: subject ? {
                         id: subject.id,
                         name: subject.name
@@ -241,8 +249,101 @@ class SubjectsService {
 
             return res.json(result);
         } catch (e) {
-            console.log(e)
             next(e)
+        }
+    }
+
+    async getTaughtGroupsByTeacher(req, res, next) {
+        try {
+            const { teacherEmail } = req.query;
+
+            if (!teacherEmail) {
+                return next(badRequest("teacherEmail обязателен"));
+            }
+
+            const user = await Users.findOne({
+                where: { email: teacherEmail }
+            });
+
+            if (!user) {
+                return next(badRequest("Пользователь с таким email не найден"));
+            }
+
+            const teacher = await Teachers.findOne({
+                where: { user_id: user.id }
+            });
+
+            if (!teacher) {
+                return next(badRequest("Преподаватель с таким email не найден"));
+            }
+
+            console.log('teacher', teacher)
+            const assignments = await GroupSubjectAssignments.findAll({
+                where: { teacherId: teacher.id },
+                include: [
+                    {
+                        model: Groups,
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Subjects,
+                        attributes: ['id', 'name']
+                    }
+                ]
+            });
+
+            const grouped = {};
+
+            for (const assignment of assignments) {
+                const group = assignment.group;
+                const subject = assignment.subject;
+
+                if (!grouped[group.id]) {
+                    grouped[group.id] = {
+                        groupId: group.id,
+                        groupName: group.name,
+                        subjects: [],
+                        students: []
+                    };
+                }
+
+                grouped[group.id].subjects.push({
+                    subjectId: subject.id,
+                    subjectName: subject.name
+                });
+            }
+
+            const groupIds = Object.keys(grouped).map(id => parseInt(id));
+
+            const studentsInGroups = await Students.findAll({
+                where: {
+                    group_id: groupIds
+                },
+                include: [
+                    {
+                        model: Users,
+                        attributes: ['id', 'first_name', 'last_name', 'email']
+                    }
+                ]
+            });
+
+
+            for (const student of studentsInGroups) {
+                const groupEntry = grouped[student.group_id];
+                if (groupEntry) {
+                    groupEntry.students.push({
+                        id: student.user.id,
+                        first_name: student.user.first_name,
+                        last_name: student.user.last_name,
+                        email: student.user.email
+                    });
+                }
+            }
+
+            return res.json(Object.values(grouped));
+        } catch (e) {
+            console.log(e);
+            next(e);
         }
     }
 }

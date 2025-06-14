@@ -1,0 +1,199 @@
+.modalContent {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modalHeader h4 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #666;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.closeButton:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.lessonInfo, .teacherInfo {
+    background: #f9fbfd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e6f0fa;
+}
+
+.infoRow {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.infoRow:last-child {
+    margin-bottom: 0;
+}
+
+.infoLabel {
+    font-weight: 600;
+    color: #555;
+    min-width: 120px;
+}
+
+.infoValue {
+    color: #333;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.selectWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.selectWrapper::after {
+    content: "⌄";
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.selectWrapper select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    appearance: none;
+    transition: border 0.2s;
+}
+
+.selectWrapper select:focus {
+    outline: none;
+    border-color: #0078d7;
+    box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.2);
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.2s;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #0078d7;
+    box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.2);
+}
+
+.modalActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.rightActions {
+    display: flex;
+    gap: 12px;
+}
+
+.saveButton, .cancelButton, .deleteButton {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.saveButton {
+    background: #0078d7;
+    color: white;
+}
+
+.saveButton:hover {
+    background: #0056b3;
+}
+
+.cancelButton {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.cancelButton:hover {
+    background: #e0e0e0;
+}
+
+.deleteBtn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #e74c3c;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.deleteButton:hover {
+    background: #ffece8;
+}

@@ -13,8 +13,24 @@
     }
 }
 
-.btnRemoveBlock {
+.biTrash3 {
+    cursor: pointer;
+
+    &:hover {
+        fill: red;
+        background-color: #f5f5f5;
+    }
+}
+
+.btnRemoveLine {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.btnRemoveBlock {
+    display: flex;
+    row-gap: 15px;
+    justify-content: space-between;
+    flex-direction: column;
 }

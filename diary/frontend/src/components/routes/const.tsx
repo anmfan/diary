@@ -5,7 +5,6 @@ const Diary = lazy(() => import('@/pages/diary-page/Diary.tsx'));
 const Marks = lazy(() => import('@/pages/marks-page/Marks.tsx'));
 const Auth = lazy(() => import('@/pages/auth-page/Auth.tsx'));
 const Management = lazy(() => import("@/pages/management-page/Management.tsx"));
-const Settings = lazy(() => import("@/pages/settings-page/Settings.tsx"));
 
 export const ROUTES_ENDPOINTS = {
     HOME: '/',
@@ -14,7 +13,6 @@ export const ROUTES_ENDPOINTS = {
     MARKS: '/marks',
     NOT_FOUND: '*',
     AUTH: '/auth',
-    SETTINGS: '/settings',
     MANAGEMENT: '/management',
 }
 
@@ -43,10 +41,5 @@ export const ROUTES = [
         id: 4,
         path: ROUTES_ENDPOINTS.MANAGEMENT,
         element: <Management/>
-    },
-    {
-        id: 5,
-        path: ROUTES_ENDPOINTS.SETTINGS,
-        element: <Settings/>
     },
 ]

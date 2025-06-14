@@ -44,8 +44,16 @@ const register = createAsyncThunk<
     }
 });
 
+const newPassword = createAsyncThunk<undefined, { email : string }, {extra: AxiosInstance}>
+('user/newPassword', async ({ email }, {extra: api}) => {
+    const { data } = await api.post(`user/new-password?email=${email}`);
+    return data;
+});
+
 const logout = createAsyncThunk<undefined, undefined, {extra: AxiosInstance}>
 ('auth/logout', async (_, {extra: api, dispatch}) => {
+    localStorage.removeItem("token")
+
     dispatch(groupsActions.resetGroupSlice())
     dispatch(teachersActions.resetTeacherSlice())
     dispatch(studentsActions.resetStudentsSlice())
@@ -71,4 +79,4 @@ const edit = createAsyncThunk<
     }
 });
 
-export { login, register, check, logout, edit };
+export { login, register, check, logout, edit, newPassword };

@@ -4,7 +4,7 @@ import TeacherManagementListStudentsItem
     from "@/components/teacher-management-list-students-item/TeacherManagementListStudentsItem.tsx";
 
 type TListStudent = {
-    data: IGroups | undefined;
+    data: IGroups | undefined | null;
 }
 
 const TeacherManagementListStudents = ({ data }: TListStudent) => {

@@ -85,10 +85,13 @@ const teachersSlice = createSlice({
 
                 if (data.type === 'teacher') {
                     state.items = state.items.map(teacher => {
-                        if (String(teacher.id) === String(data.user.id)) {
+                        const currentGroup = teacher.curated_groups ?? []
+                        if (teacher.id === data.user.id) {
                             return {
                                 ...teacher,
-                                curated_groups: data.group ? [data.group] : []
+                                curated_groups: data.group
+                                    ? [...currentGroup, data.group]
+                                    : teacher.curated_groups
                             }
                         }
                         return teacher

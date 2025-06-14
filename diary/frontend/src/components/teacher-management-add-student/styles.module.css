@@ -30,8 +30,25 @@
 }
 
 .customUpload {
-    padding: 5px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1d6f42;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+
+    img {
+        pointer-events: none;
+    }
+
+    &:hover {
+        background-color: #155c36;
+    }
 }
 
 .aboveTitle {

@@ -69,10 +69,10 @@ const addGroup = createAsyncThunk<
 
 const removeGroup = createAsyncThunk<
     TRemoveGroupResponse,
-    { user_id: number; },
+    { user_id: number; group_name?: string; },
     {extra: AxiosInstance}
->('user/remove-group', async ({user_id}, {extra: api}) => {
-    const { data } = await api.delete<TRemoveGroupResponse>(`students/remove-group?user_id=${user_id}`)
+>('user/remove-group', async ({user_id, group_name}, {extra: api}) => {
+    const { data } = await api.delete<TRemoveGroupResponse>(`students/remove-group?user_id=${user_id}&group_name=${group_name}`)
     return data;
 })
 

@@ -6,6 +6,7 @@ import {useRef, useState} from "react";
 import HeaderDropdownMenu from "../header-dropdown-menu/HeaderDropdownMenu.tsx";
 import Spinner from "../spinner/Spinner.tsx";
 import { MouseEvent } from "react";
+import {SERVER_BASE_URL} from "@/const.ts";
 
 const HeaderAuth = () => {
     const { username, avatar, role } = useAppSelector(headerAvatar)
@@ -20,6 +21,9 @@ const HeaderAuth = () => {
     if (!username) {
         return <Spinner />;
     }
+
+    const userAvatar = avatar ? SERVER_BASE_URL + avatar : null;
+
     return (
         <>
             <div
@@ -29,7 +33,7 @@ const HeaderAuth = () => {
                 className={styles.user}
             >
                 <>
-                    <HeaderAvatar width={28} height={28} avatar={avatar}/>
+                    <HeaderAvatar width={28} height={28} avatar={userAvatar}/>
                     <span style={{userSelect: 'none'}}>{username}</span>
                 </>
                 {dropdownIsOpen && <HeaderDropdownMenu role={role} />}

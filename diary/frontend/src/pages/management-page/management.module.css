@@ -1,4 +1,4 @@
-    .container {
+.container {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
@@ -75,6 +75,21 @@
     }
 }
 
+.listContainerSchedule {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fff;
+    max-height: 650px;
+    overflow-y: auto;
+
+    &:has(:nth-child(n+6))::-webkit-scrollbar {
+        width: 6px;
+        background: #f0f0f0;
+    }
+}
+
 .listTitle {
     display: flex;
     align-items: center;
@@ -114,6 +129,14 @@
     background: #fff;
 }
 
+.detailScheduleContainer {
+    flex: 4;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fff;
+}
+
 .editButtons {
     display: flex;
     margin-left: auto;
@@ -148,6 +171,7 @@
 }
 
 .detailContent {
+    height: 100%;
     color: #333;
 }
 
@@ -169,8 +193,11 @@
     font-size: 18px;
 }
 
-@media (max-width: 700px) {
-    .editButtons {
-
+@media (max-width: 1300px) {
+    .content {
+        flex-direction: column;
+    }
+    .listContainerSchedule, .listContainer {
+        max-height: 200px;
     }
 }

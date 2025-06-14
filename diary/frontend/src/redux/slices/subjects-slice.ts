@@ -52,6 +52,7 @@ const subjectsSlice = createSlice({
                     name: payload.name,
                     teachers: [],
                     assigned_groups: [],
+                    classroom: payload.classroom,
                     tab: "subjects"
                 })
             })

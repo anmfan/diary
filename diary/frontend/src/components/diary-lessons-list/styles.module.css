@@ -1,0 +1,257 @@
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    gap: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.daysSidebar {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dayCard {
+    background: white;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    color: #0078d7;
+    user-select: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.dayCard:hover {
+    box-shadow: 0 4px 16px rgba(0,120,215,0.3);
+}
+
+.dayCard.active {
+    background: linear-gradient(90deg, #0078d7, #00bcf2);
+    color: white;
+    box-shadow: 0 6px 20px rgba(0,120,215,0.5);
+}
+
+.dayName {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.date {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-bottom: 0.3rem;
+}
+
+.lessonCount {
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+.scheduleCenter {
+    flex-grow: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0,120,215,0.15);
+    overflow-y: auto;
+}
+
+.scheduleCard h2 {
+    margin-bottom: 1rem;
+    color: #0078d7;
+}
+
+.scheduleCard ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.scheduleCard li {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 120, 215, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(90deg, #0078d7 0%, #00bcf2 100%);
+    color: white;
+}
+
+.dayInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.dayName {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.date {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.lessonCount {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.divider {
+    height: 4px;
+    background: linear-gradient(90deg, #0078d7 0%, #00bcf2 100%);
+    opacity: 0.2;
+}
+
+.homeworkList {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.homeworkItem {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 120, 215, 0.1);
+    align-items: center;
+}
+
+.homeworkItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.subjectIcon {
+    min-width: 40px;
+    height: 40px;
+    background: #e6f7ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding-inline: 10px;
+    justify-content: center;
+    color: #0078d7;
+    font-size: 1.1rem;
+}
+
+.taskInfo {
+    flex-grow: 1;
+}
+
+.subjectName {
+    color: #0078d7;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.task {
+    color: #555;
+    line-height: 1.4;
+}
+
+.statusIndicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4caf50;
+    margin-top: 0.5rem;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.cardFooter {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0, 120, 215, 0.1);
+}
+
+.addButton {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 2px dashed #0078d7;
+    border-radius: 12px;
+    color: #0078d7;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.addButton:hover {
+    background: rgba(0, 120, 215, 0.05);
+}
+
+.footer {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 120, 215, 0.1);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+}
+
+.statItem {
+    text-align: center;
+}
+
+.statItem span {
+    display: block;
+    color: #0078d7;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.statItem strong {
+    font-size: 2rem;
+    color: #0078d7;
+    font-weight: 700;
+}
+
+@media (max-width: 740px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .scheduleCenter {
+        max-height: 515px;
+    }
+
+    .daysSidebar {
+        flex-wrap: wrap;
+        width: auto;
+        max-height: 125px;
+        overflow: scroll;
+    }
+}
+
+@media (max-width: 394px) {
+    .aside {
+        width: 40px;
+    }
+}

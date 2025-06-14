@@ -11,13 +11,15 @@ const ModalAddSubject = () => {
     const { register, handleSubmit } = useForm({
         defaultValues: {
             name: '',
+            classroom: ''
         }
     });
 
-    const handleSubmitForm = async (data: { name: string }) => {
+    const handleSubmitForm = async (data: { name: string, classroom: string }) => {
         if (data.name.length < 3) {
             return toast.error("Название предмета должно быть минимум 3 символа");
         }
+
         try {
             await dispatch(createSubject(data)).unwrap()
         } catch (e) {
@@ -37,6 +39,16 @@ const ModalAddSubject = () => {
                     type="text"
                     className={styles.input}
                     name="name"
+                    required />
+            </label>
+
+            <label className={styles.label}>
+                Аудитория
+                <input
+                    {...register('classroom')}
+                    type="text"
+                    className={styles.input}
+                    name="classroom"
                     required />
             </label>
 

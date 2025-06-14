@@ -27,4 +27,10 @@ const createStudent = createAsyncThunk<IUserReturned<string | null>, TCreateUser
     return data;
 });
 
-export { getAllStudents, deleteStudent, createStudent };
+const getStudentGroup = createAsyncThunk<{ group: number }, { email: string | null}, {extra: AxiosInstance}>
+('student/getGroup', async ({ email }, {extra: api}) => {
+    const {data} = await api.get<{ group: number }>(`students/getGroup?email=${email}`);
+    return data;
+});
+
+export { getAllStudents, deleteStudent, createStudent, getStudentGroup };

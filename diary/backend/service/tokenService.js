@@ -27,6 +27,7 @@ class TokenService {
     }
 
     async removeToken(refreshToken) {
+        if (!refreshToken) return;
         return await Users.update(
             { refresh_token: null },
             { where: { refresh_token: refreshToken }}

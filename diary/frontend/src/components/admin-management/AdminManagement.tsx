@@ -5,7 +5,7 @@ import {getAllTeachers} from "@/redux/thunks/teachers-thunk.ts";
 import {getAllStudents} from "@/redux/thunks/students-thunk.ts";
 import AdminManagementTabs from "../admin-management-tabs/AdminManagementTabs.tsx";
 import AdminManagementContentList from "../admin-management-content-list/AdminManagementContentList.tsx";
-import {TTabsOptions} from "./types.ts";
+import {TabsOptions, TTabsOptions} from "./types.ts";
 import AdminManagementTitles from "../admin-management-titles/AdminManagementTitles.tsx";
 import AdminManagementDetails from "../admin-management-details/AdminManagementDetails.tsx";
 import {getAllGroups} from "@/redux/thunks/groups-thunk.ts";
@@ -14,13 +14,6 @@ import useModal from "@/hooks/useModal.tsx";
 import AdminManagementModal from "@/components/admin-management-modal/AdminManagementModal.tsx";
 import AdminManagementEditNewButton
     from "@/components/admin-management-edit-new-button/AdminManagementEditNewButton.tsx";
-
-const TabsOptions = {
-    teachers: 'teachers',
-    students: 'students',
-    groups: 'groups',
-    subjects: 'subjects',
-} as const;
 
 const AdminManagement = () => {
     const [activeTab, setActiveTab] = useState<TTabsOptions>(TabsOptions.teachers);
@@ -36,6 +29,8 @@ const AdminManagement = () => {
         ])
     },[dispatch])
 
+    const activeTabIsSchedule = activeTab === TabsOptions.schedule;
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Панель управления администратора</h1>
@@ -47,7 +42,7 @@ const AdminManagement = () => {
                 <AdminManagementEditNewButton activeTab={activeTab}/>
             </div>
             <div className={styles.content}>
-                <div className={styles.listContainer}>
+                <div className={`${activeTabIsSchedule ? styles.listContainerSchedule : styles.listContainer}`}>
                     <AdminManagementTitles
                         activeTab={activeTab}
                     />
@@ -56,7 +51,7 @@ const AdminManagement = () => {
                     />
                 </div>
 
-                <div className={styles.detailContainer}>
+                <div className={`${activeTabIsSchedule ? styles.detailScheduleContainer : styles.detailContainer}`}>
                     <AdminManagementDetails
                         activeTab={activeTab}
                     />

@@ -1,17 +1,18 @@
 import styles from './auth.module.css';
 import AuthTooltip from "@/components/auth-tooltip/AuthTooltip.tsx";
 import {useAppDispatch} from "@/hooks/store.ts";
-import { useForm } from "react-hook-form";
 import {login} from "@/redux/thunks/user-thunk.ts";
 import 'react-toastify/dist/ReactToastify.css';
 import {useNavigate} from "react-router-dom";
 import {ROUTES_ENDPOINTS} from "@/components/routes/const.tsx";
 import {formValidation} from "@/utils/formValidation.ts";
 import {toast} from "react-toastify";
+import {useForm} from "react-hook-form";
 
 
 const Auth = () => {
     const dispatch = useAppDispatch();
+    // const { modalIsOpen ,openModal } = useModal();
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -40,7 +41,7 @@ const Auth = () => {
                     <div className={styles.inputGroup}>
                         <label className={styles.label} htmlFor="email">Email</label>
                         <input
-                            autoComplete={'email'}
+                            autoComplete='email'
                             className={styles.input}
                             type="email"
                             id="email"
@@ -55,18 +56,19 @@ const Auth = () => {
                         </div>
                         <input
                             className={styles.input}
-                            autoComplete={'password'}
+                            autoComplete='password'
                             type="password"
                             id="password"
                             placeholder="Пароль"
                             {...register("password")}
                         />
                     </div>
-                    <button
-                        className={styles.submitButton}
-                    >
-                        Войти</button>
+                    <button type="submit" className={styles.submitButton}>Войти</button>
                 </form>
+                {/*<button onClick={() => openModal(<ForgotPassword />)} type="button" className={styles.forgotPassword }>*/}
+                {/*    Зыбыли пароль?*/}
+                {/*</button>*/}
+                {/*{modalIsOpen && <AdminManagementModal />}*/}
             </div>
         </div>
     );

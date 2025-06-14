@@ -1,85 +1,218 @@
-/* Общие стили остаются как в предыдущем примере, меняем только специфичные блоки */
-
-/* Статистика */
-.statsContainer {
-    display: flex;
-    gap: 3rem;
-    margin: 2rem 0;
-}
-
-/* Ближайшие уроки */
-.scheduleSection {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .top {
     display: flex;
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 1.5rem;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
-.lessonsList {
-    margin-top: 1rem;
+.profileHeader {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
 }
 
-.lessonItem {
+.avatarContainer {
+    position: relative;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.avatarContainer:hover .avatarOverlay {
+    opacity: 1;
+}
+
+.avatarOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.time {
-    font-weight: 500;
-    color: #2c3e50;
+.profileInfo {
+    flex: 1;
 }
 
-.lessonInfo h4 {
-    margin-bottom: 0.25rem;
-    color: #2c3e50;
+.userInfo h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1c1c1e;
 }
 
-/* Оценки */
-.gradesSection {
-    margin: 2rem 0;
+.userRole {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 0.5rem;
 }
 
-.gradesGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.userEmail {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 1.5rem;
+}
+
+.avatarActions {
+    display: flex;
     gap: 1rem;
     margin-top: 1rem;
 }
 
+.saveButton, .cancelButton {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.saveButton {
+    background-color: #0066cc;
+    color: white;
+}
+
+.saveButton:hover:not(:disabled) {
+    background-color: #0055aa;
+}
+
+.cancelButton {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.cancelButton:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+.saveButton:disabled, .cancelButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.statsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.statItem {
+    background: #f9fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.statItem:hover {
+    transform: translateY(-5px);
+}
+
+.statItem h3 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    color: #0066cc;
+}
+
+.statItem p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.gradesSection {
+    background: #f9fafc;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.gradesSection h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #1c1c1e;
+}
+
+.gradesGrid {
+    display: grid;
+    grid-template-columns: 3fr 1fr 2fr;
+    gap: 1rem;
+}
+
 .gradeSubject, .gradeMark, .gradeDate {
     padding: 0.8rem;
-    border-radius: 8px;
-    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.gradeSubject {
+    font-weight: 500;
 }
 
 .gradeMark {
     text-align: center;
-    font-weight: bold;
+    font-weight: 600;
     color: #27ae60;
 }
 
-/* Кнопки */
-.editButton {
-    background: none;
-    border: 1px solid #3498db;
-    color: #3498db;
-    padding: 0.6rem 1.5rem;
-    border-radius: 8px;
-    transition: 0.3s;
+.gradeDate {
+    text-align: right;
+    color: #666;
 }
 
-.editButton:hover {
-    background: #3498db;
-    color: white;
+/* Адаптивность */
+@media (max-width: 768px) {
+    .profileHeader {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .avatarContainer {
+        margin-bottom: 1.5rem;
+    }
+
+    .avatarActions {
+        justify-content: center;
+    }
+
+    .gradesGrid {
+        grid-template-columns: 2fr 1fr 2fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .statsContainer {
+        grid-template-columns: 1fr;
+    }
+
+    .gradesGrid {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 702px) {
+    .avatarContainer {
+        display: none;
+    }
 }

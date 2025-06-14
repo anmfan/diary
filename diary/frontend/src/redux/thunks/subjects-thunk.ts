@@ -23,6 +23,7 @@ const deleteSubject = createAsyncThunk<TDelete<'subjectId'>, TDeleteItem, {extra
 export type TCreateSubject = {
     id: string;
     name: string;
+    classroom: string;
 }
 
 const createSubject = createAsyncThunk <
@@ -44,7 +45,6 @@ const createSubject = createAsyncThunk <
 const editSubject = createAsyncThunk<TSubjectEditUpdated, TSubjectEdit, {extra: AxiosInstance}>
 ('subjects/edit', async (body, {extra: api}) => {
     const { data } = await api.post<TSubjectEditUpdated>('subjects/edit', body)
-    console.log(data)
     return data
 })
 

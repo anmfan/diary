@@ -5,9 +5,9 @@
     left: 0;
     z-index: 1000;
     max-width: 240px;
-    height: calc(100vh - calc(2 * var(--aside-block-padding)));
+    height: 100vh;
     margin-right: 15px;
-    padding: var(--aside-block-padding) 1rem;
+    padding: 0 1rem;
     border-right: 1px solid #dee2e6;
 
     .toggleAside {

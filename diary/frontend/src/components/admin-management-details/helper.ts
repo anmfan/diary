@@ -1,4 +1,4 @@
-import {TSelectedItem} from "@/components/admin-management/types.ts";
+import {TabsOptions, TSelectedItem} from "@/components/admin-management/types.ts";
 import {IGroups, IStudent, ISubject, ITeacher} from "@/redux/types.ts";
 
 export type TAdminManagementDetails<T> = {
@@ -35,4 +35,8 @@ export const isGroup = (item: TSelectedItem): item is IGroups => {
 }
 export const isSubject = (item: TSelectedItem): item is ISubject => {
     return "name" in item!;
+}
+
+export const checkTabIsGroups = (selectedItem: TSelectedItem) => {
+    return TabsOptions.groups === selectedItem?.tab;
 }
