@@ -185,10 +185,12 @@ const Profile = () => {
                         {isTeacher && (
                             userStats.map(({ title, value }) => (
                                 <div key={title} className={styles.statItem}>
-                                    {Array.isArray(value) && value.length > 0 && (
-                                        <div>
-                                            <h2>{title}</h2>
+                                    <h2>{title}</h2>
 
+                                    {!Array.isArray(value) || value.length === 0 ? (
+                                        <p className={styles.empty}>Нет данных</p>
+                                    ) : (
+                                        <>
                                             {title === 'Управляемые группы' && value.map(group => {
                                                 if ('course' in group && 'students_count' in group) {
                                                     return (
@@ -221,7 +223,7 @@ const Profile = () => {
                                                 }
                                                 return null;
                                             })}
-                                        </div>
+                                        </>
                                     )}
                                 </div>
                             ))
