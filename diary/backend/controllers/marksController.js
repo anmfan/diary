@@ -37,6 +37,7 @@ class MarksController {
                 return next(badRequest("Максимум 2 оценки на одну дату по одному предмету"))
             }
 
+            console.log('date', date)
             const newMark = await Marks.create({
                 studentId: student.id,
                 subjectId,
