@@ -13,4 +13,4 @@ export const lessonTimes = [
 export const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт'];
 
 export type Nullable<T> = T | null;
-export const SERVER_BASE_URL = 'http://45.130.9.13'
+export const SERVER_BASE_URL = 'http://45.130.9.13:5000'
