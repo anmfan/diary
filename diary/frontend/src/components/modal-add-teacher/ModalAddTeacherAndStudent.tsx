@@ -30,7 +30,8 @@ const ModalAddTeacherAndStudent =
             fullName: '',
             email: '',
             role_id: roleId,
-            group_id: ''
+            group_id: '',
+            format: null
         }
     });
 
@@ -70,6 +71,16 @@ const ModalAddTeacherAndStudent =
                     required
                 />
             </label>
+
+            {roleId === 3 && (
+                <label className={styles.label}>
+                    Форма
+                    <select {...register("format")} className={otherStyles.selector}>
+                        <option value="">Бюджет</option>
+                        <option value="к">Коммерция</option>
+                    </select>
+                </label>
+            )}
 
             <label className={styles.label}>
                 Группа

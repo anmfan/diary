@@ -248,7 +248,7 @@ class GroupsService {
                     },
                     {
                         model: Students,
-                        attributes: ['user_id'],
+                        attributes: ['user_id', 'format'],
                         include: [{
                             model: Users,
                             attributes: ['first_name', 'last_name', 'email']

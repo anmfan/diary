@@ -68,7 +68,6 @@ export const teacherManagementApi = createApi({
                 try {
                     const { data } = await queryFulfilled
 
-                    console.log('data', data)
                     if ("userData" in data) {
                         const newStudent = data.userData.user
 
@@ -103,6 +102,7 @@ export const teacherManagementApi = createApi({
                                         for (const group of draft) {
                                             if (student.user.group === group.name) {
                                                 group.students.push({
+                                                    format: student.user.format,
                                                     user_id: student.user.id,
                                                     user: {
                                                         first_name: student.user.firstName,

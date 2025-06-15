@@ -14,6 +14,7 @@ class UserService {
         role_id = 3,
         group_id,
         fullName = null,
+        format,
         transaction
     ) {
         const hashPassword = await hash(password, 10);
@@ -28,6 +29,7 @@ class UserService {
         }
 
         group_id = group_id || null;
+        format = format || null;
 
         const user = await Users.create({
             email,
@@ -35,14 +37,17 @@ class UserService {
             password: hashPassword,
             role_id,
             first_name,
-            last_name,
-        }, { transaction });
+            last_name
+        }, { transaction, format });
 
         const userWithRole = await Users.findByPk(user.id, {
             include: [{
                 model: Roles,
                 as: 'role',
                 attributes: ['name']
+            }, {
+                model: Students,
+                attributes: ['format']
             }],
             transaction
         });
@@ -56,7 +61,7 @@ class UserService {
 
         if (role_id === 3) {
             const student = await Students.findOne({
-                where: { user_id: user.id },
+                where: { user_id: user.id, format: format || null },
                 include: [{
                     model: Groups,
                     as: 'group',

@@ -6,6 +6,7 @@ module.exports = class UserDto {
     lastName;
     role;
     avatar;
+    format;
     group = null;
 
     constructor(model) {
@@ -15,6 +16,7 @@ module.exports = class UserDto {
         this.firstName = model.first_name;
         this.lastName = model.last_name;
         this.avatar = model.avatar;
+        this.format = model.student ? model.student.format : null;
         this.role = model.role ? model.role.name : "Неопознанная роль";
     }
 }

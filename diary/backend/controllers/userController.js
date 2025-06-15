@@ -56,6 +56,7 @@ class UserController {
                 group_id,
                 group_name,
                 fullName,
+                format
             } = req.body;
 
             const candidate = await Users.findOne({where: {email}, transaction})
@@ -82,6 +83,7 @@ class UserController {
                 Number(role_id),
                 actualGroupId,
                 fullName,
+                format,
                 transaction
             );
 
@@ -356,10 +358,6 @@ class UserController {
 
     async updateAvatar(req, res, next) {
         try {
-            console.log('Updating avatar...');
-            console.log('Authenticated user:', req.user);
-            console.log('Uploaded file:', req.file);
-
             if (!req.file) {
                 return res.status(400).json({ message: 'Файл не загружен' });
             }
@@ -387,13 +385,11 @@ class UserController {
                     const oldFilePath = join(__dirname, '../uploads/avatars', oldFilename);
 
                     await fs.unlink(oldFilePath);
-                    console.log(`Старый аватар удален: ${oldFilePath}`);
                 } catch (deleteError) {
                     console.error('Ошибка при удалении старого аватара:', deleteError);
                 }
             }
 
-            console.log(`Аватар успешно обновлен: ${newAvatarPath}`);
             res.json({
                 success: true,
                 avatar: newAvatarPath,
@@ -432,7 +428,6 @@ class UserController {
                 emailSent: true
             });
         } catch (e) {
-            console.error('Ошибка при сбросе пароля:', e);
             next(e)
         }
     }

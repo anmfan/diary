@@ -15,7 +15,7 @@ class BulkRegistration {
 
         for (const data of usersData) {
             try {
-                const { email, fullName, role_id, group_name } = data;
+                const { email, fullName, role_id, group_name, format } = data;
 
                 const existingUser = await Users.findOne({ where: { email }, transaction });
                 if (existingUser) {
@@ -42,6 +42,7 @@ class BulkRegistration {
                     Number(role_id),
                     group_id,
                     fullName,
+                    format,
                     transaction
                 );
 

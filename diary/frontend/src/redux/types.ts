@@ -23,6 +23,7 @@ export type TUserInfo = {
 }
 
 export type TGroupStudents = {
+    format: string | null;
     user_id: number;
     user: {
         first_name: string;
@@ -102,6 +103,7 @@ export type IStudent = IBase & {
     last_name: string | null;
     avatar: string | null;
     group: string | null;
+    format: string | null;
     tab: "students"
 }
 
@@ -143,6 +145,7 @@ export type IUserData<T> = {
     avatar: string | null;
     email: string;
     group: T;
+    format: string | null;
     groupStudentCount: number;
     role: UserRole;
 }
@@ -188,6 +191,7 @@ export type TCreateUser<T extends 2 | 3> = {
     fullName: string;
     role_id: T;
     group_id: string;
+    format: string | null;
 }
 
 export type TEdit = {

@@ -64,6 +64,7 @@ const studentsSlice = createSlice({
                     last_name: user.lastName,
                     avatar: user.avatar,
                     group: user.group,
+                    format: user.format,
                     tab: "students"
                 })
 

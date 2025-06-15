@@ -13,6 +13,7 @@ const AdminManagementDetailsStudents = ({selectedItem}: TAdminManagementDetails<
             )}</p>
             <p><strong>Логин:</strong> {selectedItem.username}</p>
             <p><strong>Группа:</strong> {selectedItem.group || 'Нет группы'}</p>
+            <p><strong>Бюджет:</strong> {selectedItem.format === "к" ? "Коммерция" : "Да"}</p>
         </>
     );
 };

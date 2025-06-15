@@ -56,7 +56,10 @@ const Users = sequelize.define('users', {
                 if (user.role_id === 2) {
                     await Teachers.create({user_id: user.id}, {transaction: options.transaction});
                 } else if (user.role_id === 3) {
-                    await Students.create({user_id: user.id}, {transaction: options.transaction});
+                    await Students.create({
+                        user_id: user.id,
+                        format: options.format || null
+                    }, { transaction: options.transaction });
                 }
             } catch (e) {
                 console.error('Ошибка при создании студента:', e);
@@ -148,6 +151,10 @@ const Students = sequelize.define('students', {
             model: Groups,
             key: 'id'
         }
+    },
+    format: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     timestamps: true,

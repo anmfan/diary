@@ -12,7 +12,7 @@ class StudentsService {
                 include: [
                     {
                         model: Students,
-                        attributes: ['id', 'group_id'],
+                        attributes: ['id', 'group_id', 'format'],
                         include: [
                             {
                                 model: Groups,
@@ -30,6 +30,7 @@ class StudentsService {
                 first_name: user.first_name,
                 last_name: user.last_name,
                 avatar: user.avatar,
+                format: user.student?.format || null,
                 group: user.student?.group?.name || null
             }));
 

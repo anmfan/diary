@@ -10,8 +10,8 @@ type TListStudent = {
 const TeacherManagementListStudents = ({ data }: TListStudent) => {
     return (
         <ul className={styles.list}>
-            {data?.students.map(({user: {first_name, last_name}, user_id}) => (
-                <TeacherManagementListStudentsItem key={user_id} {...{first_name, last_name, user_id}}/>
+            {data?.students.map(({user: {first_name, last_name}, user_id, format}) => (
+                <TeacherManagementListStudentsItem key={user_id} {...{first_name, last_name, user_id, format}}/>
             ))}
         </ul>
     );
