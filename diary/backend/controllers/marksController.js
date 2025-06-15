@@ -54,6 +54,10 @@ class MarksController {
 
             res.status(201).json(payload);
         } catch (e) {
+            console.error('Ошибка при создании оценки:');
+            console.error('Сообщение:', e.message);
+            console.error('Полный объект ошибки:', e);
+            console.error('Стек ошибки:', e.stack);
             next(e)
         }
     }
