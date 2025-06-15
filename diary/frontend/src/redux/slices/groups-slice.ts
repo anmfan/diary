@@ -114,6 +114,7 @@ const groupsSlice = createSlice({
                                 students: [
                                     ...group.students,
                                     {
+                                        format: data.format,
                                         user_id: data.id,
                                         user: {
                                             first_name: data.firstName,
@@ -189,6 +190,7 @@ const groupsSlice = createSlice({
                                 students: [
                                     ...group.students,
                                     {
+                                        format: null,
                                         user_id: data.user.id,
                                         user: {
                                             first_name: data.user.first_name,
