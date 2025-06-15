@@ -216,3 +216,10 @@
         display: none;
     }
 }
+
+@media (max-width: 771px) {
+    .statsContainer {
+        max-height: 380px;
+        overflow: auto;
+    }
+}

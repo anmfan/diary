@@ -132,3 +132,10 @@
     font-size: 0.9em;
     color: #555;
 }
+
+@media (max-width: 1301px) {
+    .container {
+        max-height: 400px;
+        overflow: auto;
+    }
+}

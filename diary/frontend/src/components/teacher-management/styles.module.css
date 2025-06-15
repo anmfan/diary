@@ -376,3 +376,10 @@ details > div.content {
         padding: 0;
     }
 }
+
+@media (max-width: 880px) {
+    .detailContent {
+        overflow: auto;
+        max-width: 150px;
+    }
+}

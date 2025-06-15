@@ -24,7 +24,7 @@ const TeachersDashboard = ({ email }: TEmailProp) => {
                 </div>
 
                 {data?.upcomingClasses?.length ? (
-                    data.upcomingClasses.map((cls, index) => (
+                    data.upcomingClasses.slice(0, 5).map((cls, index) => (
                         <AnimatedDashboardCard key={cls.id} index={index}>
                             <div className={styles.card}>
                                 <div className={styles.cardTitle}>

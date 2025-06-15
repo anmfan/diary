@@ -180,10 +180,18 @@ class UserController {
                     attributes: []
                 });
 
-                const groupsTeachingSubjects = groupSubjectAssignments.map(gsa => ({
+                const groupsTeachingSubjectsRaw = groupSubjectAssignments.map(gsa => ({
                     group: gsa.group,
                     subject: gsa.subject
                 }));
+
+                const seenGroupIds = new Set();
+                const groupsTeachingSubjects = groupsTeachingSubjectsRaw.filter(item => {
+                    const id = item.group.id;
+                    if (seenGroupIds.has(id)) return false;
+                    seenGroupIds.add(id);
+                    return true;
+                });
 
                 return res.json({
                     curatedGroups,
