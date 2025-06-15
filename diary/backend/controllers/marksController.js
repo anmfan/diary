@@ -41,7 +41,7 @@ class MarksController {
             const newMark = await Marks.create({
                 studentId: student.id,
                 subjectId,
-                date: new Date(date),
+                date,
                 mark
             });
 
