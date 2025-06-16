@@ -230,9 +230,10 @@ class UserController {
                 });
             }
 
-            const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
 
-            console.log("Текущая дата:", today);
+            console.log("Текущая дата (today):", today);
             console.log("ID группы студента:", student.group_id);
             const allLessons = await Schedule.findAll({
                 where: {
