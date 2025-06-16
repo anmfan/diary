@@ -231,6 +231,9 @@ class UserController {
             }
 
             const today = new Date().toISOString().split('T')[0];
+
+            console.log("Текущая дата:", today);
+            console.log("ID группы студента:", student.group_id);
             const allLessons = await Schedule.findAll({
                 where: {
                     groupId: student.group_id,
@@ -240,31 +243,44 @@ class UserController {
                 raw: true
             });
 
+            console.log("Найденные занятия:", JSON.stringify(allLessons, null, 2));
+
             const totalLessons = allLessons.length;
 
+            console.log("Всего занятий:", totalLessons);
             const studentMarks = await Marks.findAll({
                 where: { studentId: student.id },
                 attributes: ['mark', 'date', 'subjectId'],
                 raw: true
             });
 
+            console.log("Оценки студента:", JSON.stringify(studentMarks, null, 2));
+
             let absences = 0;
             const validMarks = [];
 
             studentMarks.forEach(mark => {
-                const matchingLesson = allLessons.some(lesson =>
-                    lesson.date === mark.date &&
-                    lesson.subjectId === mark.subjectId
-                );
+                console.log(`Обработка оценки: ${mark.date} | ${mark.subjectId} | ${mark.mark}`);
+                const matchingLesson = allLessons.some(lesson => {
+                    const match = lesson.date === mark.date && lesson.subjectId === mark.subjectId;
+                    console.log(`Сравнение: ${lesson.date} == ${mark.date} && ${lesson.subjectId} == ${mark.subjectId} => ${match}`);
+                    return match;
+                });
 
                 if (matchingLesson) {
+                    console.log("Найдено совпадение!");
                     if (mark.mark === 'н') {
                         absences++;
+                        console.log("Отсутствие засчитано");
                     } else if (/^[1-5]$/.test(mark.mark)) {
                         validMarks.push(parseInt(mark.mark));
+                        console.log("Оценка засчитана:", mark.mark);
                     }
                 }
             });
+
+            console.log("Общее отсутствий:", absences);
+            console.log("Валидные оценки:", validMarks);
 
             const sumMarks = validMarks.reduce((acc, val) => acc + val, 0);
             const averageMark = validMarks.length > 0
