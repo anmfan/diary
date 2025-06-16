@@ -240,7 +240,8 @@ class UserController {
                 raw: true
             });
 
-            const totalLessons = allLessons.length;
+            const lessonIds = allLessons.map(lesson => lesson.id);
+            const totalLessons = lessonIds.length;
 
             const marks = await Marks.findAll({
                 where: { studentId: student.id },
