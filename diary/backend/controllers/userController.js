@@ -253,16 +253,11 @@ class UserController {
                 mark: mark.mark
             }));
 
-            const lessonsDatesSet = new Set(allLessons.map(lesson => new Date(lesson.date).toISOString().split('T')[0]));
-            const datesWithMarkOrN = new Set(
-                formattedMarksDates
-                    .filter(m => m.mark === 'н' || /^[1-5]$/.test(m.mark))
-                    .map(m => m.date)
-            );
+            const lessonsDatesSet = new Set(allLessons.map(lesson =>
+                new Date(lesson.date).toISOString().split('T')[0]
+            ));
 
-            const totalLessons = Array.from(lessonsDatesSet).filter(date => datesWithMarkOrN.has(date)).length;
-
-
+            const totalLessons = lessonsDatesSet.size;
 
             // const marksMap = new Map();
             // marks.forEach(mark => {
@@ -276,7 +271,8 @@ class UserController {
             let sumMarks = 0;
 
             formattedMarksDates.forEach(mark => {
-                if (mark.mark === 'н') {
+                const isLessonDate = lessonsDatesSet.has(mark.date);
+                if (mark.mark === 'н' && isLessonDate) {
                     absences++;
                 } else if (/^[1-5]$/.test(mark.mark)) {
                     totalMarks++;
