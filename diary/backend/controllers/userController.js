@@ -236,52 +236,41 @@ class UserController {
                     groupId: student.group_id,
                     date: { [Op.lte]: today }
                 },
-                attributes: ['id', 'date', 'lesson_number', 'subjectId'],
+                attributes: ['id', 'date', 'subjectId'],
                 raw: true
             });
+
+            const totalLessons = allLessons.length;
 
             const studentMarks = await Marks.findAll({
-                where: {
-                    studentId: student.id
-                },
-                attributes: ['mark', 'date'],
+                where: { studentId: student.id },
+                attributes: ['mark', 'date', 'subjectId'],
                 raw: true
             });
 
-            const formattedMarksDates = studentMarks.map(mark => ({
-                date: new Date(mark.date).toISOString().split('T')[0],
-                mark: mark.mark
-            }));
-
-            const lessonsDatesSet = new Set(allLessons.map(lesson =>
-                new Date(lesson.date).toISOString().split('T')[0]
-            ));
-
-            const totalLessons = lessonsDatesSet.size;
-
-            // const marksMap = new Map();
-            // marks.forEach(mark => {
-            //     const dateKey = new Date(mark.date).toISOString().split('T')[0];
-            //     if (!marksMap.has(dateKey)) marksMap.set(dateKey, []);
-            //     marksMap.get(dateKey).push(mark.mark);
-            // });
-
             let absences = 0;
-            let totalMarks = 0;
-            let sumMarks = 0;
+            const validMarks = [];
 
-            formattedMarksDates.forEach(mark => {
-                const isLessonDate = lessonsDatesSet.has(mark.date);
-                if (mark.mark === 'н' && isLessonDate) {
-                    absences++;
-                } else if (/^[1-5]$/.test(mark.mark)) {
-                    totalMarks++;
-                    sumMarks += parseInt(mark.mark);
+            studentMarks.forEach(mark => {
+                const matchingLesson = allLessons.some(lesson =>
+                    lesson.date === mark.date &&
+                    lesson.subjectId === mark.subjectId
+                );
+
+                if (matchingLesson) {
+                    if (mark.mark === 'н') {
+                        absences++;
+                    } else if (/^[1-5]$/.test(mark.mark)) {
+                        validMarks.push(parseInt(mark.mark));
+                    }
                 }
             });
 
+            const sumMarks = validMarks.reduce((acc, val) => acc + val, 0);
+            const averageMark = validMarks.length > 0
+                ? sumMarks / validMarks.length
+                : 0;
 
-            const averageMark = totalMarks > 0 ? (sumMarks / totalMarks) : 0;
             const attendancePercentage = totalLessons > 0
                 ? Math.round(((totalLessons - absences) / totalLessons) * 100)
                 : 0;
