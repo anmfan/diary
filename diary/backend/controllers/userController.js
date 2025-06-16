@@ -230,8 +230,16 @@ class UserController {
                 });
             }
 
-            const now = new Date();
-            const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+            const getLocalDate = (timezoneOffset = 5) => {
+                const now = new Date();
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                return new Date(utc + (3600000 * timezoneOffset))
+                    .toISOString()
+                    .split('T')[0];
+            };
+
+            const today = getLocalDate(5);
+            console.log("Локальная дата (с учетом часового пояса):", today);
 
             console.log("Текущая дата (today):", today);
             console.log("ID группы студента:", student.group_id);
