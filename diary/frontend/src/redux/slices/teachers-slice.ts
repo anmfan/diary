@@ -42,6 +42,7 @@ const teachersSlice = createSlice({
             .addCase(getAllTeachers.fulfilled, (state, action: PayloadAction<ITeacher[]>) => {
                 state.loadingIsDone = true
                 state.items = action.payload
+                state.sortedItems = action.payload
             })
             .addCase(getAllTeachers.rejected, (state) => {
                 state.loadingIsDone = true
