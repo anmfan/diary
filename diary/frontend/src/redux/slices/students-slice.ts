@@ -38,6 +38,7 @@ const studentsSlice = createSlice({
             .addCase(getAllStudents.fulfilled, (state, action: PayloadAction<IStudent[]>) => {
                 state.loadingIsDone = true
                 state.items = action.payload
+                state.sortedItems = action.payload
             })
             .addCase(getAllStudents.rejected, (state) => {
                 state.loadingIsDone = true
