@@ -57,14 +57,20 @@ const Profile = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
+            const MAX_FILE_SIZE = 500 * 1024;
 
             if (!file.type.match('image.*')) {
                 toast.error('Пожалуйста, выберите файл изображения');
+
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+
                 return;
             }
 
-            if (file.size > 5 * 1024 * 1024) {
-                toast.error('Размер файла не должен превышать 5MB');
+            if (file.size > MAX_FILE_SIZE) {
+                toast.error('Размер файла не должен превышать 500 КБ');
                 return;
             }
 

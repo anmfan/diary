@@ -42,6 +42,7 @@ export const userApi = createApi({
         }),
         getUserInfo: builder.query<TGetStudentInfoAccount | TGetTeacherInfoAccount, { email: string | null }>({
             query: ({ email }) => `user/account?email=${email}`,
+            keepUnusedDataFor: 0
         }),
         getAdminInfo: builder.query<TGetAdminAccountInfo, undefined>({
             query: () => `user/admin-account`,
